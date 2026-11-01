@@ -1,123 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FORANEO_AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORANEO_AI - FORANEO (PTY) LTD</title>
 <style>
-body{margin:0;font-family:Arial;background:#f2f2f2}
-.header{background:#2563eb;color:#fff;text-align:center;padding:15px}
-.header b{font-size:22px}
-.tabs{display:flex;overflow-x:auto;background:#fff;padding:8px;gap:8px;white-space:nowrap}
-.tabs button{border:1px solid #2563eb;background:#fff;color:#2563eb;padding:8px 14px;border-radius:20px;font-size:15px}
-.tabs button.active{background:#2563eb;color:#fff}
-.page{display:none;padding:12px}
-.page.active{display:block}
-.box{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px}
-#chat{height:300px;overflow-y:auto;background:#fff;border-radius:12px;padding:10px}
-.msg{margin:8px 0;padding:8px 10px;border-radius:10px;max-width:90%}
-.me{background:#dbeafe;margin-left:auto}
-.ai{background:#eee}
-input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:16px;box-sizing:border-box}
-button.send{background:#2563eb;color:#fff;border:0;padding:12px;border-radius:10px;width:100%;font-size:16px;margin-top:8px}
-img{max-width:100%;border-radius:10px}
-.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.calc button{padding:16px;font-size:18px;border-radius:10px;border:1px solid #ccc;background:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f0f2f5;padding-bottom:140px}
+.top{background:#2563eb;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
+.top small{color:#ffea00}
+.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:62px;z-index:9}
+.tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold;cursor:pointer}
+.tabs button.on{background:#2563eb;color:#fff}
+.page{display:none;padding:12px}.page.on{display:block}
+.card{background:#fff;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin:6px 0}
+.btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;margin-top:6px;cursor:pointer}
+.btn2{background:#22c55e}.btn3{background:#f59e0b}.btnR{background:#ef4444}
+.msg{background:#fff;padding:12px;border-radius:15px;margin:8px 0;max-width:88%;word-wrap:break-word}
+.me{background:#2563eb;color:#fff;margin-left:auto}
+#genImg,#editImg{width:100%;border-radius:12px;display:none;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:18px;font-size:20px;border-radius:12px;border:1px solid #ddd;background:#f8fafc;cursor:pointer}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,0.2);z-index:20}
+.bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:18px;cursor:pointer}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:15px;padding:12px 16px;border-radius:25px}
+#freezeOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);color:#fff;z-index:999;text-align:center;padding-top:120px}
+.log{font-size:13px;background:#f8fafc;padding:8px;border-radius:8px;margin:4px 0}
+#callBox{display:none;background:#111;color:#fff;padding:12px;border-radius:15px;margin:10px 0;text-align:center}
+#callVideo{width:100%;border-radius:12px;background:#000}
+#aiAvatar{font-size:90px;animation:bob 1.2s infinite}
+@keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 </style>
 </head>
 <body>
-<div class="header"><b>FORANEO_AI</b><br>FORANEO (PTY) LTD • Foraneo Net Department<br>Guest • All Things ON</div>
+<div id="freezeOverlay"><h1>⛔ FORANEO_AI FROZEN</h1><p>App frozen by Admin - FORANEO (PTY) LTD</p><button class="btn btn2" style="width:200px" onclick="unfreezeApp()">Unfreeze (Admin)</button></div>
+<div class="top"><b id="appTitle">FORANEO_AI</b><br><small>FORANEO (PTY) LTD • Foraneo Net Department</small><p id="userLine">Guest • All Things ON</p></div>
 <div class="tabs">
-<button class="active" onclick="show('chat',this)">💬 Chat</button>
+<button class="on" onclick="show('chat',this)">💬 Chat</button>
 <button onclick="show('image',this)">🎨 Image / Logo</button>
 <button onclick="show('calc',this)">🧮 Calculator</button>
 <button onclick="show('games',this)">🎮 Games</button>
 <button onclick="show('studio',this)">🎵 Studio</button>
+<button onclick="show('admin',this)">🎛️ Admin</button>
+<button onclick="show('login',this)">🔐 Login</button>
 </div>
-
-<div id="chat" class="page active">
-<div id="chatBox"><div class="msg ai">Hello! I am FORANEO_AI. Type below or send a picture and I will talk about it.</div></div>
-<div class="box" style="margin-top:10px">
-<input type="file" id="pic" accept="image/*">
-<input type="text" id="q" placeholder="Ask FORANEO..." style="margin-top:8px">
-<button class="send" onclick="sendChat()">Send</button>
+<div id="chat" class="page on">
+<div id="callBox"><div id="aiAvatar">🤖</div><p id="callStatus">Call Active</p><video id="callVideo" autoplay playsinline style="display:none"></video><button class="btn btnR" onclick="endCall()">End Call</button></div>
+<div id="chatBox"></div>
 </div>
+<div id="image" class="page">
+<div class="card"><h3>🎨 Image Generator</h3><input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset"><button class="btn" onclick="genImage()">Generate Image</button><img id="genImg"><p id="imgStatus"></p><button class="btn btn2" onclick="genVideo()">🎬 Make Video From Image</button><video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
+<div class="card"><h3>🅵 Logo Maker - FORANEO</h3><input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
+<div class="card"><h3>🖼️ Edit Photo</h3><input type="file" accept="image/*" onchange="loadEdit(event)"><img id="editImg"><select id="filterSel" onchange="applyFilter()"><option value="none">No Filter</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Vintage / Sepia</option><option value="brightness(1.4) contrast(1.2)">Bright</option><option value="blur(2px)">Blur</option><option value="hue-rotate(90deg)">Color Shift</option><option value="contrast(1.5) saturate(1.5)">Vivid</option></select><button class="btn" onclick="alert('✅ Photo edit saved')">Save Edited Photo</button></div>
+<div class="card"><h3>🎬 Edit Video</h3><input type="file" accept="video/*" onchange="loadVid(event)"><video id="editVid" controls style="width:100%;display:none"></video><label>Speed</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('editVid').playbackRate=this.value"></div>
 </div>
-
-<div id="image" class="page"><div class="box"><h3>🎨 Image / Logo</h3><p>Type what picture you want, then tap Make.</p><input type="text" id="imgPrompt" placeholder="e.g. logo for Foraneo Net"><button class="send" onclick="makeImg()">Make Image</button><div id="imgOut" style="margin-top:10px"></div></div></div>
-
-<div id="calc" class="page"><div class="box"><h3>🧮 Calculator</h3><input type="text" id="calcOut" readonly><div class="calc" style="margin-top:10px">
-<button onclick="cadd('7')">7</button><button onclick="cadd('8')">8</button><button onclick="cadd('9')">9</button><button onclick="cadd('/')">/</button>
-<button onclick="cadd('4')">4</button><button onclick="cadd('5')">5</button><button onclick="cadd('6')">6</button><button onclick="cadd('*')">x</button>
-<button onclick="cadd('1')">1</button><button onclick="cadd('2')">2</button><button onclick="cadd('3')">3</button><button onclick="cadd('-')">-</button>
-<button onclick="cadd('0')">0</button><button onclick="cadd('.')">.</button><button onclick="ceq()">=</button><button onclick="cadd('+')">+</button>
-<button onclick="cclear()" style="grid-column:span 4;background:#fee">Clear</button>
-</div></div></div>
-
-<div id="games" class="page"><div class="box"><h3>🎮 Games</h3><p>Tap a number game:</p><button class="send" onclick="guessGame()">Play Guess The Number</button><p id="gameOut"></p></div></div>
-
-<div id="studio" class="page"><div class="box"><h3>🎵 Studio</h3><p>Studio is here. Chat and Image are the main ones.</p></div></div>
-
+<div id="calc" class="page"><div class="card"><h3>🧮 Calculator</h3><input id="calcIn" readonly placeholder="e.g. 25*4+10"><div class="grid"><button onclick="cAdd('7')">7</button><button onclick="cAdd('8')">8</button><button onclick="cAdd('9')">9</button><button onclick="cAdd('4')">4</button><button onclick="cAdd('5')">5</button><button onclick="cAdd('6')">6</button><button onclick="cAdd('1')">1</button><button onclick="cAdd('2')">2</button><button onclick="cAdd('3')">3</button><button onclick="cAdd('0')">0</button><button onclick="cAdd('+')">+</button><button onclick="cAdd('-')">-</button><button onclick="cAdd('*')">×</button><button onclick="cAdd('/')">÷</button><button onclick="cClear()">C</button></div><button class="btn" onclick="cSolve()">= Solve</button><h2 id="calcOut">Result: -</h2><input id="mathQ" placeholder="What is 15% of 200?"><button class="btn btn3" onclick="solveWord()">Solve Word Problem</button><p id="mathAns"></p></div></div>
+<div id="games" class="page">
+<div class="card"><h3>🎮 Rock Paper Scissors</h3><button class="btn" onclick="rps('Rock')">🪨 Rock</button><button class="btn btn2" onclick="rps('Paper')">📄 Paper</button><button class="btn btn3" onclick="rps('Scissors')">✂️ Scissors</button><p id="rpsOut"></p><p id="rpsScore">Wins: 0 | Losses: 0</p></div>
+<div class="card"><h3>🔢 Guess Number (1-10)</h3><input id="guessIn" type="number" placeholder="Enter 1-10"><button class="btn" onclick="guess()">Guess</button><p id="guessOut">I'm thinking...</p></div>
+<div class="card"><h3>❌⭕ Tic Tac Toe</h3><div class="grid" id="ttt"></div><p id="tttOut">Your turn: X</p><button class="btn" onclick="resetTTT()">Reset</button></div>
+</div>
+<div id="studio" class="page">
+<div class="card"><h3>🎵 Drill Beat Generator</h3><p>Genre: UK Drill / Amapiano Drill</p><button class="btn" onclick="playDrill()">▶️ Play Drill Beat</button><button class="btn btnR" onclick="stopBeat()">⏹️ Stop Beat</button><p id="beatStatus">Ready - Tap Play</p><label>Tempo (BPM)</label><input type="range" min="100" max="160" value="140" id="bpm" oninput="document.getElementById('bpmVal').innerText=this.value"><span id="bpmVal">140</span> BPM</div>
+<div class="card"><h3>🎤 Studio - Autotune & Mixer</h3><input type="file" accept="audio/*" onchange="loadAudio(event)"><audio id="studioAudio" controls style="width:100%"></audio><label>🎤 Autotune / Pitch</label><input type="range" min="0.7" max="1.3" step="0.01" value="1" oninput="document.getElementById('studioAudio').playbackRate=this.value"><label>🎚️ Voice Volume</label><input type="range" min="0" max="100" value="80" oninput="document.getElementById('studioAudio').volume=this.value/100"><button class="btn btn2" onclick="alert('✅ Mix saved! FORANEO Studio')">💾 Export Mix</button></div>
+<div class="card"><h3>🎤 Record Song / Voice in Studio</h3><button class="btn btn3" onclick="studioRecord()">🔴 Record / Stop Studio Voice</button><div id="studioRecOut"></div></div>
+</div>
+<div id="admin" class="page">
+<div class="card"><h3>🎛️ FORANEO Control - Admin Only</h3><p><b>Company:</b> FORANEO (PTY) LTD<br><b>Dept:</b> Foraneo Net<br><b>AI:</b> FORANEO_AI</p><p id="appInfo"></p><button class="btn btnR" onclick="freezeApp()">⛔ FREEZE APP</button><button class="btn btn2" onclick="unfreezeApp()">✅ UNFREEZE APP</button></div>
+<div class="card"><h3>✏️ Edit App Live</h3><input id="newTitle" placeholder="New App Name e.g. FORANEO PRO"><button class="btn" onclick="editApp()">Apply Edit</button><input id="newColor" type="color" value="#2563eb"><button class="btn btn3" onclick="changeColor()">Change App Colour</button></div>
+<div class="card"><h3>👥 Manage Users</h3><input id="newUser" placeholder="Username to add"><button class="btn btn2" onclick="addUser()">+ Add User</button><input id="remUser" placeholder="Username to remove"><button class="btn btnR" onclick="removeUser()">- Remove User</button><div id="userList"></div></div>
+<div class="card"><h3>👀 Track What Users Do</h3><div id="trackLog"></div><button class="btn" onclick="clearTrack()">Clear Log</button></div>
+</div>
+<div id="login" class="page">
+<div class="card"><h3>🔐 Login / Signup</h3><input id="uName" placeholder="Username"><input id="uPass" type="password" placeholder="Password"><button class="btn" onclick="signup()">Sign Up</button><button class="btn btn2" onclick="login()">Login</button><button class="btn btn3" onclick="logout()">Logout</button><p id="loginOut"></p></div>
+<div class="card"><h3>💬 Saved Chat History</h3><p id="histCount"></p><button class="btn" onclick="clearHist()">Clear History</button></div>
+</div>
+<div class="bottom" id="chatBar"><button onclick="document.getElementById('fileInput').click()">🏀</button><button onclick="videoCall()">👤</button><button onclick="voiceCall()">🗣</button><button onclick="voiceNote()">▶️</button><input id="q" placeholder="Ask FORANEO..."><button class="send" onclick="sendMsg()">Send</button></div>
+<input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="handleFile(event)">
 <script>
-// PUT YOUR KEY HERE - keep the " " around it
-let GEMINI_KEY = "PASTE_YOUR_KEY_HERE";
-
-function show(id,btn){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
+let target=Math.floor(Math.random()*10)+1,tttBoard=['','','','','','','','',''],tttTurn='X',beatTimer=null,audioCtx=null,rec=null,chunks=[],isRec=false,studioRec=null,studioChunks=[],isStudioRec=false,callStream=null,rpsW=0,rpsL=0,callListen=null,voiceTranscript='';
+function show(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('chatBar').style.display=(id=='chat'?'flex':'none');track('Opened '+id)}
+function track(a){try{let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let u=localStorage.getItem('foraneo_current')||'Guest';l.unshift(new Date().toLocaleTimeString()+' - '+u+': '+a);localStorage.setItem('foraneo_track',JSON.stringify(l.slice(0,50)));renderTrack();updateAppInfo()}catch(e){}}
+function renderTrack(){let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let e=document.getElementById('trackLog');if(e)e.innerHTML=l.map(x=>'<div class="log">'+x+'</div>').join('')||'No activity yet'}
+function clearTrack(){localStorage.removeItem('foraneo_track');renderTrack()}
+function updateAppInfo(){let u=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let h=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');let e=document.getElementById('appInfo');if(e)e.innerHTML='📊 Messages: '+h.length+'<br>👥 Users: '+(u.length||1)+'<br>📱 Status: '+(localStorage.getItem('foraneo_frozen')=='1'?'FROZEN ⛔':'LIVE ✅');renderUsers()}
+function freezeApp(){localStorage.setItem('foraneo_frozen','1');document.getElementById('freezeOverlay').style.display='block';track('FROZE app');updateAppInfo()}
+function unfreezeApp(){localStorage.setItem('foraneo_frozen','0');document.getElementById('freezeOverlay').style.display='none';track('UNFROZE app');updateAppInfo()}
+function editApp(){let t=document.getElementById('newTitle').value;if(!t)return alert('Type new name');document.getElementById('appTitle').innerText=t;document.title=t;track('Edited app to '+t);alert('✅ App renamed to '+t)}
+function changeColor(){let c=document.getElementById('newColor').value;document.querySelector('.top').style.background=c;track('Changed app colour');alert('✅ Colour changed')}
+function addUser(){let u=document.getElementById('newUser').value;if(!u)return alert('Type username');let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');if(!us.includes(u))us.push(u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.setItem('foraneo_user_'+u,'1234');track('Added user '+u);updateAppInfo();alert('✅ User '+u+' added (pass 1234)')}
+function removeUser(){let u=document.getElementById('remUser').value;let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');us=us.filter(x=>x!==u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.removeItem('foraneo_user_'+u);track('Removed user '+u);updateAppInfo();alert('✅ User '+u+' removed')}
+function renderUsers(){let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let e=document.getElementById('userList');if(e)e.innerHTML=us.length?us.map(u=>'<div class="log">👤 '+u+'</div>').join(''):'<div class="log">No extra users yet - only KARABO</div>'}
+function aiSpeak(t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,' '));u.rate=1;u.pitch=1;speechSynthesis.speak(u)}catch(e){}}
+function startListening(onText){
+  try{
+    let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR) return null;
+    let r=new SR();r.continuous=true;r.interimResults=false;r.lang='en-ZA';
+    r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt) onText(txt);};
+    r.onend=()=>{if(callStream||isRec){try{r.start()}catch(e){}}};
+    r.start();return r;
+  }catch(e){return null;}
 }
-function addMsg(text,who){
-let d=document.createElement('div');d.className='msg '+who;d.textContent=text;
-document.getElementById('chatBox').appendChild(d);
-document.getElementById('chatBox').scrollTop=99999;
+// --- SHARED AI BRAIN - used by Chat, Voice, Video, Image ---
+function getLocalReply(q){
+  let low=q.toLowerCase(),name=getName();
+  if(low.includes('who made')||low.includes('who created')||low.includes('who are you')||low.includes('what is foraneo')||low.includes('creator')||low.includes('owner')) return 'I am FORANEO_AI. Made by FORANEO (PTY) LTD, Foraneo Net. Creator / Owner: '+name+'. I will not guess if I dont know.';
+  if(low.includes('hello')||low=='hi'||low.includes('hey')) return 'Hello '+name+'! I am FORANEO_AI from FORANEO (PTY) LTD. How can I help?';
+  if(low.includes('how are you')) return 'I am great, '+name+'! Running live, all systems ON.';
+  if(low.includes('thank')) return 'You are welcome, '+name+'! FORANEO (PTY) LTD at your service.';
+  if(low.includes('bye')) return 'Bye '+name+'! FORANEO_AI will be here waiting.';
+  if(low.includes('joke')){let j=['Why did chicken cross road? To get to Soweto!','What do you call smart phone in Soweto? FORANEO_AI!','Why is Karabo so smart? He built FORANEO_AI!'];return j[Math.floor(Math.random()*j.length)];}
+  if(low.includes('beat')||low.includes('drill')) return 'Drill beat ready! Go to Studio tab and tap Play Drill Beat. 140 BPM.';
+  if(low.match(/(\d+)\s*[\+\-\*\/]\s*(\d+)/)){try{return 'Answer = '+eval(q.match(/(\d+[\+\-\*\/\d\s]+)/)[0])}catch(e){return 'Try Calculator tab!';}}
+  return null;
 }
-async function sendChat(){
-let q=document.getElementById('q').value;
-let file=document.getElementById('pic').files[0];
-if(!q && !file){return;}
-if(q) addMsg(q,'me');
-if(file){
-let r=new FileReader();
-r.onload=async function(){
-let img=document.createElement('img');img.src=r.result;document.getElementById('chatBox').appendChild(img);
-addMsg('Looking at your picture...','ai');
-let desc=await askGemini(q||'What is shown in this picture? Describe it clearly.',r.result);
-addMsg(desc,'ai');
-};
-r.readAsDataURL(file);
-}else{
-addMsg('Thinking...','ai');
-let ans=await askGemini(q,null);
-let last=document.querySelectorAll('#chatBox .ai');last[last.length-1].textContent=ans;
+async function aiReplyTo(q, prefix){
+  let local=getLocalReply(q);
+  if(local){let full=(prefix||'🤖 FORANEO_AI: ')+local;saveMsg(full,false);aiSpeak(local);return;}
+  saveMsg('🔍 Searching internet... I will not guess.',false);
+  try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1');let d=await r.json();let f=d.AbstractText||d.Answer;hist.pop();let ans=f?('🌐 From internet: '+f):('I dont know about "'+q+'" yet. I will NOT guess.');saveMsg('🤖 FORANEO_AI: '+ans,false);aiSpeak(ans);}catch(e){hist.pop();let ans='I dont know about "'+q+'" right now (no internet). I will NOT guess.';saveMsg('🤖 FORANEO_AI: '+ans,false);aiSpeak(ans);}
 }
-document.getElementById('q').value='';
-document.getElementById('pic').value='';
+// --- FIX 1: VIDEO CALL - YOU SEE AI, NOT YOU ---
+async function videoCall(){
+  try{
+    document.getElementById('callBox').style.display='block';
+    document.getElementById('callVideo').style.display='none';
+    document.getElementById('aiAvatar').style.display='block';
+    document.getElementById('callStatus').innerHTML='👤 YOU talking to 🤖 FORANEO_AI LIVE<br>Speak now - I am listening!';
+    // Only need MIC, NOT camera - so you never see yourself
+    callStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    let hello='Hello '+getName()+'! I can hear you! You can see me, I am FORANEO_AI. What do you want to talk about?';
+    saveMsg('🤖 FORANEO_AI Video Call: '+hello,false);aiSpeak(hello);track('Video call with AI');
+    if(callListen) try{callListen.stop()}catch(e){}
+    callListen=startListening(async txt=>{
+      document.getElementById('callStatus').innerText='You said: '+txt;
+      saveMsg('You said on video call: '+txt,true);
+      await aiReplyTo(txt,'🤖 FORANEO_AI (Video): ');
+    });
+  }catch(e){alert('❌ Mic blocked! Allow Microphone. Video call needs Mic only, no camera.')}
 }
-async function askGemini(prompt,imgData){
-if(!GEMINI_KEY || GEMINI_KEY==='PASTE_YOUR_KEY_HERE'){
-return 'I am FORANEO_AI. Your key is not set yet. Paste your key in the code where it says PASTE_YOUR_KEY_HERE, then I will answer with real AI.';
+async function voiceCall(){
+  try{
+    document.getElementById('callBox').style.display='block';
+    document.getElementById('callVideo').style.display='none';
+    document.getElementById('aiAvatar').style.display='block';
+    document.getElementById('callStatus').innerHTML='🗣 Voice Call LIVE - FORANEO_AI is listening... Speak now!';
+    callStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    let hello='Hello! I am listening. Speak to me!';
+    saveMsg('🤖 FORANEO_AI Voice Call: '+hello,false);aiSpeak(hello);track('Voice call with AI');
+    if(callListen) try{callListen.stop()}catch(e){}
+    callListen=startListening(async txt=>{
+      document.getElementById('callStatus').innerText='You said: '+txt;
+      saveMsg('You said on call: '+txt,true);
+      await aiReplyTo(txt,'🤖 FORANEO_AI: ');
+    });
+  }catch(e){alert('❌ Mic blocked! Allow Microphone')}
 }
-try{
-let parts=[{text:prompt}];
-if(imgData){parts.push({inline_data:{mime_type:'image/jpeg',data:imgData.split(',')[1]}});}
-let res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})});
-let j=await res.json();
-return j.candidates[0].content.parts[0].text;
-}catch(e){return 'Error talking to AI. Check your key and internet. Error: '+e.message;}
-}
-function makeImg(){
-let p=document.getElementById('imgPrompt').value||'Foraneo logo';
-document.getElementById('imgOut').innerHTML='<p>Image idea: <b>'+p+'</b><br>Image generation needs a paid key. For now use Chat + picture describe, which is working.</p>';
-}
-function cadd(v){document.getElementById('calcOut').value+=v;}
-function cclear(){document.getElementById('calcOut').value='';}
-function ceq(){try{document.getElementById('calcOut').value=eval(document.getElementById('calcOut').value);}catch(e){document.getElementById('calcOut').value='Error';}}
-function guessGame(){
-let n=Math.floor(Math.random()*10)+1;
-let g=prompt('Guess a number 1 to 10');
-document.getElementById('gameOut').textContent=(g==n)?'Correct! It was '+n:'Wrong. It was '+n+'. Try again!';
-}
-</script>
-</body>
-</html>
+function endCall(){
+  if(callListen) try{callListen.stop();callListen=null}catch(e){}
+  if(callStream){callStream.getTracks().forEach(t=>t.stop());callStream=null}
+  document.getElementById('callBox').style.display='none';
+  let bye
