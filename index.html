@@ -1,85 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - Made by FORANEO (PTY) LTD</title>
+<title>FORANEO_AI</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#0a0a0a;color:#fff;display:flex;flex-direction:column;height:100vh}
-header{padding:15px;text-align:center;background:#111;border-bottom:2px solid #00ffcc}
-header h1{margin:0;font-size:22px;color:#00ffcc;letter-spacing:1px}
-header p{margin:5px 0 0;font-size:12px;color:#aaa}
-#chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:85%;padding:10px 14px;border-radius:15px;line-height:1.5;font-size:15px;white-space:pre-wrap}
-.user{background:#00ffcc;color:#000;align-self:flex-end}
-.ai{background:#1e1e1e;border:1px solid #333;align-self:flex-start}
-#inputBox{display:flex;padding:12px;background:#111;gap:8px}
-input{flex:1;padding:12px;border-radius:20px;border:1px solid #333;background:#222;color:#fff;outline:none}
-button{padding:12px 18px;border:none;border-radius:20px;background:#00ffcc;font-weight:bold;cursor:pointer}
+body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:10px}
+#chat{max-width:600px;margin:0 auto;padding-bottom:80px}
+.msg{background:#1e1e1e;padding:12px 14px;border-radius:15px;margin:10px 0;line-height:1.5}
+.user{background:#00d8a0;color:#000;text-align:right;margin-left:60px}
+#box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:8px;max-width:600px;margin:0 auto}
+input{flex:1;padding:12px;border-radius:20px;border:none;background:#222;color:#fff}
+button{padding:12px 18px;border-radius:20px;border:none;background:#00d8a0;font-weight:bold}
 </style>
 </head>
 <body>
-<header>
-<h1>FORANEO_AI</h1>
-<p>Made by FORANEO (PTY) LTD | Foraneo Net Department</p>
-</header>
-<div id="chat"></div>
-<div id="inputBox">
-<input id="userInput" placeholder="Ask FORANEO_AI anything...">
-<button onclick="send()">Send</button>
+<div id="chat">
+<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD - Foraneo Net. Ask me about FORANEO, its sections, address or hours.</div>
+</div>
+<div id="box">
+<input id="q" placeholder="Ask FORANEO_AI anything...">
+<button onclick="ask()">Send</button>
 </div>
 <script>
-const FORANEO_INFO = `
-FORANEO (PTY) LTD - FOUR SECTIONS, ONE COMPANY
-00 Parent: FORANEO (PTY) LTD
-01 Grabaciones Foraneo - SOUND & FILM - Music production, recording studio, cultural filming
-02 Foraneo Black Marks Tattoos - INK & SKIN
-03 Escuela Foraneo - CRAFT, KNOWLEDGE & TRAINING - Skills development and training
-04 Foraneo Net - MODERN LIFE - Digital tech, specialized development. Maker of FORANEO_AI.
-Address: 50226 Masodi, Mokopane, 0600
-Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI: FORANEO_AI was made by FORANEO (PTY) LTD, under Foraneo Net Department.
-Rule: Never guess. If unsure, say "I don't know".
-`;
-
 const chat = document.getElementById('chat');
-const input = document.getElementById('userInput');
+const input = document.getElementById('q');
 
-function addMsg(text, who){
+function add(text, cls){
   const d = document.createElement('div');
-  d.className = 'msg ' + who;
-  d.textContent = text;
+  d.className = 'msg ' + (cls||'');
+  d.innerText = text;
   chat.appendChild(d);
-  chat.scrollTop = chat.scrollHeight;
+  window.scrollTo(0, document.body.scrollHeight);
 }
 
 function getAnswer(q){
   q = q.toLowerCase();
-  if(q.includes('who made') || q.includes('who created') || q.includes('who are you')){
-    return "I am FORANEO_AI. I was made by FORANEO (PTY) LTD, under Foraneo Net Department.";
+
+  if(q.includes('who made') || q.includes('who created') || q.includes('made by')){
+    return "FORANEO_AI was made by FORANEO (PTY) LTD - Foraneo Net.";
   }
-  if(q.includes('foraneo') || q.includes('company') || q.includes('address') || q.includes('where are you') || q.includes('services') || q.includes('what do you do')){
-    return FORANEO_INFO;
-  }
-  if(q.includes('hello') || q.includes('hi') || q.includes('dumela')){
-    return "Hello! I am FORANEO_AI from FORANEO (PTY) LTD. How can I help you today?";
-  }
-  if(q.includes('hours') || q.includes('open') || q.includes('time')){
+
+  if(q.includes('hours') || q.includes('open') || q.includes('time') || q.includes('close')){
     return "FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600";
   }
-  return "I don't know. I am FORANEO_AI, made by FORANEO (PTY) LTD. I never guess. Please ask me about FORANEO (PTY) LTD, its 4 sections, address, or hours.";
+
+  if(q.includes('foraneo') || q.includes('company') || q.includes('address') || q.includes('section') || q.includes('about')){
+    return "FORANEO (PTY) LTD - Foraneo Net. Address: 50226 Masodi, Mokopane, 0600. Hours: Monday to Sunday 3:00 PM to 5:40 PM. Sections: Foraneo Net, Foraneo AI, Foraneo Services.";
+  }
+
+  return "I am FORANEO_AI by FORANEO (PTY) LTD. Ask me about FORANEO, its sections, address or hours. Hours are Monday to Sunday 3:00 PM to 5:40 PM.";
 }
 
-function send(){
-  const val = input.value.trim();
-  if(!val) return;
-  addMsg(val, 'user');
+function ask(){
+  const v = input.value.trim();
+  if(!v) return;
+  add(v, 'user');
+  add(getAnswer(v), '');
   input.value = '';
-  setTimeout(()=>{ addMsg(getAnswer(val), 'ai'); }, 300);
 }
-input.addEventListener('keypress', function(e){ if(e.key==='Enter') send(); });
-addMsg("Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD - Foraneo Net. Ask me about FORANEO, its sections, address or hours.", 'ai');
-  </script>
+input.addEventListener('keydown', e => { if(e.key === 'Enter') ask(); });
+</script>
 </body>
 </html>
