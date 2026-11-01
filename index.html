@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORANEO_AI - Made by FORANEO (PTY) LTD</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#0a0a0a;color:#fff;display:flex;flex-direction:column;height:100vh}
+header{padding:15px;text-align:center;background:#111;border-bottom:2px solid #00ffcc}
+header h1{margin:0;font-size:22px;color:#00ffcc;letter-spacing:1px}
+header p{margin:5px 0 0;font-size:12px;color:#aaa}
+#chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:10px 14px;border-radius:15px;line-height:1.5;font-size:15px;white-space:pre-wrap}
+.user{background:#00ffcc;color:#000;align-self:flex-end}
+.ai{background:#1e1e1e;border:1px solid #333;align-self:flex-start}
+#inputBox{display:flex;padding:12px;background:#111;gap:8px}
+input{flex:1;padding:12px;border-radius:20px;border:1px solid #333;background:#222;color:#fff;outline:none}
+button{padding:12px 18px;border:none;border-radius:20px;background:#00ffcc;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>FORANEO_AI</h1>
+<p>Made by FORANEO (PTY) LTD | Foraneo Net Department</p>
+</header>
+<div id="chat"></div>
+<div id="inputBox">
+<input id="userInput" placeholder="Ask FORANEO_AI anything...">
+<button onclick="send()">Send</button>
+</div>
+<script>
+const FORANEO_INFO = `
+FORANEO (PTY) LTD - FOUR SECTIONS, ONE COMPANY
+00 Parent: FORANEO (PTY) LTD
+01 Grabaciones Foraneo - SOUND & FILM - Music production, recording studio, cultural filming
+02 Foraneo Black Marks Tattoos - INK & SKIN
+03 Escuela Foraneo - CRAFT, KNOWLEDGE & TRAINING - Skills development and training
+04 Foraneo Net - MODERN LIFE - Digital tech, specialized development. Maker of FORANEO_AI.
+Address: 50226 Masodi, Mokopane, 0600
+Hours: Monday to Sunday 3:00 PM to 6:00 PM
+AI: FORANEO_AI was made by FORANEO (PTY) LTD, under Foraneo Net Department.
+Rule: Never guess. If unsure, say "I don't know".
+`;
+
+const chat = document.getElementById('chat');
+const input = document.getElementById('userInput');
+
+function addMsg(text, who){
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function getAnswer(q){
+  q = q.toLowerCase();
+  if(q.includes('who made') || q.includes('who created') || q.includes('who are you')){
+    return "I am FORANEO_AI. I was made by FORANEO (PTY) LTD, under Foraneo Net Department.";
+  }
+  if(q.includes('foraneo') || q.includes('company') || q.includes('address') || q.includes('where are you') || q.includes('services') || q.includes('what do you do')){
+    return FORANEO_INFO;
+  }
+  if(q.includes('hello') || q.includes('hi') || q.includes('dumela')){
+    return "Hello! I am FORANEO_AI from FORANEO (PTY) LTD. How can I help you today?";
+  }
+  if(q.includes('hours') || q.includes('open') || q.includes('time')){
+    return "FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 6:00 PM. Address: 50226 Masodi, Mokopane, 0600";
+  }
+  return "I don't know. I am FORANEO_AI, made by FORANEO (PTY) LTD. I never guess. Please ask me about FORANEO (PTY) LTD, its 4 sections, address, or hours.";
+}
+
+function send(){
+  const val = input.value.trim();
+  if(!val) return;
+  addMsg(val, 'user');
+  input.value = '';
+  setTimeout(()=>{ addMsg(getAnswer(val), 'ai'); }, 300);
+}
+input.addEventListener('keypress', function(e){ if(e.key==='Enter') send(); });
+addMsg("Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD - Foraneo Net. Ask me about FORANEO, its sections, address or hours.", 'ai');
+  </script>
+</body>
+</html>
