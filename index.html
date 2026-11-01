@@ -5,163 +5,138 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FORANEO_AI</title>
 <style>
-  body{font-family:sans-serif;margin:0;background:#0b2cff;color:#fff}
-  .top{padding:14px;text-align:center}
+  body{font-family:sans-serif;margin:0;background:#0b2cff;color:#fff;padding-bottom:80px}
+  .top{padding:14px;text-align:center;background:#0b2cff}
   .top h1{margin:0;font-size:22px}
-  .top p{margin:4px 0 0;opacity:.9}
+  .top p{margin:4px 0 0;font-size:14px}
   .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#0b2cff}
-  .tabs button{white-space:nowrap;padding:10px 14px;border:0;border-radius:20px;background:rgba(255,255,255,.25);color:#fff;font-weight:bold}
-  .tabs button.active{background:#fff;color:#000}
+  .tabs button{white-space:nowrap;padding:9px 14px;border:2px solid #fff;border-radius:20px;background:#fff;color:#0b2cff;font-weight:bold}
+  .tabs button.active{background:#0b2cff;color:#fff}
   .page{display:none;padding:12px}
   .page.show{display:block}
-  .card{background:#fff;color:#000;border-radius:12px;padding:12px;margin-bottom:10px}
-  #chatBox{background:#fff;color:#000;height:320px;overflow:auto;padding:10px;border-radius:12px}
-  .msg{padding:8px 10px;border-radius:10px;margin:6px 0;background:#eee}
+  .card{background:#fff;color:#000;border-radius:12px;padding:12px}
+  #chatBox{background:#ffffff;color:#000;min-height:340px;height:340px;overflow:auto;padding:12px;border-radius:12px;display:block}
+  .msg{padding:10px;border-radius:10px;margin:8px 0;background:#eee;color:#000}
   .msg.me{background:#dbeafe}
-  input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
-  .row{display:flex;gap:8px}
-  .row button{flex:1;padding:12px;border:0;border-radius:20px;background:#fff;font-weight:bold}
-  .bottom{display:flex;gap:8px;padding:10px}
+  input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+  .bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;display:flex;gap:6px;align-items:center}
+  .bottom .ico{width:40px;height:40px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:18px}
   .bottom input{flex:1}
-  .bottom button{padding:12px 18px;border:0;border-radius:20px;background:#fff;font-weight:bold}
-  img{max-width:100%;border-radius:10px}
+  .bottom button.send{padding:12px 16px;border:0;border-radius:20px;background:#0b2cff;color:#fff;font-weight:bold}
+  .btn-blue{padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold;width:100%}
 </style>
 </head>
 <body>
-
 <div class="top">
   <h1>FORANEO_AI</h1>
-  <p>FORANEO (PTY) LTD - Foraneo Net Department</p>
-  <p id="statusLine">Guest - All Things ON</p>
+  <p>FORANEO (PTY) LTD • Foraneo Net Department</p>
+  <p>Guest • All Things ON</p>
 </div>
-
 <div class="tabs">
   <button id="tab-chat" onclick="show('chat')">💬 Chat</button>
   <button id="tab-image" onclick="show('image')">🎨 Image / Logo</button>
   <button id="tab-calc" onclick="show('calc')">🧮 Calculator</button>
   <button id="tab-admin" onclick="show('admin')">🎛️ Admin</button>
 </div>
-
-<!-- CHAT -->
 <div id="page-chat" class="page show">
   <div id="chatBox"><div class="msg">Hi, I am FORANEO_AI. Paste your key in Admin, then ask me anything.</div></div>
-  <div class="bottom">
-    <input id="q" placeholder="Ask...">
-    <button onclick="ask()">Send</button>
-  </div>
-  <button onclick="clearChat()" style="padding:8px 14px;border-radius:20px;border:0">Clear Chat</button>
 </div>
-
-<!-- IMAGE -->
 <div id="page-image" class="page">
   <div class="card">
     <h3>Image / Logo</h3>
     <input id="imgPrompt" placeholder="Describe image, e.g. blue logo for Foraneo">
-    <button onclick="makeImage()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">Generate Image (uses Pollinations - no key needed)</button>
+    <button class="btn-blue" onclick="makeImage()">Generate Image</button>
     <div id="imgOut" style="margin-top:10px"></div>
   </div>
 </div>
-
-<!-- CALCULATOR -->
 <div id="page-calc" class="page">
   <div class="card">
     <h3>Calculator</h3>
     <input id="calcInput" placeholder="e.g. 250*4">
-    <button onclick="doCalc()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">= Calculate</button>
+    <button class="btn-blue" onclick="doCalc()">= Calculate</button>
     <p id="calcOut"></p>
   </div>
 </div>
-
-<!-- ADMIN -->
 <div id="page-admin" class="page">
   <div class="card">
     <h3>Admin - Gemini Key</h3>
     <p>Paste your Google Gemini API key. It stays only on this phone.</p>
     <input id="apiKey" placeholder="Paste Gemini key here">
-    <button onclick="saveKey()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">💾 Save Key</button>
-    <button onclick="testKey()" style="padding:12px;border-radius:20px;border:0;margin-top:8px">Test Key</button>
+    <button class="btn-blue" onclick="saveKey()">💾 Save Key</button>
+    <button onclick="testKey()" style="padding:12px;border-radius:20px;border:0;margin-top:8px;width:100%">Test Key</button>
     <p id="adminMsg"></p>
   </div>
 </div>
-
+<div class="bottom">
+  <button class="ico" onclick="show('calc')">🏀</button>
+  <button class="ico" onclick="show('admin')">👤</button>
+  <button class="ico" onclick="show('image')">🎨</button>
+  <button class="ico" onclick="show('chat')">▶️</button>
+  <input id="q" placeholder="Hello...">
+  <button class="send" onclick="ask()">Send</button>
+</div>
 <script>
 function show(name){
-  var pages = document.querySelectorAll('.page');
-  for(var i=0;i<pages.length;i++){ pages[i].classList.remove('show'); }
-  var p = document.getElementById('page-'+name);
+  var pages=document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++){pages[i].classList.remove('show');}
+  var p=document.getElementById('page-'+name);
   if(p) p.classList.add('show');
-  var tabs = document.querySelectorAll('.tabs button');
-  for(var j=0;j<tabs.length;j++){ tabs[j].classList.remove('active'); }
-  var t = document.getElementById('tab-'+name);
+  var tabs=document.querySelectorAll('.tabs button');
+  for(var j=0;j<tabs.length;j++){tabs[j].classList.remove('active');}
+  var t=document.getElementById('tab-'+name);
   if(t) t.classList.add('active');
 }
-function getKey(){
-  try{ return localStorage.getItem('foraneo_key') || ''; }catch(e){ return ''; }
-}
+function getKey(){ try{return localStorage.getItem('foraneo_key')||'';}catch(e){return '';} }
 function saveKey(){
-  var k = document.getElementById('apiKey').value.trim();
-  try{ localStorage.setItem('foraneo_key', k); }catch(e){}
-  document.getElementById('adminMsg').textContent = 'Key saved!';
+  var k=document.getElementById('apiKey').value.trim();
+  try{localStorage.setItem('foraneo_key',k);}catch(e){}
+  document.getElementById('adminMsg').textContent='Key saved!';
   alert('Key saved!');
 }
 async function ask(){
-  var qEl = document.getElementById('q');
-  var q = qEl.value.trim();
+  var qEl=document.getElementById('q');
+  var q=qEl.value.trim();
   if(!q) return;
-  var key = getKey();
-  if(!key){ alert('Paste key in Admin first'); show('admin'); return; }
-  var box = document.getElementById('chatBox');
-  box.innerHTML += '<div class="msg me"><b>You:</b> '+q+'</div>';
+  var key=getKey();
+  if(!key){alert('Paste key in Admin first');show('admin');return;}
+  var box=document.getElementById('chatBox');
+  box.innerHTML+='<div class="msg me"><b>You:</b> '+q+'</div>';
   qEl.value='';
-  box.scrollTop = 99999;
+  box.scrollTop=99999;
   try{
-    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text:q}]}]})
-    });
-    var j = await r.json();
-    var txt = 'No reply';
-    if(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0]) txt = j.candidates[0].content.parts[0].text;
-    if(j.error) txt = 'Error: ' + j.error.message;
-    box.innerHTML += '<div class="msg"><b>FORANEO_AI:</b> '+txt+'</div>';
-  }catch(e){
-    box.innerHTML += '<div class="msg">Error: '+e.message+'</div>';
-  }
-  box.scrollTop = 99999;
-}
-function clearChat(){
-  document.getElementById('chatBox').innerHTML = '<div class="msg">Chat cleared.</div>';
+    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:q}]}]})});
+    var j=await r.json();
+    var txt='No reply';
+    if(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0]) txt=j.candidates[0].content.parts[0].text;
+    if(j.error) txt='Error: '+j.error.message;
+    box.innerHTML+='<div class="msg"><b>FORANEO_AI:</b> '+txt+'</div>';
+  }catch(e){ box.innerHTML+='<div class="msg">Error: '+e.message+'</div>'; }
+  box.scrollTop=99999;
 }
 function doCalc(){
-  var v = document.getElementById('calcInput').value;
-  try{ document.getElementById('calcOut').textContent = 'Result: ' + eval(v); }
-  catch(e){ document.getElementById('calcOut').textContent = 'Invalid calculation'; }
+  var v=document.getElementById('calcInput').value;
+  try{document.getElementById('calcOut').textContent='Result: '+eval(v);}catch(e){document.getElementById('calcOut').textContent='Invalid calculation';}
 }
 function makeImage(){
-  var p = document.getElementById('imgPrompt').value.trim();
-  if(!p){ alert('Type a description first'); return; }
-  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p);
-  document.getElementById('imgOut').innerHTML = '<p>Generating...</p><img src="'+url+'">';
+  var p=document.getElementById('imgPrompt').value.trim();
+  if(!p){alert('Type a description first');return;}
+  var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p);
+  document.getElementById('imgOut').innerHTML='<p>Generating...</p><img src="'+url+'" style="max-width:100%;border-radius:10px">';
 }
 async function testKey(){
-  var key = getKey();
-  if(!key){ document.getElementById('adminMsg').textContent = 'No key saved yet'; return; }
-  document.getElementById('adminMsg').textContent = 'Testing...';
+  var key=getKey();
+  if(!key){document.getElementById('adminMsg').textContent='No key saved yet';return;}
+  document.getElementById('adminMsg').textContent='Testing...';
   try{
-    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text:'Say OK'}]}]})
-    });
-    var j = await r.json();
-    if(j.candidates) document.getElementById('adminMsg').textContent = 'Key works!';
-    else document.getElementById('adminMsg').textContent = 'Key error: ' + (j.error ? j.error.message : 'check key');
-  }catch(e){ document.getElementById('adminMsg').textContent = 'Error: ' + e.message; }
+    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'Say OK'}]}]})});
+    var j=await r.json();
+    if(j.candidates) document.getElementById('adminMsg').textContent='Key works!';
+    else document.getElementById('adminMsg').textContent='Key error: '+(j.error?j.error.message:'check key');
+  }catch(e){document.getElementById('adminMsg').textContent='Error: '+e.message;}
 }
-// Load saved key safely, never crash if storage is broken
 try{
-  var saved = localStorage.getItem('foraneo_key') || '';
-  document.getElementById('apiKey').value = saved;
-  if(saved) document.getElementById('statusLine').textContent = 'Guest - Key Saved - All Things ON';
+  var saved=localStorage.getItem('foraneo_key')||'';
+  document.getElementById('apiKey').value=saved;
 }catch(e){}
 show('chat');
 </script>
