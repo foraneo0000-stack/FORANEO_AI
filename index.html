@@ -13,11 +13,10 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:10
 .msg audio{width:100%;margin-top:10px}
 .title{text-align:center;color:#00d8a0;font-weight:bold;font-size:22px}
 .sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:10px}
+.top{display:none}
 #box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:5px;max-width:700px;margin:0 auto;align-items:center}
 input{flex:1;padding:12px;border-radius:20px;border:none;background:#222;color:#fff;min-width:0}
 button{padding:10px 10px;border-radius:20px;border:none;background:#00d8a0;font-weight:bold;font-size:14px;cursor:pointer}
-.top{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
-.top button{background:#222;color:#fff;border:1px solid #333;font-size:12px}
 .filelabel{background:#00d8a0;color:#000;padding:10px 11px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:14px}
 </style>
 </head>
@@ -36,27 +35,24 @@ button{padding:10px 10px;border-radius:20px;border:none;background:#00d8a0;font-
 </div>
 <div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: Generate a garden image / Generate video / Send image, file, MP3, MP4 / Tap 🎤 to talk</div>
 </div>
-
 <div id="box">
-<label class="filelabel" title="Send Image, File, Document, MP3, MP4">📎<input type="file" id="fileInput" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx"></label>
-<button onclick="startVoice()" title="Voice Note">🎤</button>
+<label class="filelabel">📎<input type="file" id="fileInput" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx"></label>
+<button onclick="startVoice()">🎤</button>
 <input id="q" placeholder="Ask FORANEO_AI anything...">
 <button onclick="ask()">Send</button>
 </div>
-
 <script>
 let frozen=false;
 let users=JSON.parse(localStorage.getItem('foraneo_users')||'["You"]');
 let activity=JSON.parse(localStorage.getItem('foraneo_log')||'[]');
-let voiceOn=false;
-let attachedText="";
-let attachedName="";
+let voiceOn=true;
+let attachedText="";let attachedName="";
 const chat=document.getElementById('chat'); const input=document.getElementById('q');
 const FORANEO_FULL="FORANEO (PTY) LTD - Foraneo Net.\nOwner: KARABO Langa.\nAddress: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.\nMade by FORANEO (PTY) LTD, under Foraneo Net department.";
 function log(a){activity.push(new Date().toLocaleTimeString()+" - "+a);localStorage.setItem('foraneo_log',JSON.stringify(activity));}
 function add(t,cls){const d=document.createElement('div');d.className='msg '+(cls||'');d.innerText=t;chat.appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
 function addHTML(html){const d=document.createElement('div');d.className='msg';d.innerHTML=html;chat.appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
-function freezeApp(){frozen=true;add("❄️ FROZEN. Tap Unfreeze.",'');}
+function freezeApp(){frozen=true;add("❄️ FROZEN.",'');}
 function unfreezeApp(){frozen=false;add("🔥 UNFROZEN.",'');}
 function showUsers(){add("👥 Users:\n"+users.join("\n"),'');}
 function showLog(){add("📊 Activity:\n"+activity.slice(-20).join("\n"),'');}
@@ -67,88 +63,12 @@ function editPhoto(e){const u=URL.createObjectURL(e.target.files[0]);const d=doc
 let ac=null,bt=null;
 function playDrill(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();let s=0;stopBeat();bt=setInterval(()=>{const t=ac.currentTime;if(s%8===0){const o=ac.createOscillator();const g=ac.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(40,t+0.2);g.gain.setValueAtTime(0.8,t);g.gain.exponentialRampToValueAtTime(0.01,t+0.3);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+0.3);}s++;},60000/140/2);add("🥁 Drill Beat Playing - 140 BPM",'');}
 function stopBeat(){if(bt)clearInterval(bt);}
-
-// --- VOICE: TALK + SPEAK BACK (CALL MODE) ---
-function toggleVoice(){voiceOn=!voiceOn;document.getElementById('voiceState').innerText=voiceOn?"ON":"OFF";add(voiceOn?"🔊 Voice ON - FORANEO_AI will speak answers like a call.":"🔇 Voice OFF.",'');}
+function toggleVoice(){voiceOn=!voiceOn;add(voiceOn?"🔊 Voice ON":"🔇 Voice OFF",'');}
 function speak(text){if(!voiceOn) return; try{const u=new SpeechSynthesisUtterance(text.slice(0,500));u.lang='en-ZA';speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
-function startVoice(){
-  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!Rec){add("🎤 Voice not supported on this browser. Use Chrome.",'');return;}
-  const rec=new Rec();rec.lang='en-ZA';rec.interimResults=false;
-  add("🎤 Listening... Speak now",'');
-  rec.onresult=e=>{input.value=e.results[0][0].transcript;ask();};
-  rec.onerror=()=>{add("🎤 Could not hear. Try again.",'');};
-  rec.start();
-}
-
-// --- FILE / IMAGE / MP3 / MP4 / DOCUMENT ---
-document.getElementById('fileInput').addEventListener('change', async (e)=>{
-  const f=e.target.files[0]; if(!f) return;
-  attachedName=f.name; attachedText="";
-  const url=URL.createObjectURL(f);
-  const type=f.type;
-  if(type.startsWith('image/')){
-    addHTML(`<b>📷 You sent image: ${f.name}</b><img src="${url}">`);
-    add("✅ Image received. Now type what you want me to do with it. Example: 'Describe this image' or 'Make this image beautiful' - Made by FORANEO_AI",'');
-  } else if(type.startsWith('video/')){
-    addHTML(`<b>🎬 You sent video: ${f.name}</b><video src="${url}" controls playsinline></video>`);
-    add("✅ MP4 / Video received - Made by FORANEO_AI. Type what you want me to do with it.",'');
-  } else if(type.startsWith('audio/')){
-    addHTML(`<b>🎵 You sent audio: ${f.name}</b><audio src="${url}" controls></audio>`);
-    add("✅ MP3 / Audio received - Made by FORANEO_AI. I can play it. Type 'Transcribe' if you want text.",'');
-  } else if(f.name.toLowerCase().endsWith('.txt') || f.name.toLowerCase().endsWith('.csv')){
-    attachedText=await f.text();
-    add(`📄 Document received: ${f.name}\n\nI read ${attachedText.length} characters. Now ask me: Summarize this document / Explain this document`,'');
-  } else if(f.name.toLowerCase().endsWith('.pdf')){
-    add(`📄 PDF received: ${f.name}\n\nPDF uploaded. I cannot read PDF text in this version yet, but file is saved. Ask me to summarize and I will explain based on your question.`,'');
-  } else {
-    add(`📎 File received: ${f.name} (${f.type||'document'})\n\nFile uploaded to FORANEO_AI. Now type what you want me to do with it.`,'');
-  }
-  log("File: "+f.name);
-  e.target.value="";
-});
-
-// --- VIDEO MAKER ---
-function makeVideo(prompt){
-  const d=document.createElement('div');d.className='msg';d.innerText="Here is your video: "+prompt+" - Made by FORANEO_AI - Owner: KARABO Langa";
-  const c=document.createElement('canvas');c.width=512;c.height=300;d.appendChild(c);
-  const vid=document.createElement('video');vid.controls=true;vid.autoplay=true;vid.muted=true;vid.playsInline=true;d.appendChild(vid);chat.appendChild(d);
-  const ctx=c.getContext('2d');const stream=c.captureStream(30);const rec=new MediaRecorder(stream,{mimeType:'video/webm'});const chunks=[];
-  rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{vid.src=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));};
-  rec.start();let f=0;const iv=setInterval(()=>{ctx.fillStyle='#00d8a0';ctx.fillRect(0,0,512,300);ctx.fillStyle='#000';ctx.font='bold 28px Arial';ctx.fillText(prompt,20,140);ctx.fillText("FORANEO_AI - "+f,20,190);f++;if(f>90){clearInterval(iv);rec.stop();}},33);
-}
-
-async function ask(){
-if(frozen){alert("FROZEN - Tap Unfreeze");return;}
-const v=input.value.trim();if(!v && !attachedText)return;add(v,'user');log("Asked: "+v);input.value='';const q=v.toLowerCase();
-// If user attached a text document, send its content to AI
-let extra = attachedText ? "\n\nDocument content ("+attachedName+"): "+attachedText.slice(0,4000) : "";
-if(q.includes('video')){
-  let p=v.replace(/generate|create|make|a video|video|please/gi,'').trim();
-  if(!p) p="beautiful nature";
-  makeVideo(p); return;
-}
-if(q.includes('generate') || q.includes('draw') || q.includes('create image') || q.includes('make image')){
-  if(q.includes('logo')){makeLogo();return;}
-  if(q.includes('image') || q.includes('picture') || q.includes('photo') || q.includes('garden') || q.includes('math') || q.includes('test')){
-    let p=v.replace(/generate|draw|create|make|an image|a image|image|picture|photo|please/gi,'').trim()||"garden";
-    const d=document.createElement('div');d.className='msg';d.innerText="Here is your image: "+p+" - Made by FORANEO_AI";
-    const img=document.createElement('img');img.src="https://image.pollinations.ai/prompt/"+encodeURIComponent(p+" image")+"?width=512&height=512&seed="+Math.floor(Math.random()*99999);d.appendChild(img);chat.appendChild(d);log("Image: "+p);return;
-  }
-}
-if(q.startsWith('add user')){const n=v.slice(8).trim();users.push(n);localStorage.setItem('foraneo_users',JSON.stringify(users));add("✅ Added: "+n,'');return;}
-if(q.startsWith('remove user')){const n=v.slice(11).trim();users=users.filter(u=>u.toLowerCase()!==n.toLowerCase());localStorage.setItem('foraneo_users',JSON.stringify(users));add("🗑️ Removed: "+n,'');return;}
-if(q.includes('freeze')){freezeApp();return;}
-if(q.includes('unfreeze')){unfreezeApp();return;}
-if(q.includes('owner')||q.includes('karabo')){let t="Owner of FORANEO (PTY) LTD is KARABO Langa.\n\n"+FORANEO_FULL;add(t,'');speak(t);return;}
-if(q.includes('who made')){add("Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa.",'');return;}
-if(q.includes('hours')||q.includes('working')||q.includes('open')){add("FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600\nOwner: KARABO Langa",'');return;}
-if(q.includes('foraneo')){add(FORANEO_FULL,'');return;}
-if(q.includes('beat')||q.includes('drill')){playDrill();return;}
-const thinking=add("Thinking... Made by FORANEO_AI",'');
-try{const sys="You are FORANEO_AI, made by FORANEO (PTY) LTD, under Foraneo Net. Owner KARABO Langa. Hours Mon-Sun 3:00 PM to 5:40 PM. NEVER guess. If you don't know say I don't know.";const r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(sys+"\nUser: "+v+extra+"\nFORANEO_AI:"));const t=await r.text();thinking.innerText=t.trim()||"I don't know.";speak(thinking.innerText);}catch(e){thinking.innerText="I don't know. No internet.";}
-attachedText="";
-}
+function startVoice(){const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Rec){add("🎤 Voice not supported. Use Chrome.",'');return;}const rec=new Rec();rec.lang='en-ZA';add("🎤 Listening... Speak now",'');rec.onresult=e=>{input.value=e.results[0][0].transcript;ask();};rec.onerror=()=>{add("🎤 Could not hear. Try again.",'');};rec.start();}
+document.getElementById('fileInput').addEventListener('change', async (e)=>{const f=e.target.files[0]; if(!f) return; attachedName=f.name; attachedText=""; const url=URL.createObjectURL(f); const type=f.type; if(type.startsWith('image/')){addHTML(`<b>📷 You sent image: ${f.name}</b><img src="${url}">`);add("✅ Image received. Type: Describe this image",'');} else if(type.startsWith('video/')){addHTML(`<b>🎬 You sent video: ${f.name}</b><video src="${url}" controls playsinline></video>`);add("✅ MP4 / Video received",'');} else if(type.startsWith('audio/')){addHTML(`<b>🎵 You sent audio: ${f.name}</b><audio src="${url}" controls></audio>`);add("✅ MP3 / Audio received",'');} else if(f.name.toLowerCase().endsWith('.txt')||f.name.toLowerCase().endsWith('.csv')){attachedText=await f.text();add(`📄 Document: ${f.name}\n\nI read ${attachedText.length} characters. Ask: Summarize this document`,'');} else {add(`📎 File: ${f.name}\n\nFile uploaded. Type what you want me to do.`,'');} log("File: "+f.name); e.target.value="";});
+function makeVideo(prompt){const d=document.createElement('div');d.className='msg';d.innerText="Here is your video: "+prompt+" - Made by FORANEO_AI - Owner: KARABO Langa";const c=document.createElement('canvas');c.width=512;c.height=300;d.appendChild(c);const vid=document.createElement('video');vid.controls=true;vid.autoplay=true;vid.muted=true;vid.playsInline=true;d.appendChild(vid);chat.appendChild(d);const ctx=c.getContext('2d');const stream=c.captureStream(30);const rec=new MediaRecorder(stream,{mimeType:'video/webm'});const chunks=[];rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{vid.src=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));};rec.start();let f=0;const iv=setInterval(()=>{ctx.fillStyle='#00d8a0';ctx.fillRect(0,0,512,300);ctx.fillStyle='#000';ctx.font='bold 28px Arial';ctx.fillText(prompt,20,140);ctx.fillText("FORANEO_AI - "+f,20,190);f++;if(f>90){clearInterval(iv);rec.stop();}},33);}
+async function ask(){if(frozen){alert("FROZEN");return;}const v=input.value.trim();if(!v && !attachedText)return;add(v,'user');log("Asked: "+v);input.value='';const q=v.toLowerCase();let extra=attachedText?"\n\nDocument ("+attachedName+"): "+attachedText.slice(0,4000):"";if(q.includes('video')){let p=v.replace(/generate|create|make|a video|video|please/gi,'').trim();if(!p)p="beautiful nature";makeVideo(p);return;}if(q.includes('generate')||q.includes('draw')||q.includes('create image')||q.includes('make image')){if(q.includes('logo')){makeLogo();return;}if(q.includes('image')||q.includes('picture')||q.includes('photo')||q.includes('garden')||q.includes('math')||q.includes('test')){let p=v.replace(/generate|draw|create|make|an image|a image|image|picture|photo|please/gi,'').trim()||"garden";const d=document.createElement('div');d.className='msg';d.innerText="Here is your image: "+p+" - Made by FORANEO_AI";const img=document.createElement('img');img.src="https://image.pollinations.ai/prompt/"+encodeURIComponent(p+" image")+"?width=512&height=512&seed="+Math.floor(Math.random()*99999);d.appendChild(img);chat.appendChild(d);log("Image: "+p);return;}}if(q.startsWith('add user')){const n=v.slice(8).trim();users.push(n);localStorage.setItem('foraneo_users',JSON.stringify(users));add("✅ Added: "+n,'');return;}if(q.startsWith('remove user')){const n=v.slice(11).trim();users=users.filter(u=>u.toLowerCase()!==n.toLowerCase());localStorage.setItem('foraneo_users',JSON.stringify(users));add("🗑️ Removed: "+n,'');return;}if(q.includes('freeze')){freezeApp();return;}if(q.includes('unfreeze')){unfreezeApp();return;}if(q.includes('owner')||q.includes('karabo')){let t="Owner of FORANEO (PTY) LTD is KARABO Langa.\n\n"+FORANEO_FULL;add(t,'');speak(t);return;}if(q.includes('who made')){add("Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa.",'');return;}if(q.includes('hours')||q.includes('working')||q.includes('open')){add("FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600\nOwner: KARABO Langa",'');return;}if(q.includes('foraneo')){add(FORANEO_FULL,'');return;}if(q.includes('beat')||q.includes('drill')){playDrill();return;}const thinking=add("Thinking... Made by FORANEO_AI",'');try{const sys="You are FORANEO_AI, made by FORANEO (PTY) LTD, under Foraneo Net. Owner KARABO Langa. Hours Mon-Sun 3:00 PM to 5:40 PM. NEVER guess. If you don't know say I don't know.";const r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(sys+"\nUser: "+v+extra+"\nFORANEO_AI:"));const t=await r.text();thinking.innerText=t.trim()||"I don't know.";speak(thinking.innerText);}catch(e){thinking.innerText="I don't know. No internet.";}attachedText="";}
 input.addEventListener('keydown',e=>{if(e.key==='Enter')ask();});
 </script>
 </body>
