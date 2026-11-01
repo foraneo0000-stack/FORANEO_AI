@@ -11,5 +11,49 @@
 <p id="msg">If you tap a button and this text changes, buttons WORK.</p>
 <button onclick="document.getElementById('msg').innerText='🏀 BUTTON WORKS!'">🏀 TEST</button><br>
 <button onclick="document.getElementById('msg').innerText='SEND BUTTON WORKS!'">Send TEST</button>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORANEO_AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f0f2f5;padding-bottom:130px}
+.top{background:#2563eb;color:#fff;padding:12px;text-align:center;position:sticky;top:0;z-index:10}
+.top b{font-size:22px}.top p{margin:2px;font-size:12px;opacity:.9}
+.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:60px;z-index:9}
+.tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold}
+.tabs button.on{background:#2563eb;color:#fff}
+.page{display:none;padding:12px}.page.on{display:block}
+.card{background:#fff;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px #0001}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin:6px 0}
+.btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:bold;margin-top:6px}
+.btn2{background:#22c55e}.btn3{background:#f59e0b}
+.msg{background:#fff;padding:12px;border-radius:15px;margin:8px 0;max-width:85%}.me{background:#2563eb;color:#fff;margin-left:auto}
+#genImg{width:100%;border-radius:12px;display:none;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:20px;font-size:24px;border-radius:12px;border:1px solid #ddd;background:#f8fafc}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px #0002}
+.bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:20px}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:16px;padding:12px 18px;border-radius:25px}
+#preview{max-width:100%;border-radius:12px;display:none}
+</style>
+</head>
+<body>
+<div class="top"><b>FORANEO_AI</b><p id="userLine">Guest • Chat + All Features</p></div>
+<div class="tabs">
+<button class="on" onclick="show('chat',this)">💬 Chat</button>
+<button onclick="show('image',this)">🎨 Image / Video</button>
+<button onclick="show('calc',this)">🧮 Calculator</button>
+<button onclick="show('games',this)">🎮 Games</button>
+<button onclick="show('login',this)">🔐 Login</button>
+</div>
+
+<div id="chat" class="page on"><div id="chatBox"></div></div>
+
+<div id="image" class="page">
+<div class="card"><h3>🎨 Image Generator</h3>
+<input id="imgPrompt" placeholder="Describe image... e.g. Lion in Soweto sunset">
+<button class="btn" onclick="genImage()">Generate Image</button>
+<img id="genImg"><p id="imgStatus"></p>
+<button class="btn btn2" onclick="genVideo()">
 </body>
 </html>
