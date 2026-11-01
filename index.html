@@ -6,17 +6,24 @@
 <title>FORANEO_AI</title>
 <style>
 body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:10px}
-#chat{max-width:600px;margin:0 auto;padding-bottom:80px}
-.msg{background:#1e1e1e;padding:12px 14px;border-radius:15px;margin:10px 0;line-height:1.5}
+#chat{max-width:650px;margin:0 auto;padding-bottom:90px}
+.msg{background:#1e1e1e;padding:12px 14px;border-radius:15px;margin:10px 0;line-height:1.6;white-space:pre-wrap}
 .user{background:#00d8a0;color:#000;text-align:right;margin-left:60px}
-#box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:8px;max-width:600px;margin:0 auto}
-input{flex:1;padding:12px;border-radius:20px;border:none;background:#222;color:#fff}
-button{padding:12px 18px;border-radius:20px;border:none;background:#00d8a0;font-weight:bold}
+.title{text-align:center;color:#00d8a0;font-weight:bold;font-size:20px;margin:10px 0}
+.sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:15px}
+#box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:8px;max-width:650px;margin:0 auto}
+input{flex:1;padding:13px;border-radius:20px;border:none;background:#222;color:#fff}
+button{padding:13px 18px;border-radius:20px;border:none;background:#00d8a0;font-weight:bold}
+.chip{display:inline-block;background:#222;border:1px solid #333;padding:6px 10px;border-radius:20px;margin:3px;font-size:13px}
 </style>
 </head>
 <body>
 <div id="chat">
-<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD - Foraneo Net. Ask me about FORANEO, its sections, address or hours.</div>
+<div class="title">FORANEO_AI</div>
+<div class="sub">Made by FORANEO (PTY) LTD - Foraneo Net</div>
+<div class="msg">Welcome to FORANEO_AI. I am made by FORANEO (PTY) LTD - Foraneo Net. Ask me about FORANEO, its sections, address or hours. I can also help you write, explain things, and do maths.
+
+Try: <span class="chip">Working hours</span> <span class="chip">Who made you?</span> <span class="chip">What is FORANEO?</span> <span class="chip">What can you do?</span></div>
 </div>
 <div id="box">
 <input id="q" placeholder="Ask FORANEO_AI anything...">
@@ -34,22 +41,70 @@ function add(text, cls){
   window.scrollTo(0, document.body.scrollHeight);
 }
 
-function getAnswer(q){
-  q = q.toLowerCase();
+const FORANEO_INFO = "FORANEO (PTY) LTD - Foraneo Net.\nAddress: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.\nSections: Foraneo Net, Foraneo AI, Foraneo Services.\nFORANEO_AI was made by FORANEO (PTY) LTD - Foraneo Net.";
 
-  if(q.includes('who made') || q.includes('who created') || q.includes('made by')){
+function getAnswer(raw){
+  let q = raw.toLowerCase().trim();
+
+  // 1. FORANEO - WHO MADE
+  if(q.includes('who made') || q.includes('who created') || q.includes('who built') || q.includes('made by') || q.includes('creator') || q.includes('founder')){
     return "FORANEO_AI was made by FORANEO (PTY) LTD - Foraneo Net.";
   }
 
-  if(q.includes('hours') || q.includes('open') || q.includes('time') || q.includes('close')){
-    return "FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600";
+  // 2. HOURS - ALWAYS 5:40
+  if(q.includes('hours') || q.includes('open') || q.includes('close') || q.includes('working') || q.includes('time') || q.includes('when')){
+    return "FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600";
   }
 
-  if(q.includes('foraneo') || q.includes('company') || q.includes('address') || q.includes('section') || q.includes('about')){
-    return "FORANEO (PTY) LTD - Foraneo Net. Address: 50226 Masodi, Mokopane, 0600. Hours: Monday to Sunday 3:00 PM to 5:40 PM. Sections: Foraneo Net, Foraneo AI, Foraneo Services.";
+  // 3. ADDRESS / LOCATION
+  if(q.includes('address') || q.includes('where') || q.includes('location') || q.includes('mokopane') || q.includes('masodi')){
+    return "FORANEO (PTY) LTD Address: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.";
   }
 
-  return "I am FORANEO_AI by FORANEO (PTY) LTD. Ask me about FORANEO, its sections, address or hours. Hours are Monday to Sunday 3:00 PM to 5:40 PM.";
+  // 4. ABOUT FORANEO / COMPANY / SECTIONS / SERVICES
+  if(q.includes('foraneo') || q.includes('company') || q.includes('about') || q.includes('section') || q.includes('service') || q.includes('what do you do') || q.includes('net')){
+    return FORANEO_INFO + "\n\nFORANEO is a company under Foraneo Net. It runs FORANEO_AI to help people with information, writing, explaining and answers.";
+  }
+
+  // 5. WHAT CAN YOU DO
+  if(q.includes('what can you') || q.includes('help') || q.includes('abilities') || q.includes('features') || q.includes('can you do')){
+    return "I can do:\n1. Tell you about FORANEO - hours, address, sections, who made me\n2. Help you write - messages, captions, emails, CV, essays\n3. Explain things in simple words\n4. Do maths - try '12 + 8' or '25 x 4'\n5. Give ideas for business, school and life\n\nJust ask me!";
+  }
+
+  // 6. GREETINGS
+  if(q.includes('hello') || q.includes('hi') || q === 'hey' || q.includes('morning') || q.includes('how are you')){
+    return "Hello! I am FORANEO_AI by FORANEO (PTY) LTD. How can I help you today? You can ask about FORANEO hours, or ask me to write or explain something.";
+  }
+
+  // 7. WRITING HELP
+  if(q.includes('write') || q.includes('caption') || q.includes('email') || q.includes('letter') || q.includes('cv') || q.includes('essay') || q.includes('message')){
+    return "Yes, I can help you write that! Tell me:\n1. What is it for? (e.g. WhatsApp, school, business)\n2. What should it say?\n\nExample: 'Write a WhatsApp message to a customer about FORANEO hours'\nAnd I will write it for you.";
+  }
+
+  // 8. EXPLAIN
+  if(q.includes('explain') || q.includes('what is') || q.includes('what does') || q.includes('meaning') || q.includes('define')){
+    return "I can explain that in simple words. Tell me what topic you want explained, e.g. 'Explain what FORANEO Net is' or 'Explain photosynthesis' and I will break it down for you.";
+  }
+
+  // 9. MATHS - simple calculator
+  if(/[0-9]/.test(q) && (q.includes('+') || q.includes('-') || q.includes('x') || q.includes('*') || q.includes('/') || q.includes('plus') || q.includes('minus'))){
+    try{
+      let expr = q.replace(/plus/g,'+').replace(/minus/g,'-').replace(/x/g,'*').replace(/times/g,'*').replace(/[^0-9+\-*/.() ]/g,'');
+      let result = eval(expr);
+      if(!isNaN(result)) return "Answer: " + expr + " = " + result;
+    }catch(e){}
+  }
+
+  // 10. THANK YOU / BYE
+  if(q.includes('thank')){
+    return "You're welcome! Made by FORANEO (PTY) LTD. Ask me anything else.";
+  }
+  if(q.includes('bye') || q.includes('goodbye')){
+    return "Goodbye! FORANEO is open Monday to Sunday, 3:00 PM to 5:40 PM. Come back anytime.";
+  }
+
+  // 11. DEFAULT - FORANEO FIRST, NEVER GUESS
+  return "I am FORANEO_AI by FORANEO (PTY) LTD - Foraneo Net.\n\n" + FORANEO_INFO + "\n\nAsk me: 'Working hours', 'What is FORANEO?', 'What can you do?' or ask me to write or explain something.";
 }
 
 function ask(){
