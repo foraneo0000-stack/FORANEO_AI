@@ -1,132 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - FORANEO (PTY) LTD</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FORANEO_AI</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f0f2f5;padding-bottom:140px}
-.top{background:#2563eb;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
-.top small{color:#ffea00}
-.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:62px;z-index:9}
-.tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold;cursor:pointer}
-.tabs button.on{background:#2563eb;color:#fff}
-.page{display:none;padding:12px}.page.on{display:block}
-.card{background:#fff;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin:6px 0}
-.btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;margin-top:6px;cursor:pointer}
-.btn2{background:#22c55e}.btn3{background:#f59e0b}.btnR{background:#ef4444}
-.msg{background:#fff;padding:12px;border-radius:15px;margin:8px 0;max-width:88%;word-wrap:break-word}
-.me{background:#2563eb;color:#fff;margin-left:auto}
-#genImg,#editImg{width:100%;border-radius:12px;display:none;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:18px;font-size:20px;border-radius:12px;border:1px solid #ddd;background:#f8fafc;cursor:pointer}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,0.2);z-index:20}
-.bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:18px;cursor:pointer}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:15px;padding:12px 16px;border-radius:25px}
-#freezeOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);color:#fff;z-index:999;text-align:center;padding-top:120px}
-.log{font-size:13px;background:#f8fafc;padding:8px;border-radius:8px;margin:4px 0}
-#callBox{display:none;background:#111;color:#fff;padding:12px;border-radius:15px;margin:10px 0;text-align:center}
+  body{font-family:sans-serif;margin:0;background:#0b2cff;color:#fff}
+  .top{padding:14px;text-align:center}
+  .top h1{margin:0;font-size:22px}
+  .top p{margin:4px 0 0;opacity:.9}
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#0b2cff}
+  .tabs button{white-space:nowrap;padding:10px 14px;border:0;border-radius:20px;background:rgba(255,255,255,.25);color:#fff;font-weight:bold}
+  .tabs button.active{background:#fff;color:#000}
+  .page{display:none;padding:12px}
+  .page.show{display:block}
+  .card{background:#fff;color:#000;border-radius:12px;padding:12px;margin-bottom:10px}
+  #chatBox{background:#fff;color:#000;height:320px;overflow:auto;padding:10px;border-radius:12px}
+  .msg{padding:8px 10px;border-radius:10px;margin:6px 0;background:#eee}
+  .msg.me{background:#dbeafe}
+  input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+  .row{display:flex;gap:8px}
+  .row button{flex:1;padding:12px;border:0;border-radius:20px;background:#fff;font-weight:bold}
+  .bottom{display:flex;gap:8px;padding:10px}
+  .bottom input{flex:1}
+  .bottom button{padding:12px 18px;border:0;border-radius:20px;background:#fff;font-weight:bold}
+  img{max-width:100%;border-radius:10px}
 </style>
 </head>
 <body>
-<div id="freezeOverlay"><h1>⛔ FORANEO_AI FROZEN</h1><p>App frozen by Admin - FORANEO (PTY) LTD</p><button class="btn btn2" style="width:200px" onclick="unfreezeApp()">Unfreeze (Admin)</button></div>
-<div class="top"><b id="appTitle">FORANEO_AI</b><br><small>FORANEO (PTY) LTD • Foraneo Net Department</small><p id="userLine">Guest • All Things ON</p></div>
+
+<div class="top">
+  <h1>FORANEO_AI</h1>
+  <p>FORANEO (PTY) LTD - Foraneo Net Department</p>
+  <p id="statusLine">Guest - All Things ON</p>
+</div>
+
 <div class="tabs">
-<button class="on" onclick="show('chat',this)">💬 Chat</button>
-<button onclick="show('image',this)">🎨 Image / Logo</button>
-<button onclick="show('calc',this)">🧮 Calculator</button>
-<button onclick="show('games',this)">🎮 Games</button>
-<button onclick="show('studio',this)">🎵 Studio</button>
-<button onclick="show('admin',this)">🎛️ Admin</button>
-<button onclick="show('login',this)">🔐 Login</button>
+  <button id="tab-chat" onclick="show('chat')">💬 Chat</button>
+  <button id="tab-image" onclick="show('image')">🎨 Image / Logo</button>
+  <button id="tab-calc" onclick="show('calc')">🧮 Calculator</button>
+  <button id="tab-admin" onclick="show('admin')">🎛️ Admin</button>
 </div>
-<div id="chat" class="page on">
-<div id="callBox"><div style="font-size:80px">🤖</div><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button></div>
-<div id="chatBox"></div>
+
+<!-- CHAT -->
+<div id="page-chat" class="page show">
+  <div id="chatBox"><div class="msg">Hi, I am FORANEO_AI. Paste your key in Admin, then ask me anything.</div></div>
+  <div class="bottom">
+    <input id="q" placeholder="Ask...">
+    <button onclick="ask()">Send</button>
+  </div>
+  <button onclick="clearChat()" style="padding:8px 14px;border-radius:20px;border:0">Clear Chat</button>
 </div>
-<div id="image" class="page">
-<div class="card"><h3>🎨 Image Generator</h3><input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset"><button class="btn" onclick="genImage()">Generate Image</button><img id="genImg"><p id="imgStatus"></p><button class="btn btn2" onclick="genVideo()">🎬 Make Video From Image</button><video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
-<div class="card"><h3>🅵 Logo Maker - FORANEO</h3><input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
-<div class="card"><h3>🖼️ Edit Photo</h3><input type="file" accept="image/*" onchange="loadEdit(event)"><img id="editImg"><select id="filterSel" onchange="applyFilter()"><option value="none">No Filter</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Vintage / Sepia</option><option value="brightness(1.4) contrast(1.2)">Bright</option><option value="blur(2px)">Blur</option><option value="hue-rotate(90deg)">Color Shift</option><option value="contrast(1.5) saturate(1.5)">Vivid</option></select><button class="btn" onclick="alert('✅ Photo edit saved')">Save Edited Photo</button></div>
-<div class="card"><h3>🎬 Edit Video</h3><input type="file" accept="video/*" onchange="loadVid(event)"><video id="editVid" controls style="width:100%;display:none"></video><label>Speed</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('editVid').playbackRate=this.value"></div>
+
+<!-- IMAGE -->
+<div id="page-image" class="page">
+  <div class="card">
+    <h3>Image / Logo</h3>
+    <input id="imgPrompt" placeholder="Describe image, e.g. blue logo for Foraneo">
+    <button onclick="makeImage()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">Generate Image (uses Pollinations - no key needed)</button>
+    <div id="imgOut" style="margin-top:10px"></div>
+  </div>
 </div>
-<div id="calc" class="page"><div class="card"><h3>🧮 Calculator</h3><input id="calcIn" readonly placeholder="e.g. 25*4+10"><div class="grid"><button onclick="cAdd('7')">7</button><button onclick="cAdd('8')">8</button><button onclick="cAdd('9')">9</button><button onclick="cAdd('4')">4</button><button onclick="cAdd('5')">5</button><button onclick="cAdd('6')">6</button><button onclick="cAdd('1')">1</button><button onclick="cAdd('2')">2</button><button onclick="cAdd('3')">3</button><button onclick="cAdd('0')">0</button><button onclick="cAdd('+')">+</button><button onclick="cAdd('-')">-</button><button onclick="cAdd('*')">×</button><button onclick="cAdd('/')">÷</button><button onclick="cClear()">C</button></div><button class="btn" onclick="cSolve()">= Solve</button><h2 id="calcOut">Result: -</h2><input id="mathQ" placeholder="What is 15% of 200?"><button class="btn btn3" onclick="solveWord()">Solve Word Problem</button><p id="mathAns"></p></div></div>
-<div id="games" class="page">
-<div class="card"><h3>🎮 Rock Paper Scissors</h3><button class="btn" onclick="rps('Rock')">🪨 Rock</button><button class="btn btn2" onclick="rps('Paper')">📄 Paper</button><button class="btn btn3" onclick="rps('Scissors')">✂️ Scissors</button><p id="rpsOut"></p><p id="rpsScore">Wins: 0 | Losses: 0</p></div>
-<div class="card"><h3>🔢 Guess Number (1-10)</h3><input id="guessIn" type="number" placeholder="Enter 1-10"><button class="btn" onclick="guess()">Guess</button><p id="guessOut">I'm thinking...</p></div>
-<div class="card"><h3>❌⭕ Tic Tac Toe</h3><div class="grid" id="ttt"></div><p id="tttOut">Your turn: X</p><button class="btn" onclick="resetTTT()">Reset</button></div>
+
+<!-- CALCULATOR -->
+<div id="page-calc" class="page">
+  <div class="card">
+    <h3>Calculator</h3>
+    <input id="calcInput" placeholder="e.g. 250*4">
+    <button onclick="doCalc()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">= Calculate</button>
+    <p id="calcOut"></p>
+  </div>
 </div>
-<div id="studio" class="page">
-<div class="card"><h3>🎵 Drill Beat Generator</h3><p>Genre: UK Drill / Amapiano Drill</p><button class="btn" onclick="playDrill()">▶️ Play Drill Beat</button><button class="btn btnR" onclick="stopBeat()">⏹️ Stop Beat</button><p id="beatStatus">Ready - Tap Play</p><label>Tempo (BPM)</label><input type="range" min="100" max="160" value="140" id="bpm" oninput="document.getElementById('bpmVal').innerText=this.value"><span id="bpmVal">140</span> BPM</div>
-<div class="card"><h3>🎤 Studio - Autotune & Mixer</h3><input type="file" accept="audio/*" onchange="loadAudio(event)"><audio id="studioAudio" controls style="width:100%"></audio><label>🎤 Autotune / Pitch</label><input type="range" min="0.7" max="1.3" step="0.01" value="1" oninput="document.getElementById('studioAudio').playbackRate=this.value"><label>🎚️ Voice Volume</label><input type="range" min="0" max="100" value="80" oninput="document.getElementById('studioAudio').volume=this.value/100"><button class="btn btn2" onclick="alert('✅ Mix saved! FORANEO Studio')">💾 Export Mix</button></div>
-<div class="card"><h3>🎤 Record Song / Voice in Studio</h3><button class="btn btn3" onclick="studioRecord()">🔴 Record / Stop Studio Voice</button><div id="studioRecOut"></div></div>
+
+<!-- ADMIN -->
+<div id="page-admin" class="page">
+  <div class="card">
+    <h3>Admin - Gemini Key</h3>
+    <p>Paste your Google Gemini API key. It stays only on this phone.</p>
+    <input id="apiKey" placeholder="Paste Gemini key here">
+    <button onclick="saveKey()" style="padding:12px;border-radius:20px;border:0;background:#0b2cff;color:#fff;font-weight:bold">💾 Save Key</button>
+    <button onclick="testKey()" style="padding:12px;border-radius:20px;border:0;margin-top:8px">Test Key</button>
+    <p id="adminMsg"></p>
+  </div>
 </div>
-<div id="admin" class="page">
-<div class="card"><h3>🤖 FORANEO_AI Brain - Gemini Key</h3><p>Paste your FREE Gemini Key here once. Then photos + voice will reply like Meta AI.</p><input id="gemKey" placeholder="Paste Gemini API Key here"><button class="btn btn2" onclick="saveKey()">💾 Save Key</button><p id="keyStatus"></p><a href="https://aistudio.google.com/apikey" target="_blank" style="color:#2563eb">Get FREE Key Here</a></div>
-<div class="card"><h3>🎛️ FORANEO Control - Admin Only</h3><p><b>Company:</b> FORANEO (PTY) LTD<br><b>Dept:</b> Foraneo Net<br><b>AI:</b> FORANEO_AI</p><p id="appInfo"></p><button class="btn btnR" onclick="freezeApp()">⛔ FREEZE APP</button><button class="btn btn2" onclick="unfreezeApp()">✅ UNFREEZE APP</button></div>
-<div class="card"><h3>✏️ Edit App Live</h3><input id="newTitle" placeholder="New App Name e.g. FORANEO PRO"><button class="btn" onclick="editApp()">Apply Edit</button><input id="newColor" type="color" value="#2563eb"><button class="btn btn3" onclick="changeColor()">Change App Colour</button></div>
-<div class="card"><h3>👥 Manage Users</h3><input id="newUser" placeholder="Username to add"><button class="btn btn2" onclick="addUser()">+ Add User</button><input id="remUser" placeholder="Username to remove"><button class="btn btnR" onclick="removeUser()">- Remove User</button><div id="userList"></div></div>
-<div class="card"><h3>👀 Track What Users Do</h3><div id="trackLog"></div><button class="btn" onclick="clearTrack()">Clear Log</button></div>
-</div>
-<div id="login" class="page">
-<div class="card"><h3>🔐 Login / Signup</h3><input id="uName" placeholder="Username"><input id="uPass" type="password" placeholder="Password"><button class="btn" onclick="signup()">Sign Up</button><button class="btn btn2" onclick="login()">Login</button><button class="btn btn3" onclick="logout()">Logout</button><p id="loginOut"></p></div>
-<div class="card"><h3>💬 Saved Chat History</h3><p id="histCount"></p><button class="btn" onclick="clearHist()">Clear History</button></div>
-</div>
-<div class="bottom" id="chatBar"><button onclick="document.getElementById('fileInput').click()">🏀</button><button onclick="videoCall()">👤</button><button onclick="voiceCall()">🗣</button><button onclick="voiceNote()">▶️</button><input id="q" placeholder="Ask FORANEO..."><button class="send" onclick="sendMsg()">Send</button></div>
-<input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="handleFile(event)">
+
 <script>
-let target=Math.floor(Math.random()*10)+1,tttBoard=['','','','','','','','',''],tttTurn='X',beatTimer=null,audioCtx=null,rec=null,chunks=[],isRec=false,studioRec=null,studioChunks=[],isStudioRec=false,callStream=null,rpsW=0,rpsL=0,callListen=null,voiceWords='',lastImageBase64='',lastImageType='image/jpeg',lastImageDesc='';
-function show(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('chatBar').style.display=(id=='chat'?'flex':'none');track('Opened '+id);if(id=='admin'){let k=localStorage.getItem('foraneo_gemini')||'';document.getElementById('gemKey').value=k;document.getElementById('keyStatus').innerText=k?'✅ Key saved - AI brain ON':'❌ No key yet - add key to reply like Meta AI'}}
-function saveKey(){let k=document.getElementById('gemKey').value.trim();if(!k)return alert('Paste key first');localStorage.setItem('foraneo_gemini',k);document.getElementById('keyStatus').innerText='✅ Key saved! Now photos + voice will reply like Meta AI';alert('✅ Key saved!')}
-function getKey(){return localStorage.getItem('foraneo_gemini')||''}
-function track(a){try{let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let u=localStorage.getItem('foraneo_current')||'Guest';l.unshift(new Date().toLocaleTimeString()+' - '+u+': '+a);localStorage.setItem('foraneo_track',JSON.stringify(l.slice(0,50)));renderTrack();updateAppInfo()}catch(e){}}
-function renderTrack(){let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let e=document.getElementById('trackLog');if(e)e.innerHTML=l.map(x=>'<div class="log">'+x+'</div>').join('')||'No activity yet'}
-function clearTrack(){localStorage.removeItem('foraneo_track');renderTrack()}
-function updateAppInfo(){let u=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let h=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');let e=document.getElementById('appInfo');if(e)e.innerHTML='📊 Messages: '+h.length+'<br>👥 Users: '+(u.length||1)+'<br>📱 Status: '+(localStorage.getItem('foraneo_frozen')=='1'?'FROZEN ⛔':'LIVE ✅');renderUsers()}
-function freezeApp(){localStorage.setItem('foraneo_frozen','1');document.getElementById('freezeOverlay').style.display='block';track('FROZE app');updateAppInfo()}
-function unfreezeApp(){localStorage.setItem('foraneo_frozen','0');document.getElementById('freezeOverlay').style.display='none';track('UNFROZE app');updateAppInfo()}
-function editApp(){let t=document.getElementById('newTitle').value;if(!t)return alert('Type new name');document.getElementById('appTitle').innerText=t;document.title=t;track('Edited app to '+t);alert('✅ App renamed to '+t)}
-function changeColor(){let c=document.getElementById('newColor').value;document.querySelector('.top').style.background=c;track('Changed app colour');alert('✅ Colour changed')}
-function addUser(){let u=document.getElementById('newUser').value;if(!u)return alert('Type username');let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');if(!us.includes(u))us.push(u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.setItem('foraneo_user_'+u,'1234');track('Added user '+u);updateAppInfo();alert('✅ User '+u+' added (pass 1234)')}
-function removeUser(){let u=document.getElementById('remUser').value;let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');us=us.filter(x=>x!==u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.removeItem('foraneo_user_'+u);track('Removed user '+u);updateAppInfo();alert('✅ User '+u+' removed')}
-function renderUsers(){let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let e=document.getElementById('userList');if(e)e.innerHTML=us.length?us.map(u=>'<div class="log">👤 '+u+'</div>').join(''):'<div class="log">No extra users yet - only KARABO</div>'}
-function aiSpeak(t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,' '));u.rate=1;u.pitch=1;speechSynthesis.speak(u)}catch(e){}}
-function startListen(cb){try{let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;let r=new SR();r.continuous=false;r.interimResults=false;r.lang='en-ZA';r.onresult=e=>{let txt=e.results[0][0].transcript.trim();if(txt)cb(txt)};r.onend=()=>{if(callStream&&!isRec){try{r.start()}catch(e){}}};r.start();return r}catch(e){return null}}
-// GEMINI BRAIN - REPLIES LIKE META AI
-async function askGemini(prompt, imageBase64, imageType){
-  let key=getKey();
-  if(!key) return null;
+function show(name){
+  var pages = document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++){ pages[i].classList.remove('show'); }
+  var p = document.getElementById('page-'+name);
+  if(p) p.classList.add('show');
+  var tabs = document.querySelectorAll('.tabs button');
+  for(var j=0;j<tabs.length;j++){ tabs[j].classList.remove('active'); }
+  var t = document.getElementById('tab-'+name);
+  if(t) t.classList.add('active');
+}
+function getKey(){
+  try{ return localStorage.getItem('foraneo_key') || ''; }catch(e){ return ''; }
+}
+function saveKey(){
+  var k = document.getElementById('apiKey').value.trim();
+  try{ localStorage.setItem('foraneo_key', k); }catch(e){}
+  document.getElementById('adminMsg').textContent = 'Key saved!';
+  alert('Key saved!');
+}
+async function ask(){
+  var qEl = document.getElementById('q');
+  var q = qEl.value.trim();
+  if(!q) return;
+  var key = getKey();
+  if(!key){ alert('Paste key in Admin first'); show('admin'); return; }
+  var box = document.getElementById('chatBox');
+  box.innerHTML += '<div class="msg me"><b>You:</b> '+q+'</div>';
+  qEl.value='';
+  box.scrollTop = 99999;
   try{
-    let parts=[{text: prompt + " You are FORANEO_AI, made by FORANEO (PTY) LTD, Foraneo Net, Creator KARABO. Answer short, friendly, in simple English."}];
-    if(imageBase64) parts.push({inlineData:{mimeType:imageType||'image/jpeg', data:imageBase64}});
-    let r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})});
-    let d=await r.json();
-    let txt=d?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return txt||null;
-  }catch(e){return null}
+    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text:q}]}]})
+    });
+    var j = await r.json();
+    var txt = 'No reply';
+    if(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0]) txt = j.candidates[0].content.parts[0].text;
+    if(j.error) txt = 'Error: ' + j.error.message;
+    box.innerHTML += '<div class="msg"><b>FORANEO_AI:</b> '+txt+'</div>';
+  }catch(e){
+    box.innerHTML += '<div class="msg">Error: '+e.message+'</div>';
+  }
+  box.scrollTop = 99999;
 }
-async function getAIAnswer(q){
-  // 1. Try Gemini first - this is what replies like Meta AI
-  let g=await askGemini(q, null, null);
-  if(g) return g;
-  // 2. Fallback if no key - old offline brain
-  let low=q.toLowerCase(),name=getName();
-  if(low.includes('what') && (low.includes('on it')||low.includes('in it')||low.includes('picture')) && lastImageDesc) return lastImageDesc;
-  if(low.includes('who made')||low.includes('who are you')) return 'I am FORANEO_AI. Made by FORANEO (PTY) LTD, Foraneo Net. Creator: '+name+'. Add Gemini Key in Admin to reply like Meta AI.';
-  if(low.includes('hello')||low=='hi') return 'Hello '+name+'! I am FORANEO_AI. Add Gemini Key in Admin, then I will reply like Meta AI.';
-  if(low.match(/(\d+)\s*[\+\-\*\/]\s*(\d+)/)){try{return 'Answer = '+eval(q.match(/(\d+[\+\-\*\/\d\s]+)/)[0])}catch(e){}}
-  if(!getKey()) return 'Add your FREE Gemini Key in Admin tab first, then I will reply like Meta AI. Go to Admin > Gemini Key.';
-  return 'I could not reach Gemini. Check your key and internet.';
+function clearChat(){
+  document.getElementById('chatBox').innerHTML = '<div class="msg">Chat cleared.</div>';
 }
-async function voiceReply(q){
-  let ans=await getAIAnswer(q);
-  saveMsg('🤖 FORANEO_AI: '+ans,false);
-  aiSpeak(ans);
-  return ans;
+function doCalc(){
+  var v = document.getElementById('calcInput').value;
+  try{ document.getElementById('calcOut').textContent = 'Result: ' + eval(v); }
+  catch(e){ document.getElementById('calcOut').textContent = 'Invalid calculation'; }
 }
-async function videoCall(){try{document.getElementById('callBox').style.display='block';document.getElementById('callStatus').innerHTML='👤 YOU | 🤖 FORANEO_AI LIVE<br>Speak now - I will REPLY like Meta AI!';callStream=await navigator.mediaDevices.getUserMedia({audio:true});let hello='Hello '+getName()+'! I can hear you! Ask me anything and I will reply!';saveMsg('🤖 FORANEO_AI Video Call: '+hello,false);aiSpeak(hello);track('Video call');if(callListen)try{callListen.stop()}catch(e){};callListen=startListen(async txt=>{document.getElementById('callStatus').innerText='You said: '+txt;saveMsg('You said on call: '+txt,true);await voiceReply(txt);document.getElementById('callStatus').innerText='Speak again - I am listening...';})}catch(e){alert('❌ Mic blocked! Allow Microphone')}}
-async function voiceCall(){try{document.getElementById('callBox').style.display='block';document.getElementById('callStatus').innerHTML='🗣 Voice Call LIVE - I will REPLY. Speak now!';callStream=await navigator.mediaDevices.getUserMedia({audio:true});let hello='Hello! I am listening. Ask me anything and I will reply!';saveMsg('🤖 FORANEO_AI Voice Call: '+hello,false);aiSpeak(hello);track('Voice call');if(callListen)try{callListen.stop()}catch(e){};callListen=startListen(async txt=>{document.getElementById('callStatus').innerText='You said: '+txt;saveMsg('You said on call: '+txt,true);await voiceReply(txt);document.getElementById('callStatus').innerText='Speak again - I am listening...';})}catch(e){alert('❌ Mic blocked! Allow Microphone')}}
-function endCall(){if(callListen)try{callListen.stop();callListen=null}catch(e){};if(callStream){callStream.getTracks().forEach(t=>t.stop());callStream=null}document.getElementById('callBox').style.display='none';saveMsg('🤖 FORANEO_AI: Bye KARABO! Nice talking to you! 👋',false);aiSpeak('Bye Karabo! Nice talking to you!')}
-async function voiceNote(){if(!isRec){try{voiceWords='';let s=await navigator.mediaDevices.getUserMedia({audio:true});rec=new MediaRecorder(s);chunks=[];isRec=true;rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=async ()=>{let b=new Blob(chunks,{type:'audio/webm'});let u=URL.createObjectURL(b);saveMsg('🎤 Voice Note:<br><audio controls src="'+u+'" style="width:100%"></audio>',true);if(voiceWords){saveMsg('You said: '+voiceWords,true);await voiceReply(voiceWords);}else{let m='I received your voice note but I could not hear the words clearly. Please speak loud and try again.';saveMsg('🤖 FORANEO_AI: '+m,false);aiSpeak(m)};track('Sent voice note')};rec.start();if(callListen)try{callListen.stop()}catch(e){};callListen=startListen(t=>{voiceWords+=(voiceWords?' ':'')+t});alert('🔴 Recording STARTED - Speak your QUESTION! Tap ▶️ again to stop. AI will REPLY like Meta AI.')}catch(e){alert('❌ Mic blocked! Tap 🔒 at top -> Allow Microphone')}}else{isRec=false;if(callListen)try{callListen.stop();callListen=null}catch(e){};try{rec.stop();rec.stream.getTracks().forEach(t=>t.stop())}catch(e){}}}
-async function studioRecord(){if(!isStudioRec){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});studioRec=new MediaRecorder(s);studioChunks=[];isStudioRec=true;studioRec.ondataavailable=e=>studioChunks.push(e.data);studioRec.onstop=()=>{let b=new Blob(studioChunks,{type:'audio/webm'});let u=URL.createObjectURL(b);document.getElementById('studioRecOut').innerHTML='<audio controls src="'+u+'" style="width:100%;margin-top:10px"></audio>';document.getElementById('studioAudio').src=u};studioRec.start();alert('🔴 Studio Recording STARTED')}catch(e){alert('❌ Mic blocked! Allow Microphone')}}else{isStudioRec=false;studioRec.stop();studioRec.stream.getTracks().forEach(t=>t.stop());alert('✅ Studio recording saved!')}}
-function handleFile(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f);if(f.type.startsWith('image')){let reader=new FileReader();reader.onload=async function(){let base64=reader.result.split(',')[1];lastImageBase64=base64;lastImageType=f.type;saveMsg('🏀 You sent: '+f.name+'<br><img src="'+url+'" style="width:100%;border-radius:10px;margin-top:6px">',false);saveMsg('👀 Looking at your picture...',false);let ans=await askGemini('Describe this picture in detail. What is on it? Who or what is in it?',base64,f.type);if(ans){lastImageDesc=ans;saveMsg('🤖 FORANEO_AI: '+ans,false);aiSpeak(ans);}else{saveMsg('🤖 FORANEO_AI: I can see your picture '+f.name+'! Add Gemini Key in Admin, then I will describe it like Meta AI.',false);}};reader.readAsDataURL(f);track('Sent image '+f.name)}else if(f.type.startsWith('video')){saveMsg('🏀 You sent video: '+f.name+'<br><video controls src="'+url+'" style="width:100%"></video>',false);let reply='🤖 FORANEO_AI: I received your video! Tell me what is in it and I will reply like Meta AI!';saveMsg(reply,false);aiSpeak(reply.replace('🤖 FORANEO_AI: ',''));track('Sent video '+f.name)}else if(f.type.startsWith('audio')){saveMsg('🏀 You sent audio: '+f.name+'<br><audio controls src="'+url+'" style="width:100%"></audio>',false);let reply='🤖 FORANEO_AI: I received your voice note! Type what you said and I will answer like Meta AI!';saveMsg(reply,false);aiSpeak(reply.replace('🤖 FORANEO_A
+function makeImage(){
+  var p = document.getElementById('imgPrompt').value.trim();
+  if(!p){ alert('Type a description first'); return; }
+  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p);
+  document.getElementById('imgOut').innerHTML = '<p>Generating...</p><img src="'+url+'">';
+}
+async function testKey(){
+  var key = getKey();
+  if(!key){ document.getElementById('adminMsg').textContent = 'No key saved yet'; return; }
+  document.getElementById('adminMsg').textContent = 'Testing...';
+  try{
+    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text:'Say OK'}]}]})
+    });
+    var j = await r.json();
+    if(j.candidates) document.getElementById('adminMsg').textContent = 'Key works!';
+    else document.getElementById('adminMsg').textContent = 'Key error: ' + (j.error ? j.error.message : 'check key');
+  }catch(e){ document.getElementById('adminMsg').textContent = 'Error: ' + e.message; }
+}
+// Load saved key safely, never crash if storage is broken
+try{
+  var saved = localStorage.getItem('foraneo_key') || '';
+  document.getElementById('apiKey').value = saved;
+  if(saved) document.getElementById('statusLine').textContent = 'Guest - Key Saved - All Things ON';
+}catch(e){}
+show('chat');
+</script>
+</body>
+</html>
