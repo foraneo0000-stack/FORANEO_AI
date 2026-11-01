@@ -140,5 +140,66 @@ function logout(){localStorage.removeItem('foraneo_current');document.getElement
 document.getElementById('q').addEventListener('keypress',function(e){if(e.key==='Enter')sendMsg()});
 renderTTT();renderHist();renderTrack();updateAppInfo();let cur=localStorage.getItem('foraneo_current');if(cur)document.getElementById('userLine').innerText='👤 '+cur+' • Logged In';if(localStorage.getItem('foraneo_frozen')=='1')document.getElementById('freezeOverlay').style.display='block';
 </script>
+  <script>
+// === FORANEO_AI UPGRADE: Talk Like Meta AI ===
+let aiListening = null;
+function aiTalk(text){
+  try{ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(text); u.rate=1; speechSynthesis.speak(u);}catch(e){}
+  let av=document.getElementById('aiAvatar'); if(av) av.innerText='🤖';
+  setTimeout(()=>{ let av2=document.getElementById('aiAvatar'); if(av2) av2.innerText='🤖'; },2000);
+}
+function aiListenReply(){
+  try{
+    let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){ return; }
+    if(aiListening) aiListening.stop();
+    let r=new SR(); r.continuous=false; r.interimResults=false; r.lang='en-ZA';
+    r.onresult=e=>{
+      let txt=e.results[0][0].transcript;
+      saveMsg('🗣 You said: '+txt, true);
+      let rep='I heard you say '+txt+'. Nice, Karabo! Tell me more about that.';
+      if(txt.toLowerCase().includes('hello')||txt.toLowerCase().includes('hi')) rep='Hello Karabo! I can hear you clearly. How are you today?';
+      if(txt.toLowerCase().includes('how are you')) rep='I am great Karabo! I am here talking with you live. What do you want to do?';
+      if(txt.toLowerCase().includes('who are you')) rep='I am FORANEO AI, made by FORANEO PTY LTD, Foraneo Net Department. I was created by you, Karabo.';
+      saveMsg('🤖 FORANEO_AI: '+rep,false); aiTalk(rep);
+    };
+    r.onend=()=>{ let cb=document.getElementById('callBox'); if(cb && cb.style.display=='block'){ setTimeout(aiListenReply,500); } };
+    r.start(); aiListening=r;
+  }catch(e){}
+}
+// VIDEO CALL - SHOW AI, NOT YOU
+async function videoCall(){
+  document.getElementById('callBox').style.display='block';
+  document.getElementById('callBox').innerHTML='<div id="aiAvatar" style="font-size:110px">🤖</div><h2>FORANEO_AI LIVE</h2><p id="callStatus">Hello Karabo! I can hear you. Speak to me!</p><button class="btn btnR" onclick="endCall()">End Call</button>';
+  try{ callStream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert('Allow Microphone to talk to AI'); }
+  saveMsg('🤖 FORANEO_AI Video Call: Hello KARABO! I can hear you! Speak to me!',false);
+  aiTalk('Hello Karabo! I can hear you! Speak to me!');
+  aiListenReply();
+}
+async function voiceCall(){
+  document.getElementById('callBox').style.display='block';
+  document.getElementById('callBox').innerHTML='<div style="font-size:80px">🤖🎤</div><h2>Voice Call LIVE</h2><p id="callStatus">Listening... Speak now!</p><button class="btn btnR" onclick="endCall()">End Call</button>';
+  try{ callStream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert('Allow Microphone'); }
+  aiTalk('Hello! I am listening. Speak to me!');
+  aiListenReply();
+}
+function endCall(){
+  if(aiListening){ try{aiListening.stop()}catch(e){} aiListening=null; }
+  if(callStream){ callStream.getTracks().forEach(t=>t.stop()); }
+  document.getElementById('callBox').style.display='none';
+  document.getElementById('callBox').innerHTML='<video id="callVideo" autoplay playsinline></video><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button>';
+  saveMsg('🤖 FORANEO_AI: Bye KARABO! Nice talking to you! 👋',false);
+}
+// VOICE NOTE - AUTO TRANSCRIBE
+async function voiceNote(){
+  if(!isRec){
+    try{
+      let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(SR){ let r=new SR(); r.onresult=e=>{ let txt=e.results[0][0].transcript; saveMsg('🎤 Voice Note: "'+txt+'"',true); let rep='I heard your voice note! You said: '+txt+'. Thank you Karabo!'; saveMsg('🤖 FORANEO_AI: '+rep,false); aiTalk(rep); }; r.start(); alert('🔴 Listening... Speak now! I will write what you say.'); return; }
+    }catch(e){}
+    alert('Your browser does not support voice transcription. Use 🗣 Voice Call instead.');
+  }
+}
+  </script>
 </body>
   </html>
