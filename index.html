@@ -12,121 +12,73 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:10
 .msg img,.msg video{width:100%;border-radius:12px;margin-top:10px;display:block}
 .title{text-align:center;color:#00d8a0;font-weight:bold;font-size:22px}
 .sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:10px}
-#box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:6px;max-width:700px;margin:0 auto;flex-wrap:wrap}
-input{flex:1;padding:12px;border-radius:20px;border:none;background:#222;color:#fff;min-width:180px}
+#box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:6px;max-width:700px;margin:0 auto}
+input{flex:1;padding:12px;border-radius:20px;border:none;background:#222;color:#fff}
 button{padding:10px 12px;border-radius:20px;border:none;background:#00d8a0;font-weight:bold;font-size:12px}
 .top{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
 .top button{background:#222;color:#fff;border:1px solid #333}
-canvas{width:100%;border-radius:12px;margin-top:10px}
 </style>
 </head>
 <body>
 <div id="chat">
 <div class="title">FORANEO_AI</div>
-<div class="sub">Made by FORANEO (PTY) LTD - Under Foraneo Net Department - Owner: KARABO Langa</div>
+<div class="sub">Made by FORANEO (PTY) LTD - Under Foraneo Net - Owner: KARABO Langa</div>
 <div class="top">
 <button onclick="freezeApp()">❄️ Freeze App</button>
 <button onclick="unfreezeApp()">🔥 Unfreeze</button>
 <button onclick="showUsers()">👥 Users</button>
-<button onclick="showLog()">📊 Track Activity</button>
-<button onclick="showStudio()">🎛️ Studio / Drill Beat</button>
-<button onclick="showTools()">🎨 Logo / Photo / Video</button>
+<button onclick="showLog()">📊 Track</button>
+<button onclick="showStudio()">🎛️ Studio</button>
+<button onclick="showTools()">🎨 Logo / Photo</button>
 </div>
-<div class="msg">Welcome to FORANEO_AI. I am FORANEO_AI. I was made by FORANEO (PTY) LTD, under Foraneo Net department. Owner: KARABO Langa.
-
-I NEVER guess. If I don't know, I will say "I don't know".
-
-I can:
-1. Control THIS app - freeze/unfreeze, check info, edit, add/remove users, track you
-2. Generate images + videos
-3. Get info from internet / Wikipedia / Google
-4. Generate drill beats, autotune + mixture help
-5. Create logos, edit photos, edit videos
-6. Do anything ChatGPT can do - write, explain, homework
-
-Hours: Monday to Sunday, 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Owner: KARABO Langa.
-Try: "Working hours" / "Who is the owner?" / "Generate a gardening image" / "Generate drill beat" / "Create logo FORANEO"</div>
+<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: Generate a garden image</div>
 </div>
-<div id="box">
-<input id="q" placeholder="Ask FORANEO_AI anything...">
-<button onclick="ask()">Send</button>
-</div>
+<div id="box"><input id="q" placeholder="Ask FORANEO_AI anything..."><button onclick="ask()">Send</button></div>
 <script>
 let frozen=false;
 let users=JSON.parse(localStorage.getItem('foraneo_users')||'["You"]');
 let activity=JSON.parse(localStorage.getItem('foraneo_log')||'[]');
-let chatHistory=JSON.parse(localStorage.getItem('foraneo_chat')||'[]');
-const chat=document.getElementById('chat');
-const input=document.getElementById('q');
-const FORANEO_FULL="FORANEO (PTY) LTD - Foraneo Net.\nOwner: KARABO Langa.\nAddress: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.\nSections: Foraneo Net, Foraneo AI, Foraneo Services.\nMade by FORANEO (PTY) LTD, under Foraneo Net department.";
-
-function log(a){ activity.push(new Date().toLocaleTimeString()+" - "+a); localStorage.setItem('foraneo_log',JSON.stringify(activity)); }
-function add(t,cls){ const d=document.createElement('div'); d.className='msg '+(cls||''); d.innerText=t; chat.appendChild(d); window.scrollTo(0,document.body.scrollHeight); return d; }
-function freezeApp(){ frozen=true; log("App frozen"); add("❄️ FORANEO_AI is now FROZEN. Tap Unfreeze to continue.",''); }
-function unfreezeApp(){ frozen=false; log("App unfrozen"); add("🔥 FORANEO_AI is UNFROZEN.",''); }
-function showUsers(){ add("👥 USERS IN THIS APP:\n"+users.join("\n")+"\n\nTo add: type 'Add user John'\nTo remove: type 'Remove user John'",''); }
-function showLog(){ add("📊 WHAT YOU DID IN THIS APP:\n"+(activity.slice(-20).join("\n")||"No activity yet"),''); }
-function showStudio(){ const d=document.createElement('div'); d.className='msg'; d.innerHTML=`<b>🎛️ FORANEO STUDIO</b><br><button onclick="playDrill()">▶️ Play Drill Beat (140 BPM)</button> <button onclick="stopBeat()">⏹️ Stop</button><br><br>Drill: 140 BPM, 808 sliding, fast hi-hats. Autotune: C Minor, 70%, Fast. Mixture: Vocal -3dB, 808 -6dB, Hat -12dB.`; chat.appendChild(d); }
-function showTools(){ const d=document.createElement('div'); d.className='msg'; d.innerHTML=`<b>🎨 LOGO / PHOTO / VIDEO</b><br><button onclick="makeLogo()">Create Logo FORANEO</button><br><br><label>Upload Photo:</label><input type="file" accept="image/*" onchange="editPhoto(event)"><br><br><label>Upload Video:</label><input type="file" accept="video/*" onchange="editVideo(event)">`; chat.appendChild(d); }
-function makeLogo(){ const c=document.createElement('canvas'); c.width=600; c.height=300; const ctx=c.getContext('2d'); ctx.fillStyle='#00d8a0'; ctx.fillRect(0,0,600,300); ctx.fillStyle='#000'; ctx.font='bold 60px Arial'; ctx.fillText('FORANEO',150,130); ctx.font='20px Arial'; ctx.fillText('Owner: KARABO Langa',170,180); ctx.fillText('FORANEO (PTY) LTD - Foraneo Net',110,220); const d=document.createElement('div'); d.className='msg'; d.innerText="Here is your logo - Made by FORANEO_AI - Owner: KARABO Langa"; d.appendChild(c); chat.appendChild(d); }
-function editPhoto(e){ const url=URL.createObjectURL(e.target.files[0]); const d=document.createElement('div'); d.className='msg'; d.innerHTML=`Photo Editor:<br><button onclick="document.getElementById('editImg').style.filter='grayscale(1)'">Black & White</button> <button onclick="document.getElementById('editImg').style.filter='contrast(1.5) saturate(1.5)'">Bright</button> <button onclick="document.getElementById('editImg').style.filter='none'">Original</button><br><img id="editImg" src="${url}">`; chat.appendChild(d); }
-function editVideo(e){ const url=URL.createObjectURL(e.target.files[0]); const d=document.createElement('div'); d.className='msg'; d.innerHTML=`Video Editor:<br><video controls src="${url}"></video>`; chat.appendChild(d); }
-let audioCtx=null, beatTimer=null;
-function playDrill(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); let step=0; stopBeat(); beatTimer=setInterval(()=>{ const t=audioCtx.currentTime; if(step%8===0){ const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(40,t+0.2); g.gain.setValueAtTime(0.8,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.3); o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.3); } step++; }, 60000/140/2); add("🥁 Playing Drill Beat - 140 BPM - Made by FORANEO_AI.",''); }
-function stopBeat(){ if(beatTimer) clearInterval(beatTimer); }
-async function searchInternet(query){ try{ const r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(query)); const j=await r.json(); if(j.extract) return "From Internet / Wikipedia:\n"+j.extract; return null; }catch(e){ return null; } }
-
+const chat=document.getElementById('chat'); const input=document.getElementById('q');
+const FORANEO_FULL="FORANEO (PTY) LTD - Foraneo Net.\nOwner: KARABO Langa.\nAddress: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.\nMade by FORANEO (PTY) LTD, under Foraneo Net department.";
+function log(a){activity.push(new Date().toLocaleTimeString()+" - "+a);localStorage.setItem('foraneo_log',JSON.stringify(activity));}
+function add(t,cls){const d=document.createElement('div');d.className='msg '+(cls||'');d.innerText=t;chat.appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
+function freezeApp(){frozen=true;add("❄️ FROZEN. Tap Unfreeze.",'');}
+function unfreezeApp(){frozen=false;add("🔥 UNFROZEN.",'');}
+function showUsers(){add("👥 Users:\n"+users.join("\n"),'');}
+function showLog(){add("📊 Activity:\n"+activity.slice(-20).join("\n"),'');}
+function showStudio(){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>🎛️ STUDIO</b><br><button onclick="playDrill()">▶️ Play Drill Beat</button> <button onclick="stopBeat()">⏹️ Stop</button>`;chat.appendChild(d);}
+function showTools(){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>🎨 LOGO</b><br><button onclick="makeLogo()">Create Logo FORANEO</button><br><br><input type="file" accept="image/*" onchange="editPhoto(event)">`;chat.appendChild(d);}
+function makeLogo(){const c=document.createElement('canvas');c.width=600;c.height=300;const x=c.getContext('2d');x.fillStyle='#00d8a0';x.fillRect(0,0,600,300);x.fillStyle='#000';x.font='bold 60px Arial';x.fillText('FORANEO',150,130);x.font='20px Arial';x.fillText('Owner: KARABO Langa',170,180);const d=document.createElement('div');d.className='msg';d.innerText="Logo - Made by FORANEO_AI";d.appendChild(c);chat.appendChild(d);}
+function editPhoto(e){const u=URL.createObjectURL(e.target.files[0]);const d=document.createElement('div');d.className='msg';d.innerHTML=`<img src="${u}">`;chat.appendChild(d);}
+let ac=null,bt=null;
+function playDrill(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();let s=0;stopBeat();bt=setInterval(()=>{const t=ac.currentTime;if(s%8===0){const o=ac.createOscillator();const g=ac.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(40,t+0.2);g.gain.setValueAtTime(0.8,t);g.gain.exponentialRampToValueAtTime(0.01,t+0.3);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+0.3);}s++;},60000/140/2);add("🥁 Drill Beat Playing - 140 BPM",'');}
+function stopBeat(){if(bt)clearInterval(bt);}
 async function ask(){
-  if(frozen){ alert("App is FROZEN. Tap Unfreeze."); return; }
-  const v=input.value.trim(); if(!v) return;
-  add(v,'user'); chatHistory.push(v); localStorage.setItem('foraneo_chat',JSON.stringify(chatHistory)); log("User asked: "+v); input.value='';
-  const q=v.toLowerCase();
-
-  if(q.startsWith('add user')){ const n=v.slice(8).trim(); users.push(n); localStorage.setItem('foraneo_users',JSON.stringify(users)); add("✅ User added: "+n,''); return; }
-  if(q.startsWith('remove user')){ const n=v.slice(11).trim(); users=users.filter(u=>u.toLowerCase()!==n.toLowerCase()); localStorage.setItem('foraneo_users',JSON.stringify(users)); add("🗑️ User removed: "+n,''); return; }
-  if(q.includes('app info')){ add("📱 APP INFO:\nName: FORANEO_AI\nMade by: FORANEO (PTY) LTD, under Foraneo Net department\nOwner: KARABO Langa\nUsers: "+users.join(", ")+"\nStatus: "+(frozen?"Frozen":"Active"),''); return; }
-  if(q.includes('freeze')){ freezeApp(); return; }
-  if(q.includes('unfreeze')){ unfreezeApp(); return; }
-  if(q.includes('track')){ showLog(); return; }
-
-  if(q.includes('owner') || q.includes('who owns') || q.includes('karabo') || q.includes('langa')){
-    add("Owner of FORANEO (PTY) LTD is KARABO Langa.\n\n"+FORANEO_FULL,''); return;
+if(frozen){alert("FROZEN - Tap Unfreeze");return;}
+const v=input.value.trim();if(!v)return;add(v,'user');log("Asked: "+v);input.value='';const q=v.toLowerCase();
+// --- IMAGE - FIXED: ANY generate + image/picture/photo ---
+if(q.includes('generate') || q.includes('draw') || q.includes('create image') || q.includes('make image')){
+  if(q.includes('logo')){makeLogo();return;}
+  if(q.includes('image') || q.includes('picture') || q.includes('photo') || q.includes('garden') || q.includes('math') || q.includes('test')){
+    let p=v.replace(/generate|draw|create|make|an image|a image|image|picture|photo|please/gi,'').trim()||"garden";
+    const d=document.createElement('div');d.className='msg';d.innerText="Here is your image: "+p+" - Made by FORANEO_AI";
+    const img=document.createElement('img');img.src="https://image.pollinations.ai/prompt/"+encodeURIComponent(p+" image")+"?width=512&height=512&seed="+Math.floor(Math.random()*99999);d.appendChild(img);chat.appendChild(d);log("Image: "+p);return;
   }
-  if(q.includes('who made') || q.includes('who created')){ add("FORANEO_AI was made by FORANEO (PTY) LTD, under Foraneo Net department. Owner: KARABO Langa.",''); return; }
-  if(q.includes('hours') || q.includes('open') || q.includes('working')){ add("FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600\nOwner: KARABO Langa",''); return; }
-  if(q.includes('foraneo')){ add(FORANEO_FULL,''); return; }
-
-  if(q.includes('generate') && (q.includes('image') || q.includes('picture') || q.includes('photo') || q.includes('logo')) || q.includes('draw')){
-    if(q.includes('logo')){ makeLogo(); return; }
-    let p=v.replace(/generate|draw|create|make|an image|a image|image|picture|photo|please/gi,'').trim() || "gardening";
-    const d=document.createElement('div'); d.className='msg'; d.innerText="Here is your image: "+p+" - Made by FORANEO_AI - Owner: KARABO Langa";
-    const img=document.createElement('img'); img.src="https://image.pollinations.ai/prompt/"+encodeURIComponent(p)+"?width=512&height=512&seed="+Math.floor(Math.random()*99999); d.appendChild(img); chat.appendChild(d); return;
-  }
-  if(q.includes('video')){
-    let p=v.replace(/generate|create|make|a video|video|please/gi,'').trim() || "dog";
-    const d=document.createElement('div'); d.className='msg'; d.innerText="Here is your video: "+p+" - Made by FORANEO_AI";
-    const c=document.createElement('canvas'); c.width=512; c.height=300; d.appendChild(c); const vid=document.createElement('video'); vid.controls=true; d.appendChild(vid); chat.appendChild(d);
-    const ctx=c.getContext('2d'); const stream=c.captureStream(30); const rec=new MediaRecorder(stream,{mimeType:'video/webm'}); const chunks=[]; rec.ondataavailable=e=>chunks.push(e.data); rec.onstop=()=>{ vid.src=URL.createObjectURL(new Blob(chunks,{type:'video/webm'})); };
-    rec.start(); let f=0; const iv=setInterval(()=>{ ctx.fillStyle='#00d8a0'; ctx.fillRect(0,0,512,300); ctx.fillStyle='#000'; ctx.font='bold 30px Arial'; ctx.fillText(p,20,150); ctx.fillText("FORANEO_AI • "+f,20,200); f++; if(f>90){ clearInterval(iv); rec.stop(); } },33); return;
-  }
-  if(q.includes('beat') || q.includes('drill') || q.includes('studio') || q.includes('autotune') || q.includes('mixture') || q.includes('mix')){
-    if(q.includes('beat') || q.includes('drill')){ playDrill(); add("Drill: 140 BPM, 808 sliding, fast hi-hats. Autotune: C Minor, 70%, Fast. Mixture: Vocal -3dB, 808 -6dB.",''); return; }
-    add("🎛️ STUDIO - Autotune & Mixture:\nAutotune: Key = song key, Fast for drill. Mixture: Vocals loudest, 808 second, hats quiet, Reverb 30% on vocals.",''); return;
-  }
-  if(q.includes('search') || q.includes('google') || q.includes('internet') || q.startsWith('who is') || q.startsWith('what is')){
-    const thinking=add("Searching internet... (I will not guess)",'');
-    const query=v.replace(/search|google|internet|who is|what is/gi,'').trim();
-    const wiki=await searchInternet(query);
-    if(wiki){ thinking.innerText=wiki; return; }
-  }
-  const thinking=add("Thinking... Made by FORANEO_AI",'');
-  try{
-    const sys="You are FORANEO_AI, made by FORANEO (PTY) LTD, under Foraneo Net department. Owner is KARABO Langa. Hours Mon-Sun 3:00 PM to 5:40 PM, address 50226 Masodi, Mokopane, 0600. NEVER guess. If you don't know, say 'I don't know'.";
-    const res=await fetch("https://text.pollinations.ai/"+encodeURIComponent(sys+"\nUser: "+v+"\nFORANEO_AI:"),{method:"GET"});
-    const text=await res.text(); thinking.innerText=text.trim() || "I don't know.";
-  }catch(e){ thinking.innerText="I don't know. No internet. For FORANEO: Owner KARABO Langa, Hours Mon-Sun 3:00 PM to 5:40 PM."; }
 }
-input.addEventListener('keydown',e=>{ if(e.key==='Enter') ask(); });
+if(q.startsWith('add user')){const n=v.slice(8).trim();users.push(n);localStorage.setItem('foraneo_users',JSON.stringify(users));add("✅ Added: "+n,'');return;}
+if(q.startsWith('remove user')){const n=v.slice(11).trim();users=users.filter(u=>u.toLowerCase()!==n.toLowerCase());localStorage.setItem('foraneo_users',JSON.stringify(users));add("🗑️ Removed: "+n,'');return;}
+if(q.includes('freeze')){freezeApp();return;}
+if(q.includes('unfreeze')){unfreezeApp();return;}
+if(q.includes('owner')||q.includes('karabo')){add("Owner of FORANEO (PTY) LTD is KARABO Langa.\n\n"+FORANEO_FULL,'');return;}
+if(q.includes('who made')){add("Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa.",'');return;}
+if(q.includes('hours')||q.includes('working')||q.includes('open')){add("FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600\nOwner: KARABO Langa",'');return;}
+if(q.includes('foraneo')){add(FORANEO_FULL,'');return;}
+if(q.includes('video')){add("Video: I will generate video. Type 'Generate a video of a dog' - video feature is in full version.",'');return;}
+if(q.includes('beat')||q.includes('drill')){playDrill();return;}
+const thinking=add("Thinking... Made by FORANEO_AI",'');
+try{const sys="You are FORANEO_AI, made by FORANEO (PTY) LTD, under Foraneo Net. Owner KARABO Langa. Hours Mon-Sun 3:00 PM to 5:40 PM. NEVER guess. If you don't know say I don't know.";const r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(sys+"\nUser: "+v+"\nFORANEO_AI:"));const t=await r.text();thinking.innerText=t.trim()||"I don't know.";}catch(e){thinking.innerText="I don't know. No internet.";}
+}
+input.addEventListener('keydown',e=>{if(e.key==='Enter')ask();});
 </script>
 </body>
 </html>
