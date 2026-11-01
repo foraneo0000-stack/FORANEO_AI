@@ -3,203 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - FORANEO (PTY) LTD</title>
+<title>FORANEO_AI - All Things ON</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f0f2f5;padding-bottom:140px}
-.top{background:#2563eb;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
-.top small{color:#ffea00}
-.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:62px;z-index:9}
-.tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold;cursor:pointer}
-.tabs button.on{background:#2563eb;color:#fff}
-.page{display:none;padding:12px}.page.on{display:block}
-.card{background:#fff;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin:6px 0}
-.btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;margin-top:6px;cursor:pointer}
-.btn2{background:#22c55e}.btn3{background:#f59e0b}.btnR{background:#ef4444}
-.msg{background:#fff;padding:12px;border-radius:15px;margin:8px 0;max-width:88%;word-wrap:break-word}
-.me{background:#2563eb;color:#fff;margin-left:auto}
-#genImg,#editImg{width:100%;border-radius:12px;display:none;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:18px;font-size:20px;border-radius:12px;border:1px solid #ddd;background:#f8fafc;cursor:pointer}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,0.2);z-index:20}
-.bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:18px;cursor:pointer}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:15px;padding:12px 16px;border-radius:25px}
-#freezeOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);color:#fff;z-index:999;text-align:center;padding-top:120px}
-.log{font-size:13px;background:#f8fafc;padding:8px;border-radius:8px;margin:4px 0}
-#callBox{display:none;background:#111;color:#fff;padding:12px;border-radius:15px;margin:10px 0;text-align:center}
-#callVideo{width:100%;border-radius:12px;background:#000}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#eef2f7;padding-bottom:80px}
+header{background:#1a5cff;color:#fff;text-align:center;padding:16px 10px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;font-size:13px;color:#ffeb3b}
+header small{font-size:12px;opacity:.9}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px;background:#fff;position:sticky;top:0;z-index:10}
+.tabs button{white-space:nowrap;border:1px solid #1a5cff;background:#fff;color:#1a5cff;padding:8px 14px;border-radius:20px;cursor:pointer}
+.tabs button.active{background:#1a5cff;color:#fff}
+.page{display:none;padding:12px}
+.page.active{display:block}
+#chatBox{background:#fff;border-radius:12px;min-height:320px;padding:10px;max-height:60vh;overflow-y:auto}
+.msg{padding:10px;margin:8px 0;border-radius:12px;background:#f1f1f1;word-wrap:break-word}
+.msg.me{background:#1a5cff;color:#fff;margin-left:20%}
+.msg.ai{background:#fff;border:1px solid #ddd}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px;display:flex;gap:6px;align-items:center;border-top:1px solid #ddd}
+.bottom input{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc;outline:none}
+.bottom button{border:none;border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;background:#eef2ff}
+.bottom .send{background:#1a5cff;color:#fff;border-radius:20px;width:64px;height:auto;font-size:16px}
+.badge{position:fixed;top:2px;right:5px;background:#00c853;color:#fff;padding:2px 8px;font-size:11px;border-radius:10px;z-index:9999}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:10px}
+.card input,.card select,.card textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ccc}
+.card button{background:#1a5cff;color:#fff;border:none;padding:11px 18px;border-radius:8px;cursor:pointer;margin:4px 2px}
+.card button.red{background:#ff3d00}
+#calcDisplay{font-size:30px;text-align:right;background:#f7f7f7;padding:12px;border-radius:10px}
+.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.calcGrid button{background:#eef2ff;color:#000;padding:14px;font-size:18px;border:none;border-radius:10px}
+#videoModal{display:none;position:fixed;inset:0;background:#000;color:#fff;z-index:10000;text-align:center;padding-top:40px}
+#videoModal .aiFace{font-size:120px}
+#gameBox{text-align:center;font-size:60px}
 </style>
 </head>
 <body>
-<div id="freezeOverlay"><h1>⛔ FORANEO_AI FROZEN</h1><p>App frozen by Admin - FORANEO (PTY) LTD</p><button class="btn btn2" style="width:200px" onclick="unfreezeApp()">Unfreeze (Admin)</button></div>
-<div class="top"><b id="appTitle">FORANEO_AI</b><br><small>FORANEO (PTY) LTD • Foraneo Net Department</small><p id="userLine">Guest • All Things ON</p></div>
+<div class="badge">V5 FRESH ✅</div>
+<header>
+<h1>FORANEO_AI</h1>
+<p>FORANEO (PTY) LTD • Foraneo Net Department</p>
+<small id="userLine">Guest • All Things ON</small>
+</header>
+
 <div class="tabs">
-<button class="on" onclick="show('chat',this)">💬 Chat</button>
-<button onclick="show('image',this)">🎨 Image / Logo</button>
-<button onclick="show('calc',this)">🧮 Calculator</button>
-<button onclick="show('games',this)">🎮 Games</button>
-<button onclick="show('studio',this)">🎵 Studio</button>
-<button onclick="show('admin',this)">🎛️ Admin</button>
-<button onclick="show('login',this)">🔐 Login</button>
+<button class="active" onclick="showPage('chatPage',this)">💬 Chat</button>
+<button onclick="showPage('imagePage',this)">🎨 Image / Logo</button>
+<button onclick="showPage('calcPage',this)">🧮 Calculator</button>
+<button onclick="showPage('gamePage',this)">🎮 Game</button>
+<button onclick="showPage('loginPage',this)">🔐 Login</button>
 </div>
-<div id="chat" class="page on">
-<div id="callBox"><video id="callVideo" autoplay playsinline></video><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button></div>
-<div id="chatBox"></div>
+
+<!-- CHAT -->
+<div id="chatPage" class="page active">
+<div id="chatBox"><div class="msg ai">🤖 <b>FORANEO_AI:</b> Hello! I am FORANEO_AI. Tap 🎤 for Voice Note, 🗣 for Voice Call, 🤖 for Video Call with me. Type below or speak!</div></div>
 </div>
-<div id="image" class="page">
-<div class="card"><h3>🎨 Image Generator</h3><input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset"><button class="btn" onclick="genImage()">Generate Image</button><img id="genImg"><p id="imgStatus"></p><button class="btn btn2" onclick="genVideo()">🎬 Make Video From Image</button><video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
-<div class="card"><h3>🅵 Logo Maker - FORANEO</h3><input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
-<div class="card"><h3>🖼️ Edit Photo</h3><input type="file" accept="image/*" onchange="loadEdit(event)"><img id="editImg"><select id="filterSel" onchange="applyFilter()"><option value="none">No Filter</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Vintage / Sepia</option><option value="brightness(1.4) contrast(1.2)">Bright</option><option value="blur(2px)">Blur</option><option value="hue-rotate(90deg)">Color Shift</option><option value="contrast(1.5) saturate(1.5)">Vivid</option></select><button class="btn" onclick="alert('✅ Photo edit saved')">Save Edited Photo</button></div>
-<div class="card"><h3>🎬 Edit Video</h3><input type="file" accept="video/*" onchange="loadVid(event)"><video id="editVid" controls style="width:100%;display:none"></video><label>Speed</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('editVid').playbackRate=this.value"></div>
+
+<!-- IMAGE / LOGO -->
+<div id="imagePage" class="page">
+<div class="card">
+<h3>🎨 Image / Logo Generator</h3>
+<input id="imgPrompt" placeholder="e.g. FORANEO lion logo, blue and gold">
+<select id="imgStyle"><option>Logo</option><option>Poster</option><option>Profile Picture</option><option>Business Card</option></select>
+<button onclick="genImage()">Generate Idea</button>
+<button onclick="clearImg()">Clear</button>
+<div id="imgResult"></div>
 </div>
-<div id="calc" class="page"><div class="card"><h3>🧮 Calculator</h3><input id="calcIn" readonly placeholder="e.g. 25*4+10"><div class="grid"><button onclick="cAdd('7')">7</button><button onclick="cAdd('8')">8</button><button onclick="cAdd('9')">9</button><button onclick="cAdd('4')">4</button><button onclick="cAdd('5')">5</button><button onclick="cAdd('6')">6</button><button onclick="cAdd('1')">1</button><button onclick="cAdd('2')">2</button><button onclick="cAdd('3')">3</button><button onclick="cAdd('0')">0</button><button onclick="cAdd('+')">+</button><button onclick="cAdd('-')">-</button><button onclick="cAdd('*')">×</button><button onclick="cAdd('/')">÷</button><button onclick="cClear()">C</button></div><button class="btn" onclick="cSolve()">= Solve</button><h2 id="calcOut">Result: -</h2><input id="mathQ" placeholder="What is 15% of 200?"><button class="btn btn3" onclick="solveWord()">Solve Word Problem</button><p id="mathAns"></p></div></div>
-<div id="games" class="page">
-<div class="card"><h3>🎮 Rock Paper Scissors</h3><button class="btn" onclick="rps('Rock')">🪨 Rock</button><button class="btn btn2" onclick="rps('Paper')">📄 Paper</button><button class="btn btn3" onclick="rps('Scissors')">✂️ Scissors</button><p id="rpsOut"></p><p id="rpsScore">Wins: 0 | Losses: 0</p></div>
-<div class="card"><h3>🔢 Guess Number (1-10)</h3><input id="guessIn" type="number" placeholder="Enter 1-10"><button class="btn" onclick="guess()">Guess</button><p id="guessOut">I'm thinking...</p></div>
-<div class="card"><h3>❌⭕ Tic Tac Toe</h3><div class="grid" id="ttt"></div><p id="tttOut">Your turn: X</p><button class="btn" onclick="resetTTT()">Reset</button></div>
+<div class="card"><h3>🖼️ Gallery</h3><div id="gallery"></div></div>
 </div>
-<div id="studio" class="page">
-<div class="card"><h3>🎵 Drill Beat Generator</h3><p>Genre: UK Drill / Amapiano Drill</p><button class="btn" onclick="playDrill()">▶️ Play Drill Beat</button><button class="btn btnR" onclick="stopBeat()">⏹️ Stop Beat</button><p id="beatStatus">Ready - Tap Play</p><label>Tempo (BPM)</label><input type="range" min="100" max="160" value="140" id="bpm" oninput="document.getElementById('bpmVal').innerText=this.value"><span id="bpmVal">140</span> BPM</div>
-<div class="card"><h3>🎤 Studio - Autotune & Mixer</h3><input type="file" accept="audio/*" onchange="loadAudio(event)"><audio id="studioAudio" controls style="width:100%"></audio><label>🎤 Autotune / Pitch</label><input type="range" min="0.7" max="1.3" step="0.01" value="1" oninput="document.getElementById('studioAudio').playbackRate=this.value"><label>🎚️ Voice Volume</label><input type="range" min="0" max="100" value="80" oninput="document.getElementById('studioAudio').volume=this.value/100"><button class="btn btn2" onclick="alert('✅ Mix saved! FORANEO Studio')">💾 Export Mix</button></div>
-<div class="card"><h3>🎤 Record Song / Voice in Studio</h3><button class="btn btn3" onclick="studioRecord()">🔴 Record / Stop Studio Voice</button><div id="studioRecOut"></div></div>
+
+<!-- CALCULATOR -->
+<div id="calcPage" class="page">
+<div class="card"><h3>🧮 Calculator</h3>
+<div id="calcDisplay">0</div>
+<div class="calcGrid">
+<button onclick="calcPress('7')">7</button><button onclick="calcPress('8')">8</button><button onclick="calcPress('9')">9</button><button onclick="calcPress('/')">÷</button>
+<button onclick="calcPress('4')">4</button><button onclick="calcPress('5')">5</button><button onclick="calcPress('6')">6</button><button onclick="calcPress('*')">×</button>
+<button onclick="calcPress('1')">1</button><button onclick="calcPress('2')">2</button><button onclick="calcPress('3')">3</button><button onclick="calcPress('-')">-</button>
+<button onclick="calcPress('0')">0</button><button onclick="calcPress('.')">.</button><button onclick="calcPress('C')">C</button><button onclick="calcPress('+')">+</button>
+</div><button style="width:100%;margin-top:10px" onclick="calcPress('=')">= Equals</button>
 </div>
-<div id="admin" class="page">
-<div class="card"><h3>🎛️ FORANEO Control - Admin Only</h3><p><b>Company:</b> FORANEO (PTY) LTD<br><b>Dept:</b> Foraneo Net<br><b>AI:</b> FORANEO_AI</p><p id="appInfo"></p><button class="btn btnR" onclick="freezeApp()">⛔ FREEZE APP</button><button class="btn btn2" onclick="unfreezeApp()">✅ UNFREEZE APP</button></div>
-<div class="card"><h3>✏️ Edit App Live</h3><input id="newTitle" placeholder="New App Name e.g. FORANEO PRO"><button class="btn" onclick="editApp()">Apply Edit</button><input id="newColor" type="color" value="#2563eb"><button class="btn btn3" onclick="changeColor()">Change App Colour</button></div>
-<div class="card"><h3>👥 Manage Users</h3><input id="newUser" placeholder="Username to add"><button class="btn btn2" onclick="addUser()">+ Add User</button><input id="remUser" placeholder="Username to remove"><button class="btn btnR" onclick="removeUser()">- Remove User</button><div id="userList"></div></div>
-<div class="card"><h3>👀 Track What Users Do</h3><div id="trackLog"></div><button class="btn" onclick="clearTrack()">Clear Log</button></div>
 </div>
-<div id="login" class="page">
-<div class="card"><h3>🔐 Login / Signup</h3><input id="uName" placeholder="Username"><input id="uPass" type="password" placeholder="Password"><button class="btn" onclick="signup()">Sign Up</button><button class="btn btn2" onclick="login()">Login</button><button class="btn btn3" onclick="logout()">Logout</button><p id="loginOut"></p></div>
-<div class="card"><h3>💬 Saved Chat History</h3><p id="histCount"></p><button class="btn" onclick="clearHist()">Clear History</button></div>
+
+<!-- GAME -->
+<div id="gamePage" class="page">
+<div class="card"><h3>🎮 Guess The Number</h3>
+<p>I am thinking of a number 1-10. Guess!</p>
+<div id="gameBox">🎲</div>
+<input id="guessInput" type="number" placeholder="1 - 10">
+<button onclick="playGuess()">Guess</button>
+<button onclick="newGame()">New Game</button>
+<p id="gameMsg"></p><p>Score: <span id="score">0</span></p></div>
 </div>
-<div class="bottom" id="chatBar"><button onclick="document.getElementById('fileInput').click()">🏀</button><button onclick="videoCall()">👤</button><button onclick="voiceCall()">🗣</button><button onclick="voiceNote()">▶️</button><input id="q" placeholder="Ask FORANEO..."><button class="send" onclick="sendMsg()">Send</button></div>
-<input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="handleFile(event)">
+
+<!-- LOGIN -->
+<div id="loginPage" class="page">
+<div class="card"><h3>🔐 Login / Settings</h3>
+<input id="userName" placeholder="Your name">
+<button onclick="saveName()">Save Name</button>
+<p id="loginMsg"></p>
+<hr>
+<button class="red" onclick="clearHistory()">Clear History</button>
+<button onclick="exportChat()">Copy Chat</button>
+<p><small>FORANEO_AI saves chat on this phone only.</small></p>
+</div>
+</div>
+
+<div class="bottom">
+<button onclick="voiceNote()" title="Voice Note">🎤</button>
+<button onclick="voiceCall()" title="Voice Call">🗣</button>
+<button onclick="videoCall()" title="Video Call">🤖</button>
+<input id="askInput" placeholder="Ask FORANEO_AI...">
+<button class="send" onclick="sendText()">Send</button>
+</div>
+
+<!-- VIDEO CALL MODAL - SHOWS AI, NOT YOU -->
+<div id="videoModal">
+<div class="aiFace">🤖</div>
+<h2>FORANEO_AI</h2>
+<p id="videoStatus">Video Call with AI - Listening...</p>
+<button onclick="closeVideo()" style="padding:12px 24px;border-radius:20px;border:none;background:#ff3d00;color:#fff;font-size:16px">📞 End Call</button>
+</div>
+
 <script>
-let target=Math.floor(Math.random()*10)+1,tttBoard=['','','','','','','','',''],tttTurn='X',beatTimer=null,audioCtx=null,rec=null,chunks=[],isRec=false,studioRec=null,studioChunks=[],isStudioRec=false,callStream=null,rpsW=0,rpsL=0;
-function show(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('chatBar').style.display=(id=='chat'?'flex':'none');track('Opened '+id)}
-function track(a){try{let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let u=localStorage.getItem('foraneo_current')||'Guest';l.unshift(new Date().toLocaleTimeString()+' - '+u+': '+a);localStorage.setItem('foraneo_track',JSON.stringify(l.slice(0,50)));renderTrack();updateAppInfo()}catch(e){}}
-function renderTrack(){let l=JSON.parse(localStorage.getItem('foraneo_track')||'[]');let e=document.getElementById('trackLog');if(e)e.innerHTML=l.map(x=>'<div class="log">'+x+'</div>').join('')||'No activity yet'}
-function clearTrack(){localStorage.removeItem('foraneo_track');renderTrack()}
-function updateAppInfo(){let u=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let h=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');let e=document.getElementById('appInfo');if(e)e.innerHTML='📊 Messages: '+h.length+'<br>👥 Users: '+(u.length||1)+'<br>📱 Status: '+(localStorage.getItem('foraneo_frozen')=='1'?'FROZEN ⛔':'LIVE ✅');renderUsers()}
-function freezeApp(){localStorage.setItem('foraneo_frozen','1');document.getElementById('freezeOverlay').style.display='block';track('FROZE app');updateAppInfo()}
-function unfreezeApp(){localStorage.setItem('foraneo_frozen','0');document.getElementById('freezeOverlay').style.display='none';track('UNFROZE app');updateAppInfo()}
-function editApp(){let t=document.getElementById('newTitle').value;if(!t)return alert('Type new name');document.getElementById('appTitle').innerText=t;document.title=t;track('Edited app to '+t);alert('✅ App renamed to '+t)}
-function changeColor(){let c=document.getElementById('newColor').value;document.querySelector('.top').style.background=c;track('Changed app colour');alert('✅ Colour changed')}
-function addUser(){let u=document.getElementById('newUser').value;if(!u)return alert('Type username');let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');if(!us.includes(u))us.push(u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.setItem('foraneo_user_'+u,'1234');track('Added user '+u);updateAppInfo();alert('✅ User '+u+' added (pass 1234)')}
-function removeUser(){let u=document.getElementById('remUser').value;let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');us=us.filter(x=>x!==u);localStorage.setItem('foraneo_users',JSON.stringify(us));localStorage.removeItem('foraneo_user_'+u);track('Removed user '+u);updateAppInfo();alert('✅ User '+u+' removed')}
-function renderUsers(){let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');let e=document.getElementById('userList');if(e)e.innerHTML=us.length?us.map(u=>'<div class="log">👤 '+u+'</div>').join(''):'<div class="log">No extra users yet - only KARABO</div>'}
-function aiSpeak(t){try{let u=new SpeechSynthesisUtterance(t);u.rate=1;u.pitch=1;speechSynthesis.speak(u)}catch(e){}}
-async function videoCall(){try{document.getElementById('callBox').style.display='block';document.getElementById('callStatus').innerHTML='👤 YOU | 🤖 FORANEO_AI LIVE<br><div style="font-size:50px">🤖</div><div>Hello KARABO! I can see you! How are you today?</div>';callStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('callVideo').srcObject=callStream;saveMsg('🤖 FORANEO_AI Video Call: Hello KARABO! I can see you! Nice to see you! What do you want to talk about?',false);aiSpeak('Hello Karabo! I can see you! Nice to see you!');track('Video call with AI')}catch(e){alert('❌ Camera blocked! Allow Camera + Mic')}}
-async function voiceCall(){try{document.getElementById('callBox').style.display='block';document.getElementById('callStatus').innerHTML='🗣 Voice Call LIVE - FORANEO_AI is listening... Speak now!';callStream=await navigator.mediaDevices.getUserMedia({audio:true});saveMsg('🤖 FORANEO_AI Voice Call: Hello! I am listening. Speak to me!',false);aiSpeak('Hello! I am listening. Speak to me!');track('Voice call with AI');try{let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){let r=new SR();r.continuous=true;r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript;document.getElementById('callStatus').innerText='You said: '+txt;saveMsg('You said on call: '+txt,true);let rep='I heard you say '+txt+'. That is interesting, Karabo! Tell me more!';saveMsg('🤖 FORANEO_AI: '+rep,false);aiSpeak(rep)};r.start()}}catch(e){}}catch(e){alert('❌ Mic blocked! Allow Microphone')}}
-function endCall(){if(callStream){callStream.getTracks().forEach(t=>t.stop())}document.getElementById('callBox').style.display='none';document.getElementById('callVideo').srcObject=null;saveMsg('🤖 FORANEO_AI: Bye KARABO! Nice talking to you! 👋',false);aiSpeak('Bye Karabo! Nice talking to you!')}
-async function voiceNote(){if(!isRec){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});rec=new MediaRecorder(s);chunks=[];isRec=true;rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let u=URL.createObjectURL(b);saveMsg('🎤 Voice Note:<br><audio controls src="'+u+'" style="width:100%"></audio>',true);saveMsg('🤖 FORANEO_AI: I received your voice note! Type what you said and I will answer you!',false);aiSpeak('I received your voice note!');track('Sent voice note')};rec.start();alert('🔴 Recording STARTED - Speak! Tap ▶️ again to stop');}catch(e){alert('❌ Mic blocked! Tap 🔒 at top -> Allow Microphone')}}else{isRec=false;try{rec.stop();rec.stream.getTracks().forEach(t=>t.stop())}catch(e){}}}
-async function studioRecord(){if(!isStudioRec){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});studioRec=new MediaRecorder(s);studioChunks=[];isStudioRec=true;studioRec.ondataavailable=e=>studioChunks.push(e.data);studioRec.onstop=()=>{let b=new Blob(studioChunks,{type:'audio/webm'});let u=URL.createObjectURL(b);document.getElementById('studioRecOut').innerHTML='<audio controls src="'+u+'" style="width:100%;margin-top:10px"></audio>';document.getElementById('studioAudio').src=u};studioRec.start();alert('🔴 Studio Recording STARTED')}catch(e){alert('❌ Mic blocked! Allow Microphone')}}else{isStudioRec=false;studioRec.stop();studioRec.stream.getTracks().forEach(t=>t.stop());alert('✅ Studio recording saved!')}}
-function handleFile(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f);let reply='';if(f.type.startsWith('image')){saveMsg('🏀 You sent: '+f.name+'<br><img src="'+url+'" style="width:100%;border-radius:10px;margin-top:6px">',false);reply='🤖 FORANEO_AI: I can see your picture! Nice picture, KARABO! It is called '+f.name+'. What do you want me to do with it? Go to Image tab -> Edit Photo!'}else if(f.type.startsWith('video')){saveMsg('🏀 You sent video: '+f.name+'<br><video controls src="'+url+'" style="width:100%"></video>',false);reply='🤖 FORANEO_AI: I received your video note! Thank you! Nice video! Tell me what is in it and I will reply!'}else if(f.type.startsWith('audio')){saveMsg('🏀 You sent audio: '+f.name+'<br><audio controls src="'+url+'" style="width:100%"></audio>',false);reply='🤖 FORANEO_AI: I received your voice note! I heard it! Type what you said and I will answer!'}else{saveMsg('🏀 You sent file: '+f.name,false);reply='🤖 FORANEO_AI: I received your file '+f.name+'! Thank you!'}saveMsg(reply,false);aiSpeak(reply.replace('🤖 FORANEO_AI: ',''));track('Sent file '+f.name+' - AI replied')}
-let hist=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');
-function renderHist(){document.getElementById('chatBox').innerHTML=hist.map(m=>'<div class="msg '+(m.me?'me':'')+'">'+m.t+'</div>').join('');let h=document.getElementById('histCount');if(h)h.innerText='Saved messages: '+hist.length;window.scrollTo(0,document.body.scrollHeight)}
-function saveMsg(t,me){hist.push({t,me});localStorage.setItem('foraneo_hist',JSON.stringify(hist));renderHist()}
-function getName(){return localStorage.getItem('foraneo_current')||'KARABO'}
-async function sendMsg(){let q=document.getElementById('q').value.trim();if(!q)return;saveMsg(q,true);document.getElementById('q').value='';track('Asked: '+q);let low=q.toLowerCase(),name=getName(),ans='';
-if(low.includes('who made')||low.includes('who created')||low.includes('who create')||low.includes('who are you')||low.includes('what is foraneo')||low.includes('creator')||low.includes('owner')){ans='I am FORANEO_AI 🤖<br><b>Made by:</b> FORANEO (PTY) LTD<br><b>Department:</b> Foraneo Net<br><b>Creator / Owner:</b> '+name+'<br>I control this app, generate images/videos/logos/beats, edit photos/videos, and search the internet. If I don\'t know something, I will say I don\'t know - I will NOT guess.'}
-else if(low.includes('hello')||low=='hi'||low.includes('hey')){ans='Hello '+name+'! 👋 I am FORANEO_AI from FORANEO (PTY) LTD - Foraneo Net. How can I help?'}
-else if(low.includes('how are you')){ans='I am great, '+name+'! Running live, all systems ON ✅'}
-else if(low.includes('freeze')){freezeApp();ans='⛔ App frozen by you, Admin.'}
-else if(low.includes('unfreeze')){unfreezeApp();ans='✅ App unfrozen!'}
-else if(low.includes('generate')||low.includes('draw')||low.includes('logo')){let p=q.replace(/generate|draw|logo/i,'').trim()||'FORANEO Logo';if(low.includes('logo')){ans='🅵 Logo idea for "'+p+'": Bold Blue + White, FORANEO style. Go to Image / Logo tab!'}else{ans='🎨 Generating image for: "'+p+'"<br><img src="https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?'+Date.now()+'" style="width:100%;border-radius:10px;margin-top:8px">'}} 
-else if(low.includes('beat')||low.includes('drill')){ans='🎵 Drill beat ready! Go to Studio tab -> Tap Play Drill Beat. 140 BPM, 808 bass.'}
-else if(low.includes('autotune')||low.includes('studio')||low.includes('mix')){ans='🎤 Studio ready! Go to Studio tab -> Load voice, move Autotune / Pitch slider, then Export Mix.'}
-else if(low.includes('joke')){let j=['Why did chicken cross road? To get to Soweto! 😂','What do you call smart phone in Soweto? FORANEO_AI! 🤖','Why is Karabo so smart? He built FORANEO_AI! 🔥'];ans=j[Math.floor(Math.random()*j.length)]}
-else if(low.includes('thank')){ans='You are welcome, '+name+'! 🙏 FORANEO (PTY) LTD at your service.'}
-else if(low.includes('bye')){ans='Bye '+name+'! 👋 FORANEO_AI will be here waiting.'}
-else if(low.match(/(\d+)\s*[\+\-\*\/]\s*(\d+)/)){try{ans='🧮 Answer = '+eval(q.match(/(\d+[\+\-\*\/\d\s]+)/)[0])}catch(e){ans='Try Calculator tab!'}}
-else{saveMsg('🔍 Searching internet... I will not guess.',false);try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1');let d=await r.json();let f=d.AbstractText||d.Answer;hist.pop();if(f){ans='🌐 From internet: '+f}else{ans='I don\'t know about "'+q+'" yet. I will NOT guess.'}}catch(e){hist.pop();ans='I don\'t know about "'+q+'" right now (no internet). I will NOT guess.'}}
-saveMsg(ans,false)}
-function clearHist(){hist=[];localStorage.removeItem('foraneo_hist');renderHist();alert('History cleared')}
-function genImage(){let p=document.getElementById('imgPrompt').value||'FORANEO Logo Blue White';document.getElementById('imgStatus').innerText='Generating...';let img=document.getElementById('genImg');img.src='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?'+Date.now();img.style.display='block';track('Generated image: '+p);img.onload=()=>document.getElementById('imgStatus').innerText='✅ Done!'}
-function genVideo(){let img=document.getElementById('genImg');if(!img.src){alert('Generate image first!');return}let v=document.getElementById('genVid');v.style.display='block';v.poster=img.src;alert('🎬 Video created from your image!');track('Generated video')}
-function makeLogo(){let t=document.getElementById('logoText').value||'FORANEO';let s=document.getElementById('logoStyle').value;let o=document.getElementById('logoOut');o.innerText=t.toUpperCase();if(s=='Blue White'){o.style.background='#2563eb';o.style.color='#fff'}else if(s=='Black Gold'){o.style.background='#111';o.style.color='#facc15'}else if(s=='Red Black'){o.style.background='#ef4444';o.style.color='#fff'}else{o.style.background='#22c55e';o.style.color='#fff'}track('Created logo: '+t)}
-function downloadLogo(){let t=document.getElementById('logoOut').innerText;alert('✅ Logo "'+t+'" ready to screenshot / save!')}
-function loadEdit(e){let u=URL.createObjectURL(e.target.files[0]);let i=document.getElementById('editImg');i.src=u;i.style.display='block'}
-function applyFilter(){document.getElementById('editImg').style.filter=document.getElementById('filterSel').value}
-function loadVid(e){let v=document.getElementById('editVid');v.src=URL.createObjectURL(e.target.files[0]);v.style.display='block'}
-function loadAudio(e){document.getElementById('studioAudio').src=URL.createObjectURL(e.target.files[0])}
-function playDrill(){stopBeat();if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();let bpm=+document.getElementById('bpm').value;let step=60/bpm/2;document.getElementById('beatStatus').innerText='🔥 Playing Drill Beat - '+bpm+' BPM';let i=0;function hit(){if(!beatTimer)return;let t=audioCtx.currentTime;let o=audioCtx.createOscillator(),g=audioCtx.createGain();if(i%8==0){o.frequency.value=55;g.gain.value=0.9}else if(i%4==2){o.frequency.value=200;g.gain.value=0.3}else{o.frequency.value=800;g.gain.value=0.15}o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+0.12);i++;beatTimer=setTimeout(hit,step*1000)}beatTimer=setTimeout(hit,0);track('Played Drill Beat')}
-function stopBeat(){clearTimeout(beatTimer);beatTimer=null;document.getElementById('beatStatus').innerText='Stopped'}
-function cAdd(v){document.getElementById('calcIn').value+=v}
-function cClear(){document.getElementById('calcIn').value='';document.getElementById('calcOut').innerText='Result: -'}
-function cSolve(){try{document.getElementById('calcOut').innerText='Result: '+eval(document.getElementById('calcIn').value)}catch(e){document.getElementById('calcOut').innerText='Error'}}
-function solveWord(){let q=document.getElementById('mathQ').value.toLowerCase();let m=q.match(/(\d+)% of (\d+)/);if(m){document.getElementById('mathAns').innerText=(m[1]*m[2]/100)+' is '+m[1]+'% of '+m[2];return}document.getElementById('mathAns').innerText='Try: What is 15% of 200?'}
-function rps(u){let c=['Rock','Paper','Scissors'][Math.floor(Math.random()*3)];let w=u==c?'Draw!':(u=='Rock'&&c=='Scissors')||(u=='Paper'&&c=='Rock')||(u=='Scissors'&&c=='Paper')?'You WIN! 🎉':'You Lose';if(w.includes('WIN'))rpsW++;if(w.includes('Lose'))rpsL++;document.getElementById('rpsOut').innerText='You: '+u+' | AI: '+c+' -> '+w;document.getElementById('rpsScore').innerText='Wins: '+rpsW+' | Losses: '+rpsL}
-function guess(){let g=+document.getElementById('guessIn').value;if(g==target){document.getElementById('guessOut').innerText='🎉 CORRECT! It was '+target;target=Math.floor(Math.random()*10)+1}else document.getElementById('guessOut').innerText=g<target?'Too low! Go higher ⬆️':'Too high! Go lower ⬇️'}
-function renderTTT(){document.getElementById('ttt').innerHTML=tttBoard.map((v,i)=>'<button onclick="playTTT('+i+')">'+(v||' ')+'</button>').join('')}
-function playTTT(i){if(tttBoard[i])return;tttBoard[i]=tttTurn;tttTurn=tttTurn=='X'?'O':'X';document.getElementById('tttOut').innerText='Next: '+tttTurn;renderTTT()}
-function resetTTT(){tttBoard=['','','','','','','','',''];tttTurn='X';renderTTT();document.getElementById('tttOut').innerText='Your turn: X'}
-function signup(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(!u||!p)return alert('Enter username + password');localStorage.setItem('foraneo_user_'+u,p);let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');if(!us.includes(u))us.push(u);localStorage.setItem('foraneo_users',JSON.stringify(us));document.getElementById('loginOut').innerText='✅ Account created for '+u+'! Now tap Login';track('Signed up '+u);updateAppInfo()}
-function login(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(localStorage.getItem('foraneo_user_'+u)==p&&p){localStorage.setItem('foraneo_current',u);document.getElementById('userLine').innerText='👤 '+u+' • Logged In';document.getElementById('loginOut').innerText='✅ Welcome back, '+u+'!';track('Logged in '+u)}else document.getElementById('loginOut').innerText='❌ Wrong username/password'}
-function logout(){localStorage.removeItem('foraneo_current');document.getElementById('userLine').innerText='Guest • All Things ON';document.getElementById('loginOut').innerText='Logged out'}
-document.getElementById('q').addEventListener('keypress',function(e){if(e.key==='Enter')sendMsg()});
-renderTTT();renderHist();renderTrack();updateAppInfo();let cur=localStorage.getItem('foraneo_current');if(cur)document.getElementById('userLine').innerText='👤 '+cur+' • Logged In';if(localStorage.getItem('foraneo_frozen')=='1')document.getElementById('freezeOverlay').style.display='block';
-</script>
-  <script>
-// === FORANEO_AI UPGRADE: Talk Like Meta AI ===
-let aiListening = null;
-function aiTalk(text){
-  try{ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(text); u.rate=1; speechSynthesis.speak(u);}catch(e){}
-  let av=document.getElementById('aiAvatar'); if(av) av.innerText='🤖';
-  setTimeout(()=>{ let av2=document.getElementById('aiAvatar'); if(av2) av2.innerText='🤖'; },2000);
+let calcVal="", score=0, secret=Math.floor(Math.random()*10)+1;
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
 }
-function aiListenReply(){
-  try{
-    let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){ return; }
-    if(aiListening) aiListening.stop();
-    let r=new SR(); r.continuous=false; r.interimResults=false; r.lang='en-ZA';
-    r.onresult=e=>{
-      let txt=e.results[0][0].transcript;
-      saveMsg('🗣 You said: '+txt, true);
-      let rep='I heard you say '+txt+'. Nice, Karabo! Tell me more about that.';
-      if(txt.toLowerCase().includes('hello')||txt.toLowerCase().includes('hi')) rep='Hello Karabo! I can hear you clearly. How are you today?';
-      if(txt.toLowerCase().includes('how are you')) rep='I am great Karabo! I am here talking with you live. What do you want to do?';
-      if(txt.toLowerCase().includes('who are you')) rep='I am FORANEO AI, made by FORANEO PTY LTD, Foraneo Net Department. I was created by you, Karabo.';
-      saveMsg('🤖 FORANEO_AI: '+rep,false); aiTalk(rep);
-    };
-    r.onend=()=>{ let cb=document.getElementById('callBox'); if(cb && cb.style.display=='block'){ setTimeout(aiListenReply,500); } };
-    r.start(); aiListening=r;
-  }catch(e){}
+function addMsg(who,text,isMe){
+  var box=document.getElementById('chatBox');
+  var d=document.createElement('div');
+  d.className='msg '+(isMe?'me':'ai');
+  d.innerHTML=(isMe?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+text;
+  box.appendChild(d); box.scrollTop=box.scrollHeight;
+  try{localStorage.setItem('foraneo_chat',box.innerHTML)}catch(e){}
 }
-// VIDEO CALL - SHOW AI, NOT YOU
-async function videoCall(){
-  document.getElementById('callBox').style.display='block';
-  document.getElementById('callBox').innerHTML='<div id="aiAvatar" style="font-size:110px">🤖</div><h2>FORANEO_AI LIVE</h2><p id="callStatus">Hello Karabo! I can hear you. Speak to me!</p><button class="btn btnR" onclick="endCall()">End Call</button>';
-  try{ callStream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert('Allow Microphone to talk to AI'); }
-  saveMsg('🤖 FORANEO_AI Video Call: Hello KARABO! I can hear you! Speak to me!',false);
-  aiTalk('Hello Karabo! I can hear you! Speak to me!');
-  aiListenReply();
+function loadHistory(){
+  try{var h=localStorage.getItem('foraneo_chat'); if(h) document.getElementById('chatBox').innerHTML=h;}catch(e){}
+  try{var n=localStorage.getItem('foraneo_name'); if(n) document.getElementById('userLine').textContent=n+' • All Things ON';}catch(e){}
 }
-async function voiceCall(){
-  document.getElementById('callBox').style.display='block';
-  document.getElementById('callBox').innerHTML='<div style="font-size:80px">🤖🎤</div><h2>Voice Call LIVE</h2><p id="callStatus">Listening... Speak now!</p><button class="btn btnR" onclick="endCall()">End Call</button>';
-  try{ callStream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert('Allow Microphone'); }
-  aiTalk('Hello! I am listening. Speak to me!');
-  aiListenReply();
+function clearHistory(){
+  localStorage.removeItem('foraneo_chat');
+  document.getElementById('chatBox').innerHTML='<div class="msg ai">🤖 <b>FORANEO_AI:</b> History cleared. Fresh start!</div>';
+  alert('History cleared');
 }
-function endCall(){
-  if(aiListening){ try{aiListening.stop()}catch(e){} aiListening=null; }
-  if(callStream){ callStream.getTracks().forEach(t=>t.stop()); }
-  document.getElementById('callBox').style.display='none';
-  document.getElementById('callBox').innerHTML='<video id="callVideo" autoplay playsinline></video><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button>';
-  saveMsg('🤖 FORANEO_AI: Bye KARABO! Nice talking to you! 👋',false);
+function saveName(){
+  var n=document.getElementById('userName').value.trim(); if(!n) return alert('Type your name');
+  localStorage.setItem('foraneo_name',n);
+  document.getElementById('userLine').textContent=n+' • All Things ON';
+  document.getElementById('loginMsg').textContent='Saved: '+n;
 }
-// VOICE NOTE - AUTO TRANSCRIBE
-async function voiceNote(){
-  if(!isRec){
-    try{
-      let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-      if(SR){ let r=new SR(); r.onresult=e=>{ let txt=e.results[0][0].transcript; saveMsg('🎤 Voice Note: "'+txt+'"',true); let rep='I heard your voice note! You said: '+txt+'. Thank you Karabo!'; saveMsg('🤖 FORANEO_AI: '+rep,false); aiTalk(rep); }; r.start(); alert('🔴 Listening... Speak now! I will write what you say.'); return; }
-    }catch(e){}
-    alert('Your browser does not support voice transcription. Use 🗣 Voice Call instead.');
-  }
-}
-  </script>
-</body>
-  </html>
+function exportChat
