@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORANEO_AI</title>
 <style>
-body{background:#ffffff;color:#111111;font-family:Arial,sans-serif;margin:0;padding:10px}
+body{background:#ffffff;color:#111;font-family:Arial,sans-serif;margin:0;padding:10px}
 #chat{max-width:700px;margin:0 auto;padding-bottom:140px}
 .msg{background:#f1f5ff;padding:12px 14px;border-radius:15px;margin:10px 0;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;color:#111;border:1px solid #dbeafe}
 .user{background:#2563eb;color:#fff;text-align:right;margin-left:60px;border:none}
 .msg img,.msg video{width:100%;border-radius:12px;margin-top:10px;display:block}
 .msg audio{width:100%;margin-top:10px}
-.title{text-align:center;color:#2563eb;font-weight:900;font-size:24px;letter-spacing:1px}
+.title{text-align:center;color:#2563eb;font-weight:900;font-size:24px}
 .sub{text-align:center;color:#666;font-size:13px;margin-bottom:10px}
 .top{display:none}
 #box{position:fixed;bottom:10px;left:10px;right:10px;display:flex;gap:4px;max-width:700px;margin:0 auto;align-items:center;background:#fff;padding:8px;border-radius:25px;box-shadow:0 2px 15px rgba(0,0,0,0.15)}
@@ -26,21 +26,12 @@ button{padding:11px 8px;border-radius:20px;border:none;background:#2563eb;color:
 <div id="chat">
 <div class="title">FORANEO_AI</div>
 <div class="sub">Made by FORANEO (PTY) LTD - Under Foraneo Net - Owner: KARABO Langa</div>
-<div class="top">
-<button onclick="freezeApp()">❄️ Freeze</button>
-<button onclick="unfreezeApp()">🔥 Unfreeze</button>
-<button onclick="showUsers()">👥 Users</button>
-<button onclick="showLog()">📊 Track</button>
-<button onclick="showStudio()">🎛️ Studio</button>
-<button onclick="showTools()">🎨 Logo / Photo</button>
-<button onclick="toggleVoice()">🔊 Voice: <span id="voiceState">OFF</span></button>
-</div>
 <div id="callBox">
-<b id="callTitle">📞 Call</b><br><br>
+<b id="callTitle">Call</b><br><br>
 <video id="callVideo" autoplay playsinline muted></video><br><br>
-<button onclick="endCall()">❌ End Call</button>
+<button onclick="endCall()">End Call</button>
 </div>
-<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: 🏀 Upload / 👤 Video Call / 🗣 Voice Call / ▶️ Voice Note / Generate a garden image / Generate video</div>
+<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: Upload / Video Call / Voice Call / Voice Note / Generate a garden image / Generate video</div>
 </div>
 <div id="box">
 <label class="filelabel">🏀<input type="file" id="fileInput" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx"></label>
@@ -51,90 +42,9 @@ button{padding:11px 8px;border-radius:20px;border:none;background:#2563eb;color:
 <button onclick="ask()">Send</button>
 </div>
 <script>
-let frozen=false;
-let users=JSON.parse(localStorage.getItem('foraneo_users')||'["You"]');
-let activity=JSON.parse(localStorage.getItem('foraneo_log')||'[]');
 let voiceOn=true;
 let attachedText="";let attachedName="";
 let callStream=null;
 let vnRecorder=null, vnChunks=[], vnRecording=false;
 const chat=document.getElementById('chat'); const input=document.getElementById('q');
-const FORANEO_FULL="FORANEO (PTY) LTD - Foraneo Net.\nOwner: KARABO Langa.\nAddress: 50226 Masodi, Mokopane, 0600.\nHours: Monday to Sunday, 3:00 PM to 5:40 PM.\nMade by FORANEO (PTY) LTD, under Foraneo Net department.";
-function log(a){activity.push(new Date().toLocaleTimeString()+" - "+a);localStorage.setItem('foraneo_log',JSON.stringify(activity));}
-function add(t,cls){const d=document.createElement('div');d.className='msg '+(cls||'');d.innerText=t;chat.appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
-function addHTML(html){const d=document.createElement('div');d.className='msg';d.innerHTML=html;chat.appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
-function freezeApp(){frozen=true;add("❄️ FROZEN.",'');}
-function unfreezeApp(){frozen=false;add("🔥 UNFROZEN.",'');}
-function showUsers(){add("👥 Users:\n"+users.join("\n"),'');}
-function showLog(){add("📊 Activity:\n"+activity.slice(-20).join("\n"),'');}
-function showStudio(){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>🎛️ STUDIO</b><br><button onclick="playDrill()">▶️ Play Drill Beat</button> <button onclick="stopBeat()">⏹️ Stop</button>`;chat.appendChild(d);}
-function showTools(){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>🎨 LOGO</b><br><button onclick="makeLogo()">Create Logo FORANEO</button><br><br><input type="file" accept="image/*" onchange="editPhoto(event)">`;chat.appendChild(d);}
-function makeLogo(){const c=document.createElement('canvas');c.width=600;c.height=300;const x=c.getContext('2d');x.fillStyle='#2563eb';x.fillRect(0,0,600,300);x.fillStyle='#fff';x.font='bold 60px Arial';x.fillText('FORANEO',150,130);x.font='20px Arial';x.fillText('Owner: KARABO Langa',170,180);const d=document.createElement('div');d.className='msg';d.innerText="Logo - Made by FORANEO_AI";d.appendChild(c);chat.appendChild(d);}
-function editPhoto(e){const u=URL.createObjectURL(e.target.files[0]);const d=document.createElement('div');d.className='msg';d.innerHTML=`<img src="${u}">`;chat.appendChild(d);}
-let ac=null,bt=null;
-function playDrill(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();let s=0;stopBeat();bt=setInterval(()=>{const t=ac.currentTime;if(s%8===0){const o=ac.createOscillator();const g=ac.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(40,t+0.2);g.gain.setValueAtTime(0.8,t);g.gain.exponentialRampToValueAtTime(0.01,t+0.3);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+0.3);}s++;},60000/140/2);add("🥁 Drill Beat Playing - 140 BPM",'');}
-function stopBeat(){if(bt)clearInterval(bt);}
-function toggleVoice(){voiceOn=!voiceOn;add(voiceOn?"🔊 Voice ON":"🔇 Voice OFF",'');}
-function speak(text){if(!voiceOn) return; try{const u=new SpeechSynthesisUtterance(text.slice(0,500));u.lang='en-ZA';speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
-async function startVideoCall(){
-  try{
-    endCall();
-    document.getElementById('callBox').style.display='block';
-    document.getElementById('callTitle').innerText='👤 LIVE VIDEO CALL - FORANEO_AI';
-    callStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-    document.getElementById('callVideo').srcObject=callStream;
-    add("👤 Live Video Call started. You are live with FORANEO_AI. Tap ❌ End Call to stop.",'');
-    speak("Hello, video call started. I am FORANEO AI. How can I help you?");
-  }catch(e){ add("👤 Camera blocked. Allow camera permission and try again.",''); }
-}
-function startVoiceCall(){
-  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!Rec){add("🗣 Voice not supported. Use Chrome.",'');return;}
-  document.getElementById('callBox').style.display='block';
-  document.getElementById('callTitle').innerText='🗣 VOICE CALL - FORANEO_AI';
-  add("🗣 Voice Call started... Speak now",'');
-  speak("Voice call started. Speak now, I am listening.");
-  const rec=new Rec();rec.lang='en-ZA';
-  rec.onresult=e=>{input.value=e.results[0][0].transcript;ask();};
-  rec.onerror=()=>{add("🗣 Could not hear. Tap 🗣 again.",'');};
-  rec.start();
-}
-function endCall(){
-  if(callStream){callStream.getTracks().forEach(t=>t.stop());callStream=null;}
-  document.getElementById('callBox').style.display='none';
-  document.getElementById('callVideo').srcObject=null;
-}
-async function toggleVoiceNote(){
-  const btn=document.getElementById('vnBtn');
-  if(!vnRecording){
-    try{
-      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      vnChunks=[];
-      vnRecorder=new MediaRecorder(stream);
-      vnRecorder.ondataavailable=e=>{if(e.data.size>0)vnChunks.push(e.data);};
-      vnRecorder.onstop=()=>{
-        stream.getTracks().forEach(t=>t.stop());
-        const blob=new Blob(vnChunks,{type:'audio/webm'});
-        const url=URL.createObjectURL(blob);
-        const d=document.createElement('div');d.className='msg user';
-        d.innerHTML=`<b>▶️ Voice Note from You</b><br><audio src="${url}" controls></audio>`;
-        chat.appendChild(d);
-        add("▶️ Voice Note sent. FORANEO_AI received your voice note.",'');
-        speak("Voice note received. Thank you.");
-        window.scrollTo(0,document.body.scrollHeight);
-      };
-      vnRecorder.start();
-      vnRecording=true;
-      btn.innerText='⏹️';
-      btn.style.background='#ff4444';
-      add("▶️ Recording Voice Note... Tap ⏹️ to stop and send.",'');
-    }catch(e){ add("▶️ Mic blocked. Allow microphone permission.",''); }
-  } else {
-    vnRecorder.stop();
-    vnRecording=false;
-    btn.innerText='▶️';
-    btn.style.background='#2563eb';
-  }
-}
-document.getElementById('fileInput').addEventListener('change', async (e)=>{const f=e.target.files[0]; if(!f) return; attachedName=f.name; attachedText=""; const url=URL.createObjectURL(f); const type=f.type; if(type.startsWith('image/')){addHTML(`<b>🏀 You sent image: ${f.name}</b><img src="${url}">`);add("✅ Image received. Type: Describe this image",'');} else if(type.startsWith('video/')){addHTML(`<b>🏀 You sent video: ${f.name}</b><video src="${url}" controls playsinline></video>`);add("✅ MP4 / Video received",'');} else if(type.startsWith('audio/')){addHTML(`<b>🏀 You sent audio: ${f.name}</b><audio src="${url}" controls></audio>`);add("✅ MP3 / Audio received",'');} else if(f.name.toLowerCase().endsWith('.txt')||f.name.toLowerCase().endsWith('.csv')){attachedText=await f.text();add(`🏀 Document: ${f.name}\n\nI read ${attachedText.length} characters. Ask: Summarize this document`,'');} else {add(`🏀 File: ${f.name}\n\nFile uploaded. Type what you want me to do.`,'');} log("File: "+f.name); e.target.value="";});
-function makeVideo(prompt){const d=document.createElement('div');d.className='msg';d.innerText="Here is your video: "+prompt+" - Made by FORANEO_AI - Owner: KARABO Langa";const c=document.createElement('canvas');c.width=512;c.height=300;d.appendChild(c);const vid=document.createElement('video');vid.controls=true;vid.autoplay=true;vid.muted=true;vid.playsInline=true;d.appendChild(vid);chat.appendChild(d);const ctx=c.getContext('2d');const stream=c.captureStream(30);const rec=new MediaRecorder(stream,{mimeType:'video/webm'});const chunks=[];rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{vid.src=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));};rec.start();let f=0;const iv=setInterval(()=>{ctx.fillStyle='#2563eb';ctx.fillRect(0,0,512,300);ctx.fillStyle='#
+const FORANEO_FULL="FORANEO (PTY) LTD
