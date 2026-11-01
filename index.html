@@ -31,9 +31,7 @@ input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;fo
 </head>
 <body>
 <div id="freezeOverlay"><h1>⛔ FORANEO_AI FROZEN</h1><p>App frozen by Admin - FORANEO (PTY) LTD</p><button class="btn btn2" style="width:200px" onclick="unfreezeApp()">Unfreeze (Admin)</button></div>
-
 <div class="top"><b id="appTitle">FORANEO_AI</b><br><small>FORANEO (PTY) LTD • Foraneo Net Department</small><p id="userLine">Guest • All Things ON</p></div>
-
 <div class="tabs">
 <button class="on" onclick="show('chat',this)">💬 Chat</button>
 <button onclick="show('image',this)">🎨 Image / Logo</button>
@@ -43,16 +41,13 @@ input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;fo
 <button onclick="show('admin',this)">🎛️ Admin</button>
 <button onclick="show('login',this)">🔐 Login</button>
 </div>
-
 <div id="chat" class="page on">
 <div id="callBox"><video id="callVideo" autoplay playsinline></video><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button></div>
 <div id="chatBox"></div>
 </div>
-
 <div id="image" class="page">
 <div class="card"><h3>🎨 Image Generator</h3><input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset"><button class="btn" onclick="genImage()">Generate Image</button><img id="genImg"><p id="imgStatus"></p><button class="btn btn2" onclick="genVideo()">🎬 Make Video From Image</button><video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
-<div class="card"><h3>🅵 Logo Maker - FORANEO</h3
-<input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
+<div class="card"><h3>🅵 Logo Maker - FORANEO</h3><input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
 <div class="card"><h3>🖼️ Edit Photo</h3><input type="file" accept="image/*" onchange="loadEdit(event)"><img id="editImg"><select id="filterSel" onchange="applyFilter()"><option value="none">No Filter</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Vintage / Sepia</option><option value="brightness(1.4) contrast(1.2)">Bright</option><option value="blur(2px)">Blur</option><option value="hue-rotate(90deg)">Color Shift</option><option value="contrast(1.5) saturate(1.5)">Vivid</option></select><button class="btn" onclick="alert('✅ Photo edit saved')">Save Edited Photo</button></div>
 <div class="card"><h3>🎬 Edit Video</h3><input type="file" accept="video/*" onchange="loadVid(event)"><video id="editVid" controls style="width:100%;display:none"></video><label>Speed</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('editVid').playbackRate=this.value"></div>
 </div>
@@ -99,7 +94,7 @@ function endCall(){if(callStream){callStream.getTracks().forEach(t=>t.stop())}do
 async function voiceNote(){if(!isRec){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});rec=new MediaRecorder(s);chunks=[];isRec=true;rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let u=URL.createObjectURL(b);saveMsg('🎤 Voice Note:<br><audio controls src="'+u+'" style="width:100%"></audio>',true);track('Sent voice note')};rec.start();alert('🔴 Recording STARTED - Speak! Tap ▶️ again to stop');}catch(e){alert('❌ Mic blocked! Tap 🔒 at top -> Allow Microphone')}}else{isRec=false;try{rec.stop();rec.stream.getTracks().forEach(t=>t.stop())}catch(e){}}}
 async function studioRecord(){if(!isStudioRec){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});studioRec=new MediaRecorder(s);studioChunks=[];isStudioRec=true;studioRec.ondataavailable=e=>studioChunks.push(e.data);studioRec.onstop=()=>{let b=new Blob(studioChunks,{type:'audio/webm'});let u=URL.createObjectURL(b);document.getElementById('studioRecOut').innerHTML='<audio controls src="'+u+'" style="width:100%;margin-top:10px"></audio>';document.getElementById('studioAudio').src=u};studioRec.start();alert('🔴 Studio Recording STARTED')}catch(e){alert('❌ Mic blocked! Allow Microphone')}}else{isStudioRec=false;studioRec.stop();studioRec.stream.getTracks().forEach(t=>t.stop());alert('✅ Studio recording saved!')}}
 function handleFile(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f);if(f.type.startsWith('image')){saveMsg('🏀 You sent: '+f.name+'<br><img src="'+url+'" style="width:100%;border-radius:10px;margin-top:6px">',false)}else if(f.type.startsWith('video')){saveMsg('🏀 You sent video: '+f.name+'<br><video controls src="'+url+'" style="width:100%"></video>',false)}else if(f.type.startsWith('audio')){saveMsg('🏀 You sent audio: '+f.name+'<br><audio controls src="'+url+'" style="width:100%"></audio>',false)}else{saveMsg('🏀 You sent file: '+f.name,false)}track('Sent file '+f.name)}
-let hist=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');
+  let hist=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');
 function renderHist(){document.getElementById('chatBox').innerHTML=hist.map(m=>'<div class="msg '+(m.me?'me':'')+'">'+m.t+'</div>').join('');let h=document.getElementById('histCount');if(h)h.innerText='Saved messages: '+hist.length;window.scrollTo(0,document.body.scrollHeight)}
 function saveMsg(t,me){hist.push({t,me});localStorage.setItem('foraneo_hist',JSON.stringify(hist));renderHist()}
 function getName(){return localStorage.getItem('foraneo_current')||'KARABO'}
@@ -145,4 +140,4 @@ document.getElementById('q').addEventListener('keypress',function(e){if(e.key===
 renderTTT();renderHist();renderTrack();updateAppInfo();let cur=localStorage.getItem('foraneo_current');if(cur)document.getElementById('userLine').innerText='👤 '+cur+' • Logged In';if(localStorage.getItem('foraneo_frozen')=='1')document.getElementById('freezeOverlay').style.display='block';
 </script>
 </body>
-  </html>
+</html>
