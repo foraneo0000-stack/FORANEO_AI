@@ -1,65 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - FORANEO (PTY) LTD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FORANEO_AI</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f0f2f5;padding-bottom:140px}
-.top{background:#2563eb;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
-.top small{color:#ffea00}
-.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:62px;z-index:9}
-.tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold;cursor:pointer}
-.tabs button.on{background:#2563eb;color:#fff}
-.page{display:none;padding:12px}.page.on{display:block}
-.card{background:#fff;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin:6px 0}
-.btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;margin-top:6px;cursor:pointer}
-.btn2{background:#22c55e}.btn3{background:#f59e0b}.btnR{background:#ef4444}
-.msg{background:#fff;padding:12px;border-radius:15px;margin:8px 0;max-width:88%;word-wrap:break-word}
-.me{background:#2563eb;color:#fff;margin-left:auto}
-#genImg,#editImg{width:100%;border-radius:12px;display:none;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:18px;font-size:20px;border-radius:12px;border:1px solid #ddd;background:#f8fafc;cursor:pointer}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,0.2);z-index:20}
-.bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:18px;cursor:pointer}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:15px;padding:12px 16px;border-radius:25px}
-#freezeOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);color:#fff;z-index:999;text-align:center;padding-top:120px}
-.log{font-size:13px;background:#f8fafc;padding:8px;border-radius:8px;margin:4px 0}
-#callBox{display:none;background:#111;color:#fff;padding:12px;border-radius:15px;margin:10px 0;text-align:center}
-#aiAvatar{font-size:110px;line-height:1.2}
-#aiAvatar.talking{animation:talk 0.5s infinite alternate}
-@keyframes talk{from{transform:scale(1)}to{transform:scale(1.15)}}
-#callVideo{width:80px;height:60px;border-radius:8px;background:#000;position:absolute;right:10px;top:10px;border:2px solid #fff;object-fit:cover}
-#callWrap{position:relative}
+body{margin:0;font-family:Arial;background:#f2f2f2}
+.header{background:#2563eb;color:#fff;text-align:center;padding:15px}
+.header b{font-size:22px}
+.tabs{display:flex;overflow-x:auto;background:#fff;padding:8px;gap:8px;white-space:nowrap}
+.tabs button{border:1px solid #2563eb;background:#fff;color:#2563eb;padding:8px 14px;border-radius:20px;font-size:15px}
+.tabs button.active{background:#2563eb;color:#fff}
+.page{display:none;padding:12px}
+.page.active{display:block}
+.box{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px}
+#chat{height:300px;overflow-y:auto;background:#fff;border-radius:12px;padding:10px}
+.msg{margin:8px 0;padding:8px 10px;border-radius:10px;max-width:90%}
+.me{background:#dbeafe;margin-left:auto}
+.ai{background:#eee}
+input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:16px;box-sizing:border-box}
+button.send{background:#2563eb;color:#fff;border:0;padding:12px;border-radius:10px;width:100%;font-size:16px;margin-top:8px}
+img{max-width:100%;border-radius:10px}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc button{padding:16px;font-size:18px;border-radius:10px;border:1px solid #ccc;background:#fff}
 </style>
 </head>
 <body>
-<div id="freezeOverlay"><h1>⛔ FORANEO_AI FROZEN</h1><p>App frozen by Admin - FORANEO (PTY) LTD</p><button class="btn btn2" style="width:200px" onclick="unfreezeApp()">Unfreeze (Admin)</button></div>
-<div class="top"><b id="appTitle">FORANEO_AI</b><br><small>FORANEO (PTY) LTD • Foraneo Net Department</small><p id="userLine">Guest • All Things ON</p></div>
+<div class="header"><b>FORANEO_AI</b><br>FORANEO (PTY) LTD • Foraneo Net Department<br>Guest • All Things ON</div>
 <div class="tabs">
-<button class="on" onclick="show('chat',this)">💬 Chat</button>
+<button class="active" onclick="show('chat',this)">💬 Chat</button>
 <button onclick="show('image',this)">🎨 Image / Logo</button>
 <button onclick="show('calc',this)">🧮 Calculator</button>
 <button onclick="show('games',this)">🎮 Games</button>
 <button onclick="show('studio',this)">🎵 Studio</button>
-<button onclick="show('admin',this)">🎛️ Admin</button>
-<button onclick="show('login',this)">🔐 Login</button>
 </div>
-<div id="chat" class="page on">
-<div id="callBox"><div id="callWrap"><div id="aiAvatar">🤖</div><video id="callVideo" autoplay playsinline muted></video></div><p id="callStatus">Call Active</p><button class="btn btnR" onclick="endCall()">End Call</button></div>
-<div id="chatBox"></div>
+
+<div id="chat" class="page active">
+<div id="chatBox"><div class="msg ai">Hello! I am FORANEO_AI. Type below or send a picture and I will talk about it.</div></div>
+<div class="box" style="margin-top:10px">
+<input type="file" id="pic" accept="image/*">
+<input type="text" id="q" placeholder="Ask FORANEO..." style="margin-top:8px">
+<button class="send" onclick="sendChat()">Send</button>
 </div>
-<div id="image" class="page">
-<div class="card"><h3>🎨 Image Generator</h3><input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset"><button class="btn" onclick="genImage()">Generate Image</button><img id="genImg"><p id="imgStatus"></p><button class="btn btn2" onclick="genVideo()">🎬 Make Video From Image</button><video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
-<div class="card"><h3>🅵 Logo Maker - FORANEO</h3><input id="logoText" placeholder="Your brand name e.g. KARABO"><select id="logoStyle"><option>Blue White</option><option>Black Gold</option><option>Red Black</option><option>Green White</option></select><button class="btn btn3" onclick="makeLogo()">Create Logo</button><div id="logoOut" style="text-align:center;font-size:32px;font-weight:900;padding:20px;border-radius:12px;margin-top:10px;background:#2563eb;color:#fff">FORANEO</div><button class="btn btn2" onclick="downloadLogo()">⬇️ Download Logo</button></div>
-<div class="card"><h3>🖼️ Edit Photo</h3><input type="file" accept="image/*" onchange="loadEdit(event)"><img id="editImg"><select id="filterSel" onchange="applyFilter()"><option value="none">No Filter</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Vintage / Sepia</option><option value="brightness(1.4) contrast(1.2)">Bright</option><option value="blur(2px)">Blur</option><option value="hue-rotate(90deg)">Color Shift</option><option value="contrast(1.5) saturate(1.5)">Vivid</option></select><button class="btn" onclick="alert('✅ Photo edit saved')">Save Edited Photo</button></div>
-<div class="card"><h3>🎬 Edit Video</h3><input type="file" accept="video/*" onchange="loadVid(event)"><video id="editVid" controls style="width:100%;display:none"></video><label>Speed</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('editVid').playbackRate=this.value"></div>
 </div>
-<div id="calc" class="page"><div class="card"><h3>🧮 Calculator</h3><input id="calcIn" readonly placeholder="e.g. 25*4+10"><div class="grid"><button onclick="cAdd('7')">7</button><button onclick="cAdd('8')">8</button><button onclick="cAdd('9')">9</button><button onclick="cAdd('4')">4</button><button onclick="cAdd('5')">5</button><button onclick="cAdd('6')">6</button><button onclick="cAdd('1')">1</button><button onclick="cAdd('2')">2</button><button onclick="cAdd('3')">3</button><button onclick="cAdd('0')">0</button><button onclick="cAdd('+')">+</button><button onclick="cAdd('-')">-</button><button onclick="cAdd('*')">×</button><button onclick="cAdd('/')">÷</button><button onclick="cClear()">C</button></div><button class="btn" onclick="cSolve()">= Solve</button><h2 id="calcOut">Result: -</h2><input id="mathQ" placeholder="What is 15% of 200?"><button class="btn btn3" onclick="solveWord()">Solve Word Problem</button><p id="mathAns"></p></div></div>
-<div id="games" class="page">
-<div class="card"><h3>🎮 Rock Paper Scissors</h3><button class="btn" onclick="rps('Rock')">🪨 Rock</button><button class="btn btn2" onclick="rps('Paper')">📄 Paper</button><button class="btn btn3" onclick="rps('Scissors')">✂️ Scissors</button><p id="rpsOut"></p><p id="rpsScore">Wins: 0 | Losses: 0</p></div>
-<div class="card"><h3>🔢 Guess Number (1-10)</h3><input id="guessIn" type="number" placeholder="Enter 1-10"><button class="btn" onclick="guess()">Guess</button><p id="guessOut">I'm thinking...</p></div>
-<div class="card"><h3>❌⭕ Tic Tac Toe</h3><div class="grid" id="ttt"></div><p id="tttOut">Your turn: X</p><button class="btn" onclick="resetTTT()">Reset</button></div>
-</div>
-<div id="studio" class="page">
-<div class="card"><h3>🎵 Drill Beat Generator</h3><p>Genre: UK Drill / Amapiano Drill</p><button class="btn
+
+<div id="image" class="page"><div class="box"><h3>🎨 Image / Logo</h3><p>Type what picture you want, then tap Make.</p><input type="text" id="imgPrompt" placeholder="e.g. logo for Foraneo Net"><button class="send" onclick="makeImg()">Make Image</button><div id="imgOut" style="margin-top:10px"></div></div></div>
+
+<div id="calc" class="page"><div class="box"><h3>🧮 Calculator</h3><input type="text" id="calcOut" readonly><div class="calc" style="margin-top:10px">
+<button onclick="cadd('7')">7</button><button onclick="cadd('8')">8</button><button onclick="cadd('9')">9</button><button onclick="cadd('/')">/</button>
+<button onclick="cadd('4')">4</button><button onclick="cadd('5')">5</button><button onclick="cadd('6')">6</button><button onclick="cadd('*')">x</button>
+<button onclick="cadd('1')">1</button><button onclick="cadd('2')">2</button><button onclick="cadd('3')">3</button><button onclick="cadd('-')">-</button>
+<button onclick="cadd('0')">0</button><button onclick="cadd('.')">.</button><button onclick="ceq()">=</button><button onclick="cadd('+')">+</button>
+<button onclick="cclear()" style="grid-column:span 4;background:#fee">Clear</button>
+</div></div></div>
+
+<div id="games" class="page"><div class="box"><h3>🎮 Games</h3><p>Tap a number game:</p><button class="send" onclick="guessGame()">Play Guess The Number</button><p id="gameOut"></p></div></div>
+
+<div id="studio" class="page"><div class="box"><h3>🎵 Studio</h3><p>Studio is here. Chat and Image are the main ones.</p></div></div>
+
+<script>
+// PUT YOUR KEY HERE - keep the " " around it
+let GEMINI_KEY = "PASTE_YOUR_KEY_HERE";
+
+function show(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+function addMsg(text,who){
+let d=document.createElement('div');d.className='msg '+who;d.textContent=text;
+document.getElementById('chatBox').appendChild(d);
+document.getElementById('chatBox').scrollTop=99999;
+}
+async function sendChat(){
+let q=document.getElementById('q').value;
+let file=document.getElementById('pic').files[0];
+if(!q && !file){return;}
+if(q) addMsg(q,'me');
+if(file){
+let r=new FileReader();
+r.onload=async function(){
+let img=document.createElement('img');img.src=r.result;document.getElementById('chatBox').appendChild(img);
+addMsg('Looking at your picture...','ai');
+let desc=await askGemini(q||'What is shown in this picture? Describe it clearly.',r.result);
+addMsg(desc,'ai');
+};
+r.readAsDataURL(file);
+}else{
+addMsg('Thinking...','ai');
+let ans=await askGemini(q,null);
+let last=document.querySelectorAll('#chatBox .ai');last[last.length-1].textContent=ans;
+}
+document.getElementById('q').value='';
+document.getElementById('pic').value='';
+}
+async function askGemini(prompt,imgData){
+if(!GEMINI_KEY || GEMINI_KEY==='PASTE_YOUR_KEY_HERE'){
+return 'I am FORANEO_AI. Your key is not set yet. Paste your key in the code where it says PASTE_YOUR_KEY_HERE, then I will answer with real AI.';
+}
+try{
+let parts=[{text:prompt}];
+if(imgData){parts.push({inline_data:{mime_type:'image/jpeg',data:imgData.split(',')[1]}});}
+let res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})});
+let j=await res.json();
+return j.candidates[0].content.parts[0].text;
+}catch(e){return 'Error talking to AI. Check your key and internet. Error: '+e.message;}
+}
+function makeImg(){
+let p=document.getElementById('imgPrompt').value||'Foraneo logo';
+document.getElementById('imgOut').innerHTML='<p>Image idea: <b>'+p+'</b><br>Image generation needs a paid key. For now use Chat + picture describe, which is working.</p>';
+}
+function cadd(v){document.getElementById('calcOut').value+=v;}
+function cclear(){document.getElementById('calcOut').value='';}
+function ceq(){try{document.getElementById('calcOut').value=eval(document.getElementById('calcOut').value);}catch(e){document.getElementById('calcOut').value='Error';}}
+function guessGame(){
+let n=Math.floor(Math.random()*10)+1;
+let g=prompt('Guess a number 1 to 10');
+document.getElementById('gameOut').textContent=(g==n)?'Correct! It was '+n:'Wrong. It was '+n+'. Try again!';
+}
+</script>
+</body>
+</html>
