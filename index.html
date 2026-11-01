@@ -31,7 +31,7 @@ button{padding:10px 12px;border-radius:20px;border:none;background:#00d8a0;font-
 <button onclick="showStudio()">🎛️ Studio</button>
 <button onclick="showTools()">🎨 Logo / Photo</button>
 </div>
-<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: Generate a garden image</div>
+<div class="msg">Welcome to FORANEO_AI. Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa. Hours: Mon-Sun 3:00 PM to 5:40 PM. Address: 50226 Masodi, Mokopane, 0600. Try: Generate a garden image / Generate video</div>
 </div>
 <div id="box"><input id="q" placeholder="Ask FORANEO_AI anything..."><button onclick="ask()">Send</button></div>
 <script>
@@ -53,10 +53,25 @@ function editPhoto(e){const u=URL.createObjectURL(e.target.files[0]);const d=doc
 let ac=null,bt=null;
 function playDrill(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();let s=0;stopBeat();bt=setInterval(()=>{const t=ac.currentTime;if(s%8===0){const o=ac.createOscillator();const g=ac.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(40,t+0.2);g.gain.setValueAtTime(0.8,t);g.gain.exponentialRampToValueAtTime(0.01,t+0.3);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+0.3);}s++;},60000/140/2);add("🥁 Drill Beat Playing - 140 BPM",'');}
 function stopBeat(){if(bt)clearInterval(bt);}
+// --- VIDEO MAKER - THIS WAS MISSING BEFORE ---
+function makeVideo(prompt){
+  const d=document.createElement('div');d.className='msg';d.innerText="Here is your video: "+prompt+" - Made by FORANEO_AI - Owner: KARABO Langa";
+  const c=document.createElement('canvas');c.width=512;c.height=300;d.appendChild(c);
+  const vid=document.createElement('video');vid.controls=true;vid.autoplay=true;vid.muted=true;vid.playsInline=true;d.appendChild(vid);chat.appendChild(d);
+  const ctx=c.getContext('2d');const stream=c.captureStream(30);const rec=new MediaRecorder(stream,{mimeType:'video/webm'});const chunks=[];
+  rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{vid.src=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));};
+  rec.start();let f=0;const iv=setInterval(()=>{ctx.fillStyle='#00d8a0';ctx.fillRect(0,0,512,300);ctx.fillStyle='#000';ctx.font='bold 28px Arial';ctx.fillText(prompt,20,140);ctx.fillText("FORANEO_AI - "+f,20,190);f++;if(f>90){clearInterval(iv);rec.stop();}},33);
+}
 async function ask(){
 if(frozen){alert("FROZEN - Tap Unfreeze");return;}
 const v=input.value.trim();if(!v)return;add(v,'user');log("Asked: "+v);input.value='';const q=v.toLowerCase();
-// --- IMAGE - FIXED: ANY generate + image/picture/photo ---
+// --- VIDEO FIRST - FIXED ---
+if(q.includes('video')){
+  let p=v.replace(/generate|create|make|a video|video|please/gi,'').trim();
+  if(!p) p="beautiful nature";
+  makeVideo(p); return;
+}
+// --- IMAGE ---
 if(q.includes('generate') || q.includes('draw') || q.includes('create image') || q.includes('make image')){
   if(q.includes('logo')){makeLogo();return;}
   if(q.includes('image') || q.includes('picture') || q.includes('photo') || q.includes('garden') || q.includes('math') || q.includes('test')){
@@ -73,7 +88,6 @@ if(q.includes('owner')||q.includes('karabo')){add("Owner of FORANEO (PTY) LTD is
 if(q.includes('who made')){add("Made by FORANEO (PTY) LTD, under Foraneo Net. Owner: KARABO Langa.",'');return;}
 if(q.includes('hours')||q.includes('working')||q.includes('open')){add("FORANEO (PTY) LTD is open Monday to Sunday, 3:00 PM to 5:40 PM.\nAddress: 50226 Masodi, Mokopane, 0600\nOwner: KARABO Langa",'');return;}
 if(q.includes('foraneo')){add(FORANEO_FULL,'');return;}
-if(q.includes('video')){add("Video: I will generate video. Type 'Generate a video of a dog' - video feature is in full version.",'');return;}
 if(q.includes('beat')||q.includes('drill')){playDrill();return;}
 const thinking=add("Thinking... Made by FORANEO_AI",'');
 try{const sys="You are FORANEO_AI, made by FORANEO (PTY) LTD, under Foraneo Net. Owner KARABO Langa. Hours Mon-Sun 3:00 PM to 5:40 PM. NEVER guess. If you don't know say I don't know.";const r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(sys+"\nUser: "+v+"\nFORANEO_AI:"));const t=await r.text();thinking.innerText=t.trim()||"I don't know.";}catch(e){thinking.innerText="I don't know. No internet.";}
