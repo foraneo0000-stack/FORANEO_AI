@@ -67,4 +67,49 @@ function renderUsers(){let us=JSON.parse(localStorage.getItem('foraneo_users')||
 function videoCall(){alert('👤 Video Call LIVE');saveMsg('👤 Video Call started',false);track('Video call')}
 function voiceCall(){alert('🗣 Voice Call - listening...');saveMsg('🗣 Voice Call tapped',false);track('Voice call')}
 function voiceNote(){saveMsg('▶️ RECORDING... Voice Note sent 🎤',true);track('Sent voice note')}
-function handleFile(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f);saveMsg('🏀 You sent: '+f.name+'<br><img src
+function handleFile(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f);saveMsg('🏀 You sent: '+f.name+'<br><img src="'+url+'" style="width:100%;border-radius:10px;margin-top:6px">',false);track('Sent file '+f.name)}
+let hist=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');
+function renderHist(){document.getElementById('chatBox').innerHTML=hist.map(m=>'<div class="msg '+(m.me?'me':'')+'">'+m.t+'</div>').join('');let h=document.getElementById('histCount');if(h)h.innerText='Saved messages: '+hist.length;window.scrollTo(0,document.body.scrollHeight)}
+function saveMsg(t,me){hist.push({t,me});localStorage.setItem('foraneo_hist',JSON.stringify(hist));renderHist()}
+function getName(){return localStorage.getItem('foraneo_current')||'KARABO'}
+async function sendMsg(){let q=document.getElementById('q').value.trim();if(!q)return;saveMsg(q,true);document.getElementById('q').value='';track('Asked: '+q);let low=q.toLowerCase(),name=getName(),ans='';
+if(low.includes('who made')||low.includes('who created')||low.includes('who create')||low.includes('who are you')||low.includes('what is foraneo')||low.includes('creator')||low.includes('owner')){ans='I am FORANEO_AI 🤖<br><b>Made by:</b> FORANEO (PTY) LTD<br><b>Department:</b> Foraneo Net<br><b>Creator / Owner:</b> '+name+'<br>I control this app, generate images/videos/logos/beats, edit photos/videos, and search the internet. If I don\'t know something, I will say I don\'t know - I will NOT guess.'}
+else if(low.includes('hello')||low=='hi'||low.includes('hey')){ans='Hello '+name+'! 👋 I am FORANEO_AI from FORANEO (PTY) LTD - Foraneo Net. How can I help?'}
+else if(low.includes('how are you')){ans='I am great, '+name+'! Running live, all systems ON ✅'}
+else if(low.includes('freeze')){freezeApp();ans='⛔ App frozen by you, Admin.'}
+else if(low.includes('unfreeze')){unfreezeApp();ans='✅ App unfrozen!'}
+else if(low.includes('generate')||low.includes('draw')||low.includes('logo')){let p=q.replace(/generate|draw|logo/i,'').trim()||'FORANEO Logo';if(low.includes('logo')){ans='🅵 Logo idea for "'+p+'": Bold Blue + White, FORANEO style. Go to Image / Logo tab!'}else{ans='🎨 Generating image for: "'+p+'"<br><img src="https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?'+Date.now()+'" style="width:100%;border-radius:10px;margin-top:8px">'}} 
+else if(low.includes('beat')||low.includes('drill')){ans='🎵 Drill beat ready! Go to Studio tab -> Tap Play Drill Beat. 140 BPM, 808 bass.'}
+else if(low.includes('autotune')||low.includes('studio')||low.includes('mix')){ans='🎤 Studio ready! Go to Studio tab -> Load voice, move Autotune / Pitch slider, then Export Mix.'}
+else if(low.includes('joke')){let j=['Why did chicken cross road? To get to Soweto! 😂','What do you call smart phone in Soweto? FORANEO_AI! 🤖','Why is Karabo so smart? He built FORANEO_AI! 🔥'];ans=j[Math.floor(Math.random()*j.length)]}
+else if(low.includes('thank')){ans='You are welcome, '+name+'! 🙏 FORANEO (PTY) LTD at your service.'}
+else if(low.includes('bye')){ans='Bye '+name+'! 👋 FORANEO_AI will be here waiting.'}
+else if(low.match(/(\d+)\s*[\+\-\*\/]\s*(\d+)/)){try{ans='🧮 Answer = '+eval(q.match(/(\d+[\+\-\*\/\d\s]+)/)[0])}catch(e){ans='Try Calculator tab!'}}
+else{saveMsg('🔍 Searching internet... I will not guess.',false);try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1');let d=await r.json();let f=d.AbstractText||d.Answer;hist.pop();if(f){ans='🌐 From internet: '+f}else{ans='I don\'t know about "'+q+'" yet. I will NOT guess.'}}catch(e){hist.pop();ans='I don\'t know about "'+q+'" right now (no internet). I will NOT guess.'}}
+saveMsg(ans,false)}
+function clearHist(){hist=[];localStorage.removeItem('foraneo_hist');renderHist();alert('History cleared')}
+function genImage(){let p=document.getElementById('imgPrompt').value||'FORANEO Logo Blue White';document.getElementById('imgStatus').innerText='Generating...';let img=document.getElementById('genImg');img.src='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?'+Date.now();img.style.display='block';track('Generated image: '+p);img.onload=()=>document.getElementById('imgStatus').innerText='✅ Done!'}
+function genVideo(){let img=document.getElementById('genImg');if(!img.src){alert('Generate image first!');return}let v=document.getElementById('genVid');v.style.display='block';v.poster=img.src;alert('🎬 Video created from your image!');track('Generated video')}
+function makeLogo(){let t=document.getElementById('logoText').value||'FORANEO';let s=document.getElementById('logoStyle').value;let o=document.getElementById('logoOut');o.innerText=t.toUpperCase();if(s=='Blue White'){o.style.background='#2563eb';o.style.color='#fff'}else if(s=='Black Gold'){o.style.background='#111';o.style.color='#facc15'}else{o.style.background='#ef4444';o.style.color='#fff'}track('Created logo: '+t)}
+function loadEdit(e){let u=URL.createObjectURL(e.target.files[0]);let i=document.getElementById('editImg');i.src=u;i.style.display='block'}
+function applyFilter(){document.getElementById('editImg').style.filter=document.getElementById('filterSel').value}
+function loadVid(e){let v=document.getElementById('editVid');v.src=URL.createObjectURL(e.target.files[0]);v.style.display='block'}
+function loadAudio(e){document.getElementById('studioAudio').src=URL.createObjectURL(e.target.files[0])}
+function playDrill(){stopBeat();if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();let bpm=+document.getElementById('bpm').value;let step=60/bpm/2;document.getElementById('beatStatus').innerText='🔥 Playing Drill Beat - '+bpm+' BPM';let i=0;function hit(){if(!beatTimer)return;let t=audioCtx.currentTime;let o=audioCtx.createOscillator(),g=audioCtx.createGain();if(i%8==0){o.frequency.value=55;g.gain.value=0.9}else if(i%4==2){o.frequency.value=200;g.gain.value=0.3}else{o.frequency.value=800;g.gain.value=0.15}o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+0.12);i++;beatTimer=setTimeout(hit,step*1000)}beatTimer=setTimeout(hit,0);track('Played Drill Beat')}
+function stopBeat(){clearTimeout(beatTimer);beatTimer=null;document.getElementById('beatStatus').innerText='Stopped'}
+function cAdd(v){document.getElementById('calcIn').value+=v}
+function cClear(){document.getElementById('calcIn').value='';document.getElementById('calcOut').innerText='Result: -'}
+function cSolve(){try{document.getElementById('calcOut').innerText='Result: '+eval(document.getElementById('calcIn').value)}catch(e){document.getElementById('calcOut').innerText='Error'}}
+function solveWord(){let q=document.getElementById('mathQ').value.toLowerCase();let m=q.match(/(\d+)% of (\d+)/);if(m){document.getElementById('mathAns').innerText=(m[1]*m[2]/100)+' is '+m[1]+'% of '+m[2];return}document.getElementById('mathAns').innerText='Try: What is 15% of 200?'}
+function rps(u){let c=['Rock','Paper','Scissors'][Math.floor(Math.random()*3)];let w=u==c?'Draw!':(u=='Rock'&&c=='Scissors')||(u=='Paper'&&c=='Rock')||(u=='Scissors'&&c=='Paper')?'You WIN! 🎉':'You Lose';document.getElementById('rpsOut').innerText='You: '+u+' | AI: '+c+' -> '+w}
+function guess(){let g=+document.getElementById('guessIn').value;if(g==target){document.getElementById('guessOut').innerText='🎉 CORRECT! It was '+target;target=Math.floor(Math.random()*10)+1}else document.getElementById('guessOut').innerText=g<target?'Too low! Go higher ⬆️':'Too high! Go lower ⬇️'}
+function renderTTT(){document.getElementById('ttt').innerHTML=tttBoard.map((v,i)=>'<button onclick="playTTT('+i+')">'+(v||' ')+'</button>').join('')}
+function playTTT(i){if(tttBoard[i])return;tttBoard[i]=tttTurn;tttTurn=tttTurn=='X'?'O':'X';document.getElementById('tttOut').innerText='Next: '+tttTurn;renderTTT()}
+function resetTTT(){tttBoard=['','','','','','','','',''];tttTurn='X';renderTTT();document.getElementById('tttOut').innerText='Your turn: X'}
+function signup(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(!u||!p)return alert('Enter username + password');localStorage.setItem('foraneo_user_'+u,p);let us=JSON.parse(localStorage.getItem('foraneo_users')||'[]');if(!us.includes(u))us.push(u);localStorage.setItem('foraneo_users',JSON.stringify(us));document.getElementById('loginOut').innerText='✅ Account created for '+u+'! Now tap Login';track('Signed up '+u);updateAppInfo()}
+function login(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(localStorage.getItem('foraneo_user_'+u)==p&&p){localStorage.setItem('foraneo_current',u);document.getElementById('userLine').innerText='👤 '+u+' • Logged In';document.getElementById('loginOut').innerText='✅ Welcome back, '+u+'!';track('Logged in '+u)}else document.getElementById('loginOut').innerText='❌ Wrong username/password'}
+function logout(){localStorage.removeItem('foraneo_current');document.getElementById('userLine').innerText='Guest • All Things ON';document.getElementById('loginOut').innerText='Logged out'}
+renderTTT();renderHist();renderTrack();updateAppInfo();let cur=localStorage.getItem('foraneo_current');if(cur)document.getElementById('userLine').innerText='👤 '+cur+' • Logged In';if(localStorage.getItem('foraneo_frozen')=='1')document.getElementById('freezeOverlay').style.display='block';
+</script>
+</body>
+</html>
