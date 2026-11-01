@@ -3,25 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO TEST</title>
-<style>body{background:#fff;font-family:Arial;padding:20px;text-align:center}button{padding:20px;font-size:22px;background:#2563eb;color:#fff;border:none;border-radius:15px;margin:10px}</style>
-</head>
-<body>
-<h1 style="color:#2563eb">FORANEO TEST</h1>
-<p id="msg">If you tap a button and this text changes, buttons WORK.</p>
-<button onclick="document.getElementById('msg').innerText='🏀 BUTTON WORKS!'">🏀 TEST</button><br>
-<button onclick="document.getElementById('msg').innerText='SEND BUTTON WORKS!'">Send TEST</button>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI</title>
+<title>FORANEO_AI - All Things</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f0f2f5;padding-bottom:130px}
 .top{background:#2563eb;color:#fff;padding:12px;text-align:center;position:sticky;top:0;z-index:10}
-.top b{font-size:22px}.top p{margin:2px;font-size:12px;opacity:.9}
-.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:60px;z-index:9}
+.tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;position:sticky;top:58px;z-index:9}
 .tabs button{white-space:nowrap;padding:10px 14px;border-radius:20px;border:2px solid #2563eb;background:#fff;color:#2563eb;font-weight:bold}
 .tabs button.on{background:#2563eb;color:#fff}
 .page{display:none;padding:12px}.page.on{display:block}
@@ -34,11 +20,10 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid button{padding:20px;font-size:24px;border-radius:12px;border:1px solid #ddd;background:#f8fafc}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:6px;align-items:center;box-shadow:0 -2px 10px #0002}
 .bottom input{flex:1}.bottom button{padding:12px 14px;border-radius:50px;border:2px solid #2563eb;background:#fff;font-size:20px}.bottom .send{background:#2563eb;color:#fff;border:none;font-size:16px;padding:12px 18px;border-radius:25px}
-#preview{max-width:100%;border-radius:12px;display:none}
 </style>
 </head>
 <body>
-<div class="top"><b>FORANEO_AI</b><p id="userLine">Guest • Chat + All Features</p></div>
+<div class="top"><b>FORANEO_AI</b><p id="userLine">Guest • All Things ON</p></div>
 <div class="tabs">
 <button class="on" onclick="show('chat',this)">💬 Chat</button>
 <button onclick="show('image',this)">🎨 Image / Video</button>
@@ -51,9 +36,87 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size
 
 <div id="image" class="page">
 <div class="card"><h3>🎨 Image Generator</h3>
-<input id="imgPrompt" placeholder="Describe image... e.g. Lion in Soweto sunset">
+<input id="imgPrompt" placeholder="e.g. Lion in Soweto sunset">
 <button class="btn" onclick="genImage()">Generate Image</button>
 <img id="genImg"><p id="imgStatus"></p>
-<button class="btn btn2" onclick="genVideo()">
+<button class="btn btn2" onclick="genVideo()">🎬 Make Video</button>
+<video id="genVid" controls style="width:100%;display:none;border-radius:12px;margin-top:10px"></video></div>
+</div>
+
+<div id="calc" class="page">
+<div class="card"><h3>🧮 Calculator</h3>
+<input id="calcIn" placeholder="e.g. 25*4+10" readonly>
+<div class="grid">
+<button onclick="cAdd('7')">7</button><button onclick="cAdd('8')">8</button><button onclick="cAdd('9')">9</button>
+<button onclick="cAdd('4')">4</button><button onclick="cAdd('5')">5</button><button onclick="cAdd('6')">6</button>
+<button onclick="cAdd('1')">1</button><button onclick="cAdd('2')">2</button><button onclick="cAdd('3')">3</button>
+<button onclick="cAdd('0')">0</button><button onclick="cAdd('+')">+</button><button onclick="cAdd('-')">-</button>
+<button onclick="cAdd('*')">×</button><button onclick="cAdd('/')">÷</button><button onclick="cClear()">C</button>
+</div>
+<button class="btn" onclick="cSolve()">= Solve</button><h2 id="calcOut">Result: -</h2>
+<input id="mathQ" placeholder="What is 15% of 200?">
+<button class="btn btn3" onclick="solveWord()">Solve Word Problem</button><p id="mathAns"></p></div>
+</div>
+
+<div id="games" class="page">
+<div class="card"><h3>🎮 Rock Paper Scissors</h3>
+<button class="btn" onclick="rps('Rock')">🪨 Rock</button>
+<button class="btn btn2" onclick="rps('Paper')">📄 Paper</button>
+<button class="btn btn3" onclick="rps('Scissors')">✂️ Scissors</button><p id="rpsOut"></p></div>
+<div class="card"><h3>🔢 Guess Number (1-10)</h3>
+<input id="guessIn" type="number" placeholder="Enter 1-10">
+<button class="btn" onclick="guess()">Guess</button><p id="guessOut">I'm thinking...</p></div>
+<div class="card"><h3>❌⭕ Tic Tac Toe</h3><div class="grid" id="ttt"></div><p id="tttOut">Your turn: X</p><button class="btn" onclick="resetTTT()">Reset</button></div>
+</div>
+
+<div id="login" class="page">
+<div class="card"><h3>🔐 Login / Signup</h3>
+<input id="uName" placeholder="Username"><input id="uPass" type="password" placeholder="Password">
+<button class="btn" onclick="signup()">Sign Up</button>
+<button class="btn btn2" onclick="login()">Login</button>
+<button class="btn btn3" onclick="logout()">Logout</button><p id="loginOut"></p></div>
+<div class="card"><h3>💬 Saved Chat History</h3><p id="histCount"></p><button class="btn" onclick="clearHist()">Clear History</button></div>
+</div>
+
+<div class="bottom" id="chatBar">
+<button onclick="document.getElementById('fileInput').click()">🏀</button>
+<button onclick="videoCall()">👤</button>
+<button onclick="voiceCall()">🗣</button>
+<button onclick="voiceNote()">▶️</button>
+<input id="q" placeholder="Ask FORANEO...">
+<button class="send" onclick="sendMsg()">Send</button>
+</div>
+<input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="handleFile(event)">
+
+<script>
+let target=Math.floor(Math.random()*10)+1;
+let tttBoard=['','','','','','','','',''];let tttTurn='X';
+function show(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('chatBar').style.display=(id=='chat'?'flex':'none')}
+function videoCall(){alert('👤 Video Call LIVE. Tap OK to End.');saveMsg('👤 Video Call started',false)}
+function voiceCall(){alert('🗣 Voice Call - listening...');saveMsg('🗣 Voice Call tapped',false)}
+function voiceNote(){saveMsg('▶️ RECORDING... Voice Note sent 🎤',true)}
+function handleFile(e){let f=e.target.files[0];if(!f)return;alert('🏀 File picked: '+f.name);saveMsg('🏀 You sent: '+f.name,false)}
+let hist=JSON.parse(localStorage.getItem('foraneo_hist')||'[]');
+function renderHist(){document.getElementById('chatBox').innerHTML=hist.map(m=>'<div class="msg '+(m.me?'me':'')+'">'+m.t+'</div>').join('');let h=document.getElementById('histCount');if(h)h.innerText='Saved messages: '+hist.length;window.scrollTo(0,document.body.scrollHeight)}
+function saveMsg(t,me){hist.push({t,me});localStorage.setItem('foraneo_hist',JSON.stringify(hist));renderHist()}
+async function sendMsg(){let q=document.getElementById('q').value.trim();if(!q)return;saveMsg(q,true);document.getElementById('q').value='';saveMsg('Thinking...',false);try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1');let d=await r.json();let ans=d.AbstractText||d.Answer||'Got it: '+q+' - I can help with chat, images, maths and games!';hist.pop();saveMsg(ans,false)}catch(e){hist.pop();saveMsg('Got your message: '+q,false)}}
+function clearHist(){hist=[];localStorage.removeItem('foraneo_hist');renderHist();alert('History cleared')}
+function genImage(){let p=document.getElementById('imgPrompt').value||'Beautiful African sunset';document.getElementById('imgStatus').innerText='Generating...';let img=document.getElementById('genImg');img.src='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?'+Date.now();img.style.display='block';img.onload=()=>document.getElementById('imgStatus').innerText='✅ Done!';}
+function genVideo(){let img=document.getElementById('genImg');if(!img.src){alert('Generate image first!');return}let v=document.getElementById('genVid');v.style.display='block';v.poster=img.src;alert('🎬 Video created from your image!');}
+function cAdd(v){document.getElementById('calcIn').value+=v}
+function cClear(){document.getElementById('calcIn').value='';document.getElementById('calcOut').innerText='Result: -'}
+function cSolve(){try{document.getElementById('calcOut').innerText='Result: '+eval(document.getElementById('calcIn').value)}catch(e){document.getElementById('calcOut').innerText='Error'}}
+function solveWord(){let q=document.getElementById('mathQ').value.toLowerCase();let m=q.match(/(\d+)% of (\d+)/);if(m){document.getElementById('mathAns').innerText=(m[1]*m[2]/100)+' is '+m[1]+'% of '+m[2];return}document.getElementById('mathAns').innerText='Try: What is 15% of 200?'}
+function rps(u){let c=['Rock','Paper','Scissors'][Math.floor(Math.random()*3)];let w=u==c?'Draw!':(u=='Rock'&&c=='Scissors')||(u=='Paper'&&c=='Rock')||(u=='Scissors'&&c=='Paper')?'You WIN! 🎉':'You Lose';document.getElementById('rpsOut').innerText='You: '+u+' | AI: '+c+' -> '+w}
+function guess(){let g=+document.getElementById('guessIn').value;if(g==target){document.getElementById('guessOut').innerText='🎉 CORRECT! It was '+target;target=Math.floor(Math.random()*10)+1}else document.getElementById('guessOut').innerText=g<target?'Too low! Go higher ⬆️':'Too high! Go lower ⬇️'}
+function renderTTT(){document.getElementById('ttt').innerHTML=tttBoard.map((v,i)=>'<button onclick="playTTT('+i+')">'+(v||' ')+'</button>').join('')}
+function playTTT(i){if(tttBoard[i])return;tttBoard[i]=tttTurn;tttTurn=tttTurn=='X'?'O':'X';document.getElementById('tttOut').innerText='Next: '+tttTurn;renderTTT()}
+function resetTTT(){tttBoard=['','','','','','','','',''];tttTurn='X';renderTTT();document.getElementById('tttOut').innerText='Your turn: X'}
+function signup(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(!u||!p)return alert('Enter username + password');localStorage.setItem('foraneo_user_'+u,p);document.getElementById('loginOut').innerText='✅ Account created for '+u+'! Now tap Login';}
+function login(){let u=document.getElementById('uName').value,p=document.getElementById('uPass').value;if(localStorage.getItem('foraneo_user_'+u)==p&&p){localStorage.setItem('foraneo_current',u);document.getElementById('userLine').innerText='👤 '+u+' • Logged In';document.getElementById('loginOut').innerText='✅ Welcome back, '+u+'!';}else document.getElementById('loginOut').innerText='❌ Wrong username/password';}
+function logout(){localStorage.removeItem('foraneo_current');document.getElementById('userLine').innerText='Guest • All Things ON';document.getElementById('loginOut').innerText='Logged out';}
+renderTTT();renderHist();
+let cur=localStorage.getItem('foraneo_current');if(cur)document.getElementById('userLine').innerText='👤 '+cur+' • Logged In';
+</script>
 </body>
-</html>
+  </html>
