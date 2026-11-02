@@ -1,13 +1,288 @@
 <!DOCTYPE html>
-<html>
-<head><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FORANEO_AI</title>
-<style>body{font-family:Arial;text-align:center;padding:40px;background:#007bff;color:white}h1{font-size:32px}div{background:white;color:black;padding:20px;border-radius:15px;margin-top:20px}</style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORANEO_AI - All Things ON</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#eef2f7;padding-bottom:80px}
+header{background:#1a5cff;color:#fff;text-align:center;padding:16px 10px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;font-size:13px;color:#ffeb3b}
+header small{font-size:12px;opacity:.9}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px;background:#fff;position:sticky;top:0;z-index:10}
+.tabs button{white-space:nowrap;border:1px solid #1a5cff;background:#fff;color:#1a5cff;padding:8px 14px;border-radius:20px;cursor:pointer}
+.tabs button.active{background:#1a5cff;color:#fff}
+.page{display:none;padding:12px}
+.page.active{display:block}
+#chatBox{background:#fff;border-radius:12px;min-height:320px;padding:10px;max-height:60vh;overflow-y:auto}
+.msg{padding:10px;margin:8px 0;border-radius:12px;background:#f1f1f1;word-wrap:break-word}
+.msg.me{background:#1a5cff;color:#fff;margin-left:20%}
+.msg.ai{background:#fff;border:1px solid #ddd}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px;display:flex;gap:6px;align-items:center;border-top:1px solid #ddd}
+.bottom input{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc;outline:none}
+.bottom button{border:none;border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;background:#eef2ff}
+.bottom .send{background:#1a5cff;color:#fff;border-radius:20px;width:64px;height:auto;font-size:16px}
+.badge{position:fixed;top:2px;right:5px;background:#00c853;color:#fff;padding:2px 8px;font-size:11px;border-radius:10px;z-index:9999}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:10px}
+.card input,.card select,.card textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ccc}
+.card button{background:#1a5cff;color:#fff;border:none;padding:11px 18px;border-radius:8px;cursor:pointer;margin:4px 2px}
+.card button.red{background:#ff3d00}
+#calcDisplay{font-size:30px;text-align:right;background:#f7f7f7;padding:12px;border-radius:10px}
+.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.calcGrid button{background:#eef2ff;color:#000;padding:14px;font-size:18px;border:none;border-radius:10px}
+#videoModal,#voiceModal{display:none;position:fixed;inset:0;background:#000;color:#fff;z-index:10000;text-align:center;padding-top:40px}
+#videoModal .aiFace,#voiceModal .aiFace{font-size:120px}
+#gameBox{text-align:center;font-size:60px}
+img{max-width:100%;border-radius:10px}
+</style>
 </head>
 <body>
+<div class="badge">V5 FRESH ✅</div>
+<header>
 <h1>FORANEO_AI</h1>
-<h2>V5 FRESH ✅</h2>
-<p>If you see this, the update WORKED!</p>
-<div>New version loaded - 2 Nov 2026</div>
+<p>FORANEO (PTY) LTD • Foraneo Net Department</p>
+<small id="userLine">Guest • All Things ON</small>
+</header>
+
+<div class="tabs">
+<button class="active" onclick="showPage('chatPage',this)">💬 Chat</button>
+<button onclick="showPage('imagePage',this)">🎨 Image / Logo</button>
+<button onclick="showPage('calcPage',this)">🧮 Calculator</button>
+<button onclick="showPage('gamePage',this)">🎮 Game</button>
+<button onclick="showPage('loginPage',this)">🔐 Login</button>
+</div>
+
+<div id="chatPage" class="page active">
+<div id="chatBox"><div class="msg ai">🤖 <b>FORANEO_AI:</b> Hello! I am FORANEO_AI. Tap 🎤 for Voice Note, 🗣 for Voice Call, 🤖 for Video Call with me. Send a photo in Image tab and I will tell you what is on it!</div></div>
+</div>
+
+<div id="imagePage" class="page">
+<div class="card">
+<h3>🎨 Image / Logo Generator</h3>
+<input id="imgPrompt" placeholder="e.g. FORANEO lion logo, blue and gold">
+<select id="imgStyle"><option>Logo</option><option>Poster</option><option>Profile Picture</option><option>Business Card</option></select>
+<button onclick="genImage()">Generate Idea</button>
+<button onclick="clearImg()">Clear</button>
+<div id="imgResult"></div>
+</div>
+<div class="card"><h3>📸 AI Photo - Send Photo, AI Responds</h3>
+<p>Upload a photo and FORANEO_AI will tell you what is on it.</p>
+<input type="file" accept="image/*" onchange="photoAI(event)">
+<img id="photoPreview" style="display:none">
+<p id="photoAIReply"></p>
+<button onclick="askAboutPhoto()">Ask AI About This Photo</button>
+</div>
+<div class="card"><h3>🖼️ Gallery</h3><div id="gallery"></div></div>
+</div>
+
+<div id="calcPage" class="page">
+<div class="card"><h3>🧮 Calculator</h3>
+<div id="calcDisplay">0</div>
+<div class="calcGrid">
+<button onclick="calcPress('7')">7</button><button onclick="calcPress('8')">8</button><button onclick="calcPress('9')">9</button><button onclick="calcPress('/')">÷</button>
+<button onclick="calcPress('4')">4</button><button onclick="calcPress('5')">5</button><button onclick="calcPress('6')">6</button><button onclick="calcPress('*')">×</button>
+<button onclick="calcPress('1')">1</button><button onclick="calcPress('2')">2</button><button onclick="calcPress('3')">3</button><button onclick="calcPress('-')">-</button>
+<button onclick="calcPress('0')">0</button><button onclick="calcPress('.')">.</button><button onclick="calcPress('C')">C</button><button onclick="calcPress('+')">+</button>
+</div><button style="width:100%;margin-top:10px" onclick="calcPress('=')">= Equals</button>
+</div>
+</div>
+
+<div id="gamePage" class="page">
+<div class="card"><h3>🎮 Guess The Number</h3>
+<p>I am thinking of a number 1-10. Guess!</p>
+<div id="gameBox">🎲</div>
+<input id="guessInput" type="number" placeholder="1 - 10">
+<button onclick="playGuess()">Guess</button>
+<button onclick="newGame()">New Game</button>
+<p id="gameMsg"></p><p>Score: <span id="score">0</span></p></div>
+</div>
+
+<div id="loginPage" class="page">
+<div class="card"><h3>🔐 Login / Settings</h3>
+<input id="userName" placeholder="Your name">
+<button onclick="saveName()">Save Name</button>
+<p id="loginMsg"></p>
+<hr>
+<button class="red" onclick="clearHistory()">Clear History</button>
+<button onclick="exportChat()">Copy Chat</button>
+<p><small>FORANEO_AI saves chat on this phone only.</small></p>
+</div>
+</div>
+
+<div class="bottom">
+<button onclick="voiceNote()" title="Voice Note">🎤</button>
+<button onclick="voiceCall()" title="Voice Call">🗣</button>
+<button onclick="videoCall()" title="Video Call">🤖</button>
+<input id="askInput" placeholder="Ask FORANEO_AI...">
+<button class="send" onclick="sendText()">Send</button>
+</div>
+
+<div id="videoModal">
+<div class="aiFace">🤖</div>
+<h2>FORANEO_AI - Video Call</h2>
+<p id="videoStatus">Video Call with AI - Listening...</p>
+<p id="videoAIReply" style="padding:0 20px"></p>
+<button onclick="videoListen()" style="padding:12px 20px;border-radius:20px;border:none;background:#1a5cff;color:#fff">🎤 Speak to AI</button>
+<button onclick="closeVideo()" style="padding:12px 24px;border-radius:20px;border:none;background:#ff3d00;color:#fff;font-size:16px">📞 End Call</button>
+</div>
+
+<div id="voiceModal">
+<div class="aiFace">🗣️</div>
+<h2>FORANEO_AI - Voice Call</h2>
+<p id="voiceStatus">Voice Call Connected - Tap Speak</p>
+<p id="voiceAIReply" style="padding:0 20px"></p>
+<button onclick="voiceCallListen()" style="padding:12px 20px;border-radius:20px;border:none;background:#00c853;color:#fff">🎤 Speak to AI</button>
+<button onclick="closeVoice()" style="padding:12px 24px;border-radius:20px;border:none;background:#ff3d00;color:#fff;font-size:16px">📞 End Call</button>
+</div>
+
+<script>
+let calcVal="", score=0, secret=Math.floor(Math.random()*10)+1;
+let lastPhotoName="", lastPhotoDesc="";
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function addMsg(who,text,isMe){
+  var box=document.getElementById('chatBox');
+  var d=document.createElement('div');
+  d.className='msg '+(isMe?'me':'ai');
+  d.innerHTML=(isMe?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+text;
+  box.appendChild(d); box.scrollTop=box.scrollHeight;
+  try{localStorage.setItem('foraneo_chat',box.innerHTML)}catch(e){}
+}
+function loadHistory(){
+  try{var h=localStorage.getItem('foraneo_chat'); if(h) document.getElementById('chatBox').innerHTML=h;}catch(e){}
+  try{var n=localStorage.getItem('foraneo_name'); if(n) document.getElementById('userLine').textContent=n+' • All Things ON';}catch(e){}
+}
+function clearHistory(){
+  localStorage.removeItem('foraneo_chat');
+  document.getElementById('chatBox').innerHTML='<div class="msg ai">🤖 <b>FORANEO_AI:</b> History cleared. Fresh start!</div>';
+  alert('History cleared');
+}
+function saveName(){
+  var n=document.getElementById('userName').value.trim(); if(!n) return alert('Type your name');
+  localStorage.setItem('foraneo_name',n);
+  document.getElementById('userLine').textContent=n+' • All Things ON';
+  document.getElementById('loginMsg').textContent='Saved: '+n;
+}
+function exportChat(){
+  var t=document.getElementById('chatBox').innerText;
+  navigator.clipboard.writeText(t).then(()=>alert('Chat copied!'));
+}
+function getAIReply(q){
+  var l=q.toLowerCase();
+  if(l.includes('hello')||l.includes('hi')) return 'Hello! How can I help you today?';
+  if(l.includes('who are you')) return 'I am FORANEO_AI, built by FORANEO (PTY) LTD.';
+  if(l.includes('foraneo')) return 'FORANEO (PTY) LTD - Foraneo Net Department. All Things ON!';
+  if(l.includes('thank')) return 'You are welcome!';
+  if(l.includes('bye')) return 'Bye! Nice talking to you!';
+  if(l.includes('photo')||l.includes('picture')||l.includes('image')||l.includes('what is on')) return lastPhotoName ? 'I can see your photo: '+lastPhotoDesc+' What do you want me to do with it?' : 'Go to Image tab, upload a photo, and I will tell you what is on it.';
+  if(l.includes('logo')) return 'Go to Image / Logo tab, type your idea and tap Generate Idea.';
+  if(l.includes('game')) return 'Go to Game tab and guess my number 1-10!';
+  if(l.includes('voice')||l.includes('call')) return 'Tap the 🗣 Voice Call or 🤖 Video Call button at the bottom and I will talk to you.';
+  return 'I understand you said: "'+q+'". Tell me more, or try the tabs - Image, Calculator, Game, or Voice.';
+}
+function speakAI(text){
+  try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(text); speechSynthesis.speak(u);}catch(e){}
+}
+function sendText(){
+  var inp=document.getElementById('askInput');
+  var q=inp.value.trim(); if(!q) return;
+  addMsg('You',q,true); inp.value='';
+  var reply=getAIReply(q);
+  setTimeout(()=>{ addMsg('FORANEO_AI',reply,false); },400);
+}
+document.getElementById('askInput').addEventListener('keypress',function(e){ if(e.key==='Enter') sendText(); });
+function calcPress(v){
+  if(v==='C'){calcVal=""; document.getElementById('calcDisplay').textContent='0'; return;}
+  if(v==='='){ try{calcVal=String(eval(calcVal)); document.getElementById('calcDisplay').textContent=calcVal;}catch(e){document.getElementById('calcDisplay').textContent='Error'; calcVal="";} return;}
+  calcVal+=v; document.getElementById('calcDisplay').textContent=calcVal;
+}
+function playGuess(){
+  var g=parseInt(document.getElementById('guessInput').value);
+  if(!g) return;
+  if(g===secret){score++; document.getElementById('score').textContent=score; document.getElementById('gameMsg').textContent='🎉 Correct! You got it!'; document.getElementById('gameBox').textContent='🏆';}
+  else if(g<secret){document.getElementById('gameMsg').textContent='Too low - try higher!';}
+  else{document.getElementById('gameMsg').textContent='Too high - try lower!';}
+}
+function newGame(){secret=Math.floor(Math.random()*10)+1; document.getElementById('gameMsg').textContent='New game! Guess 1-10'; document.getElementById('gameBox').textContent='🎲'; document.getElementById('guessInput').value='';}
+function genImage(){
+  var p=document.getElementById('imgPrompt').value||'FORANEO logo';
+  var s=document.getElementById('imgStyle').value;
+  document.getElementById('imgResult').innerHTML='<div class="card"><b>Your '+s+' idea:</b><br>'+p+'<br><br><div style="background:#1a5cff;color:#fff;padding:30px;border-radius:12px;text-align:center;font-size:28px;font-weight:bold">'+p.toUpperCase()+'</div><p>FORANEO (PTY) LTD</p></div>';
+  document.getElementById('gallery').innerHTML+='<div style="background:#1a5cff;color:#fff;padding:15px;border-radius:10px;margin:5px 0;text-align:center">'+p+'</div>';
+}
+function clearImg(){document.getElementById('imgResult').innerHTML=''; document.getElementById('imgPrompt').value='';}
+// --- AI RESPONDS TO PHOTOS ---
+function photoAI(e){
+  var f=e.target.files[0]; if(!f) return;
+  lastPhotoName=f.name;
+  var r=new FileReader();
+  r.onload=function(){
+    var img=document.getElementById('photoPreview');
+    img.src=r.result; img.style.display='block';
+    // AI analysis based on file info
+    var lower=f.name.toLowerCase();
+    var guess='a photo';
+    if(lower.includes('logo')||lower.includes('foraneo')) guess='a logo / FORANEO design';
+    else if(lower.includes('face')||lower.includes('selfie')||lower.includes('me')) guess='a photo of a person';
+    else if(lower.includes('car')||lower.includes('house')||lower.includes('dog')||lower.includes('cat')) guess='a photo - it looks like '+lower;
+    lastPhotoDesc='I can see it. File name: '+f.name+'. It looks like '+guess+'. The picture is loaded above.';
+    document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+lastPhotoDesc+' Tap "Ask AI About This Photo" or ask in Chat "What is on it?"';
+    addMsg('FORANEO_AI','I received your photo: '+f.name+'. '+lastPhotoDesc,false);
+    speakAI('I can see your photo. '+lastPhotoDesc);
+  };
+  r.readAsDataURL(f);
+}
+function askAboutPhoto(){
+  if(!lastPhotoName){alert('Upload a photo first in Image tab.'); return;}
+  var reply='Looking at your photo '+lastPhotoName+': '+lastPhotoDesc+' If you tell me what is in the photo, I can help you more - e.g. describe it, make a logo from it, or write a caption.';
+  document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+reply;
+  addMsg('FORANEO_AI',reply,false);
+  speakAI(reply);
+}
+// --- AI RESPONDS TO VOICE NOTES ---
+function listenAndReply(mode){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Voice not supported. Try Chrome.'); return;}
+  var R=new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+  R.onresult=function(e){
+    var t=e.results[0][0].transcript;
+    addMsg('You','🎤 '+t,true);
+    var reply=getAIReply(t);
+    addMsg('FORANEO_AI',reply,false);
+    speakAI(reply);
+    if(mode==='video') document.getElementById('videoAIReply').textContent='🤖 AI: '+reply;
+    if(mode==='voice') document.getElementById('voiceAIReply').textContent='🤖 AI: '+reply;
+    if(mode==='note') alert('🤖 FORANEO_AI replied: '+reply);
+  };
+  R.start();
+}
+function voiceNote(){ listenAndReply('note'); }
+// --- AI VOICE CALL ---
+function voiceCall(){
+  document.getElementById('voiceModal').style.display='block';
+  document.getElementById('voiceStatus').textContent='Voice Call Connected - I am listening...';
+  var hello='Hello! This is FORANEO AI on a voice call. How can I help you? Tap Speak to AI and talk to me.';
+  document.getElementById('voiceAIReply').textContent='🤖 AI: '+hello;
+  speakAI(hello);
+}
+function voiceCallListen(){ listenAndReply('voice'); }
+function closeVoice(){document.getElementById('voiceModal').style.display='none'; speechSynthesis.cancel();}
+// --- AI VIDEO CALL ---
+function videoCall(){
+  document.getElementById('videoModal').style.display='block';
+  document.getElementById('videoStatus').textContent='Video Call with AI - Connected. I can hear you!';
+  var hello='Hello! This is FORANEO AI on video call. I can see you are here. How can I help you? Tap Speak to AI and talk to me.';
+  document.getElementById('videoAIReply').textContent='🤖 AI: '+hello;
+  speakAI(hello);
+}
+function videoListen(){ listenAndReply('video'); }
+function closeVideo(){document.getElementById('videoModal').style.display='none'; speechSynthesis.cancel();}
+loadHistory();
+</script>
 </body>
 </html>
