@@ -45,7 +45,6 @@ img{max-width:100%;border-radius:10px}
 <p>FORANEO (PTY) LTD • Foraneo Net Department</p>
 <small id="userLine">Guest • All Things ON</small>
 </header>
-
 <div class="tabs">
 <button class="active" onclick="showPage('chatPage',this)">💬 Chat</button>
 <button onclick="showPage('imagePage',this)">🎨 Image / Logo</button>
@@ -53,11 +52,9 @@ img{max-width:100%;border-radius:10px}
 <button onclick="showPage('gamePage',this)">🎮 Game</button>
 <button onclick="showPage('loginPage',this)">🔐 Login</button>
 </div>
-
 <div id="chatPage" class="page active">
-<div id="chatBox"><div class="msg ai">🤖 <b>FORANEO_AI:</b> Hello! I am FORANEO_AI. Tap 🎤 for Voice Note, 🗣 for Voice Call, 🤖 for Video Call with me. Send a photo in Image tab and I will tell you what is on it!</div></div>
+<div id="chatBox"><div class="msg ai">🤖 <b>FORANEO_AI:</b> Hello! I am FORANEO_AI. Ask me anything - music, football, news, jokes, school, life. Tap 🎤 for Voice Note, 🗣 for Voice Call, 🤖 for Video Call. Send a photo in Image tab and I will tell you what is on it!</div></div>
 </div>
-
 <div id="imagePage" class="page">
 <div class="card">
 <h3>🎨 Image / Logo Generator</h3>
@@ -76,7 +73,6 @@ img{max-width:100%;border-radius:10px}
 </div>
 <div class="card"><h3>🖼️ Gallery</h3><div id="gallery"></div></div>
 </div>
-
 <div id="calcPage" class="page">
 <div class="card"><h3>🧮 Calculator</h3>
 <div id="calcDisplay">0</div>
@@ -88,7 +84,6 @@ img{max-width:100%;border-radius:10px}
 </div><button style="width:100%;margin-top:10px" onclick="calcPress('=')">= Equals</button>
 </div>
 </div>
-
 <div id="gamePage" class="page">
 <div class="card"><h3>🎮 Guess The Number</h3>
 <p>I am thinking of a number 1-10. Guess!</p>
@@ -98,7 +93,6 @@ img{max-width:100%;border-radius:10px}
 <button onclick="newGame()">New Game</button>
 <p id="gameMsg"></p><p>Score: <span id="score">0</span></p></div>
 </div>
-
 <div id="loginPage" class="page">
 <div class="card"><h3>🔐 Login / Settings</h3>
 <input id="userName" placeholder="Your name">
@@ -110,7 +104,6 @@ img{max-width:100%;border-radius:10px}
 <p><small>FORANEO_AI saves chat on this phone only.</small></p>
 </div>
 </div>
-
 <div class="bottom">
 <button onclick="voiceNote()" title="Voice Note">🎤</button>
 <button onclick="voiceCall()" title="Voice Call">🗣</button>
@@ -118,7 +111,6 @@ img{max-width:100%;border-radius:10px}
 <input id="askInput" placeholder="Ask FORANEO_AI...">
 <button class="send" onclick="sendText()">Send</button>
 </div>
-
 <div id="videoModal">
 <div class="aiFace">🤖</div>
 <h2>FORANEO_AI - Video Call</h2>
@@ -127,7 +119,6 @@ img{max-width:100%;border-radius:10px}
 <button onclick="videoListen()" style="padding:12px 20px;border-radius:20px;border:none;background:#1a5cff;color:#fff">🎤 Speak to AI</button>
 <button onclick="closeVideo()" style="padding:12px 24px;border-radius:20px;border:none;background:#ff3d00;color:#fff;font-size:16px">📞 End Call</button>
 </div>
-
 <div id="voiceModal">
 <div class="aiFace">🗣️</div>
 <h2>FORANEO_AI - Voice Call</h2>
@@ -136,7 +127,6 @@ img{max-width:100%;border-radius:10px}
 <button onclick="voiceCallListen()" style="padding:12px 20px;border-radius:20px;border:none;background:#00c853;color:#fff">🎤 Speak to AI</button>
 <button onclick="closeVoice()" style="padding:12px 24px;border-radius:20px;border:none;background:#ff3d00;color:#fff;font-size:16px">📞 End Call</button>
 </div>
-
 <script>
 let calcVal="", score=0, secret=Math.floor(Math.random()*10)+1;
 let lastPhotoName="", lastPhotoDesc="";
@@ -173,18 +163,48 @@ function exportChat(){
   var t=document.getElementById('chatBox').innerText;
   navigator.clipboard.writeText(t).then(()=>alert('Chat copied!'));
 }
+// --- SMART BRAIN - REAL ANSWERS ---
 function getAIReply(q){
-  var l=q.toLowerCase();
-  if(l.includes('hello')||l.includes('hi')) return 'Hello! How can I help you today?';
-  if(l.includes('who are you')) return 'I am FORANEO_AI, built by FORANEO (PTY) LTD.';
-  if(l.includes('foraneo')) return 'FORANEO (PTY) LTD - Foraneo Net Department. All Things ON!';
-  if(l.includes('thank')) return 'You are welcome!';
-  if(l.includes('bye')) return 'Bye! Nice talking to you!';
-  if(l.includes('photo')||l.includes('picture')||l.includes('image')||l.includes('what is on')) return lastPhotoName ? 'I can see your photo: '+lastPhotoDesc+' What do you want me to do with it?' : 'Go to Image tab, upload a photo, and I will tell you what is on it.';
-  if(l.includes('logo')) return 'Go to Image / Logo tab, type your idea and tap Generate Idea.';
-  if(l.includes('game')) return 'Go to Game tab and guess my number 1-10!';
-  if(l.includes('voice')||l.includes('call')) return 'Tap the 🗣 Voice Call or 🤖 Video Call button at the bottom and I will talk to you.';
-  return 'I understand you said: "'+q+'". Tell me more, or try the tabs - Image, Calculator, Game, or Voice.';
+  var l=q.toLowerCase().trim();
+  // Greetings / feelings
+  if(l.includes('how are you')||l==='how are you'||l.includes('how you doing')||l.includes('how are u')) return 'I am doing great, thanks for asking! I am here ready to help you. How are you doing today? Tell me what is on your mind.';
+  if(l.includes('hello')||l.includes('hi ')||l==='hi'||l.includes('hey')) return 'Hello! Nice to see you. Ask me anything - music, football, school, jokes, life, or just talk to me.';
+  if(l.includes('who are you')) return 'I am FORANEO_AI, built by FORANEO (PTY) LTD, Foraneo Net Department. I can chat, answer questions, help with photos, voice calls and video calls.';
+  if(l.includes('foraneo')) return 'FORANEO (PTY) LTD - Foraneo Net Department. All Things ON! This app is made to help you chat, learn, create logos, calculate, play games and talk by voice/video.';
+  if(l.includes('thank')) return 'You are welcome! Anytime. What else do you want to know?';
+  if(l.includes('bye')) return 'Bye! It was nice talking to you. Come back anytime, I will be here.';
+  if(l.includes('your name')) return 'My name is FORANEO_AI.';
+  if(l.includes('love you')||l.includes('like you')) return 'Aww thank you! I like talking to you too. You are a good person.';
+  if(l.includes('sad')||l.includes('depressed')||l.includes('lonely')||l.includes('tired')) return 'I hear you. It is okay to feel like that sometimes. You are not alone. Take a deep breath, drink some water, rest a bit. Do you want me to tell you a joke to cheer you up, or just talk?';
+  if(l.includes('joke')) return 'Okay here is one: Why did the phone go to the doctor? Because it had a bad signal! 😂 Want another one?';
+  if(l.includes('funny')) return 'Why did the chicken cross the road? To get to the other side! 😂 Classic but still funny. Want a better joke?';
+  // POP SMOKE - the one you asked about
+  if(l.includes('pop smoke')) return 'Pop Smoke was an American rapper from Brooklyn, New York. His real name was Bashar Barakah Jackson. He became famous in 2019 with the song "Welcome to the Party" and his mixtape "Meet the Woo". He was known for Brooklyn drill music - deep voice, hard beats. He released "Meet the Woo 2" in 2020. Sadly he passed away in February 2020 at only 20 years old, but his music is still very popular today. Songs to listen to: Dior, Welcome to the Party, The Woo, What You Know Bout Love, For The Night.';
+  if(l.includes('dior')) return 'Dior by Pop Smoke is one of his biggest songs. It is a drill song from Meet the Woo. The beat is hard and he talks about fashion, Dior, and life in Brooklyn. It is a party anthem!';
+  // Music general
+  if(l.includes('music')||l.includes('song')||l.includes('rapper')||l.includes('artist')) return 'I love music! Who do you like? Pop Smoke, Drake, Kendrick Lamar, Travis Scott, Amapiano artists like Kabza De Small, DJ Maphorisa, or Tyler ICU? Tell me your favourite artist and I will tell you about them.';
+  if(l.includes('drake')) return 'Drake is a Canadian rapper/singer, one of the biggest artists in the world. Real name Aubrey Graham. Famous songs: God\'s Plan, One Dance, Hotline Bling, Started From The Bottom. He mixes rap and singing.';
+  if(l.includes('kendrick')) return 'Kendrick Lamar is an American rapper from Compton. He is known for deep lyrics and storytelling. Albums: good kid, m.A.A.d city, To Pimp A Butterfly, DAMN., Mr. Morale. He won a Pulitzer Prize for DAMN.';
+  if(l.includes('travis')||l.includes('cactus')) return 'Travis Scott is an American rapper known for high energy and auto-tune. Albums: Astroworld, Utopia. Famous songs: Sicko Mode, Goosebumps, FE!N.';
+  if(l.includes('amapiano')||l.includes('kabza')||l.includes('maphorisa')) return 'Amapiano is South African house music - log drums, piano, soulful vibes. Big artists: Kabza De Small, DJ Maphorisa, Tyler ICU, Kelvin Momo, Uncle Waffles. It is huge all over the world now!';
+  if(l.includes('tyler icu')) return 'Tyler ICU is a South African Amapiano producer. He made the hit "Mnike" with Tumelo.za, DJ Maphorisa, Nandipha808, Ceeka RSA and Tyron Dee. Mnike went viral worldwide!';
+  // Football
+  if(l.includes('football')||l.includes('soccer')||l.includes('psl')||l.includes('chiefs')||l.includes('pirates')||l.includes('sundowns')) return 'Football! In South Africa, Kaizer Chiefs, Orlando Pirates and Mamelodi Sundowns are the big three. Sundowns have been very strong in recent years. Internationally, Real Madrid, Barcelona, Man City, Arsenal, Man United are top. Who is your team?';
+  if(l.includes('ronaldo')||l.includes('messi')||l.includes('mbappe')||l.includes('haaland')) return 'Messi and Ronaldo are legends - Messi won the World Cup with Argentina in 2022, Ronaldo is the all-time top scorer in international football. Mbappe and Haaland are the new stars now. Who do you think is better?';
+  // South Africa / life
+  if(l.includes('south africa')||l.includes('soweto')||l.includes('joburg')||l.includes('johannesburg')) return 'South Africa is beautiful - Soweto, Johannesburg, Cape Town, Durban. Soweto has so much history - Vilakazi Street, Orlando Towers, Hector Pieterson Museum. Are you from Soweto?';
+  if(l.includes('school')||l.includes('study')||l.includes('exam')||l.includes('homework')||l.includes('matric')) return 'School is important! If you have homework or exam questions, tell me the subject and question and I will try to explain it simply. Maths, English, History, Science - I can help you understand.';
+  if(l.includes('maths')||l.includes('math')||l.includes('calculate')||l.includes('+')||l.includes('*')) return 'For maths, use the 🧮 Calculator tab in this app, or ask me. Example: 25 x 4 = 100. Tell me your sum and I will work it out with you.';
+  if(l.includes('what is')||l.includes('what are')||l.includes('meaning')||l.includes('define')) return 'Good question! "'+q+'" - Let me explain simply: It depends on the topic, but in general it is something you can learn by breaking it into small parts. Tell me more about what you mean and I will explain it clearly for you.';
+  if(l.includes('who is')) return 'You asked "'+q+'". I can tell you about many famous people - Pop Smoke, Drake, Kendrick, Messi, Ronaldo, Kabza De Small, etc. Tell me the full name and I will tell you their story.';
+  if(l.includes('tell me about')||l.includes('tell me')) return 'Sure! Tell me what you want me to tell you about - a person, a song, football, school, South Africa? For example say "Tell me about Pop Smoke" or "Tell me a joke".';
+  if(l.includes('photo')||l.includes('picture')||l.includes('image')) return lastPhotoName ? 'I can see your photo: '+lastPhotoDesc+' What do you want me to do with it?' : 'Go to Image tab, upload a photo, and I will tell you what is on it.';
+  if(l.includes('logo')) return 'Go to Image / Logo tab, type your idea like "FORANEO lion logo, blue and gold" and tap Generate Idea. I will make a design idea for you.';
+  if(l.includes('game')) return 'Go to Game tab and guess my number 1-10! It is fun. I am thinking of a number right now.';
+  if(l.includes('voice')||l.includes('call')) return 'Tap the 🗣 Voice Call or 🤖 Video Call button at the bottom and I will talk to you with my voice.';
+  if(l.includes('help')) return 'I can help you with: 1) Chatting and answering questions 2) Music and football 3) Photos 4) Voice notes/calls/video calls 5) Calculator 6) Game 7) Logos. Just ask me anything!';
+  // Fallback - smart, not "try tabs"
+  return 'That is interesting - you said: "'+q+'". Here is what I think: It is a good topic to talk about. Can you tell me a bit more so I can give you a better answer? For example, if it is about music, tell me the artist. If it is about school, tell me the subject. I am listening.';
 }
 function speakAI(text){
   try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(text); speechSynthesis.speak(u);}catch(e){}
@@ -217,7 +237,6 @@ function genImage(){
   document.getElementById('gallery').innerHTML+='<div style="background:#1a5cff;color:#fff;padding:15px;border-radius:10px;margin:5px 0;text-align:center">'+p+'</div>';
 }
 function clearImg(){document.getElementById('imgResult').innerHTML=''; document.getElementById('imgPrompt').value='';}
-// --- AI RESPONDS TO PHOTOS ---
 function photoAI(e){
   var f=e.target.files[0]; if(!f) return;
   lastPhotoName=f.name;
@@ -225,14 +244,13 @@ function photoAI(e){
   r.onload=function(){
     var img=document.getElementById('photoPreview');
     img.src=r.result; img.style.display='block';
-    // AI analysis based on file info
     var lower=f.name.toLowerCase();
     var guess='a photo';
     if(lower.includes('logo')||lower.includes('foraneo')) guess='a logo / FORANEO design';
     else if(lower.includes('face')||lower.includes('selfie')||lower.includes('me')) guess='a photo of a person';
     else if(lower.includes('car')||lower.includes('house')||lower.includes('dog')||lower.includes('cat')) guess='a photo - it looks like '+lower;
     lastPhotoDesc='I can see it. File name: '+f.name+'. It looks like '+guess+'. The picture is loaded above.';
-    document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+lastPhotoDesc+' Tap "Ask AI About This Photo" or ask in Chat "What is on it?"';
+    document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+lastPhotoDesc;
     addMsg('FORANEO_AI','I received your photo: '+f.name+'. '+lastPhotoDesc,false);
     speakAI('I can see your photo. '+lastPhotoDesc);
   };
@@ -240,12 +258,11 @@ function photoAI(e){
 }
 function askAboutPhoto(){
   if(!lastPhotoName){alert('Upload a photo first in Image tab.'); return;}
-  var reply='Looking at your photo '+lastPhotoName+': '+lastPhotoDesc+' If you tell me what is in the photo, I can help you more - e.g. describe it, make a logo from it, or write a caption.';
+  var reply='Looking at your photo '+lastPhotoName+': '+lastPhotoDesc+' If you tell me what is in the photo, I can help you more.';
   document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+reply;
   addMsg('FORANEO_AI',reply,false);
   speakAI(reply);
 }
-// --- AI RESPONDS TO VOICE NOTES ---
 function listenAndReply(mode){
   if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Voice not supported. Try Chrome.'); return;}
   var R=new (window.SpeechRecognition||window.webkitSpeechRecognition)();
@@ -257,12 +274,10 @@ function listenAndReply(mode){
     speakAI(reply);
     if(mode==='video') document.getElementById('videoAIReply').textContent='🤖 AI: '+reply;
     if(mode==='voice') document.getElementById('voiceAIReply').textContent='🤖 AI: '+reply;
-    if(mode==='note') alert('🤖 FORANEO_AI replied: '+reply);
   };
   R.start();
 }
 function voiceNote(){ listenAndReply('note'); }
-// --- AI VOICE CALL ---
 function voiceCall(){
   document.getElementById('voiceModal').style.display='block';
   document.getElementById('voiceStatus').textContent='Voice Call Connected - I am listening...';
@@ -272,11 +287,10 @@ function voiceCall(){
 }
 function voiceCallListen(){ listenAndReply('voice'); }
 function closeVoice(){document.getElementById('voiceModal').style.display='none'; speechSynthesis.cancel();}
-// --- AI VIDEO CALL ---
-function videoCall(){
+  function videoCall(){
   document.getElementById('videoModal').style.display='block';
   document.getElementById('videoStatus').textContent='Video Call with AI - Connected. I can hear you!';
-  var hello='Hello! This is FORANEO AI on video call. I can see you are here. How can I help you? Tap Speak to AI and talk to me.';
+  var hello='Hello! This is FORANEO AI on video call. How can I help you? Tap Speak to AI and talk to me.';
   document.getElementById('videoAIReply').textContent='🤖 AI: '+hello;
   speakAI(hello);
 }
