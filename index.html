@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORANEO_AI - All Things ON</title>
 <script src="https://js.puter.com/v2/"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#fff;padding-bottom:90px;color:#1a5cff}
@@ -14,13 +15,12 @@ header h1{margin:0;font-size:24px} header p{margin:4px 0 0;font-size:13px}
 .tabs button{white-space:nowrap;border:1px solid #1a5cff;background:#fff;color:#1a5cff;padding:8px 14px;border-radius:20px;cursor:pointer}
 .tabs button.active{background:#1a5cff;color:#fff}
 .page{display:none;padding:12px} .page.active{display:block}
-#chatBox{background:#fff;border:1px solid #1a5cff;border-radius:12px;min-height:320px;padding:10px;max-height:60vh;overflow-y:auto}
-.msg{padding:10px;margin:8px 0;border-radius:12px;background:#fff;border:1px solid #1a5cff;color:#1a5cff;word-wrap:break-word}
-.msg.me{background:#1a5cff;color:#fff;margin-left:15%}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px;display:flex;gap:6px;align-items:center;border-top:1px solid #1a5cff}
-.bottom input{flex:1;padding:12px;border-radius:20px;border:1px solid #1a5cff;outline:none;color:#1a5cff}
-.bottom button{border:1px solid #1a5cff;border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;background:#fff}
-.bottom .send{background:#1a5cff;color:#fff;border-radius:20px;width:64px;height:auto;font-size:16px}
+#chatBox{background:#fff;border:none;border-radius:12px;min-height:320px;padding:10px;max-height:60vh;overflow-y:auto}
+.msg{padding:10px;margin:8px 0;border-radius:12px;background:#f2f4f8;border:none;color:#222;word-wrap:break-word}
+.msg.me{background:#1a5cff;color:#fff;margin-left:15%;border:none}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px;display:flex;gap:6px;align-items:center;border-top:1px solid #eee}
+.bottom input{flex:1;padding:12px;border-radius:20px;border:1px solid #ddd;outline:none;color:#222}
+.bottom .send{background:#1a5cff;color:#fff;border:none;border-radius:20px;width:64px;height:44px;font-size:16px;cursor:pointer}
 .badge{position:fixed;top:2px;right:5px;background:#fff;color:#1a5cff;border:1px solid #1a5cff;padding:2px 8px;font-size:11px;border-radius:10px;z-index:9999;font-weight:bold}
 .card{background:#fff;padding:14px;border-radius:12px;margin-bottom:10px;border:1px solid #1a5cff}
 .card input,.card select,.card textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #1a5cff}
@@ -28,15 +28,32 @@ header h1{margin:0;font-size:24px} header p{margin:4px 0 0;font-size:13px}
 #calcDisplay{font-size:30px;text-align:right;background:#fff;border:1px solid #1a5cff;padding:12px;border-radius:10px}
 .calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .calcGrid button{background:#fff;color:#1a5cff;padding:14px;font-size:18px;border:1px solid #1a5cff;border-radius:10px}
-#videoModal,#voiceModal{display:none;position:fixed;inset:0;background:#1a5cff;color:#fff;z-index:10000;text-align:center;padding-top:30px}
-.aiFace{font-size:110px;animation:wave 1s infinite}
-@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(10deg)}}
 img{max-width:100%;border-radius:10px}
 .chip{border:1px solid #1a5cff;background:#fff;color:#1a5cff;padding:8px 12px;border-radius:20px;cursor:pointer;margin:3px;display:inline-block}
+#videoModal,#voiceModal{display:none;position:fixed;inset:0;background:#000;color:#fff;z-index:10000;overflow:hidden}
+.callTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent);z-index:5}
+.callTop b{font-size:16px} .callTop span{font-size:12px;background:#25D366;padding:4px 10px;border-radius:20px;color:#fff}
+#aiVideoArea{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#1a3a8f,#0a0a1a 70%);padding:20px;text-align:center}
+.aiAvatar{width:170px;height:170px;border-radius:50%;background:linear-gradient(135deg,#1a5cff,#00c6ff);display:flex;align-items:center;justify-content:center;font-size:95px;border:4px solid rgba(255,255,255,.9);box-shadow:0 0 40px rgba(26,92,255,.8);transition:transform .2s}
+.aiAvatar.talking{animation:talk .4s infinite}
+@keyframes talk{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.aiEyes{position:absolute;font-size:22px;margin-top:-20px;letter-spacing:38px;margin-left:8px}
+.blink{animation:blink 3.5s infinite}
+@keyframes blink{0%,92%,100%{opacity:1}95%{opacity:0}}
+#videoAIReply{position:absolute;left:14px;right:14px;bottom:120px;background:rgba(0,0,0,.6);border-radius:14px;padding:12px;font-size:14px;line-height:1.4;max-height:130px;overflow-y:auto;z-index:4}
+#videoStatus{font-size:12px;opacity:.9;margin-top:8px}
+#userCam{position:absolute;right:12px;top:60px;width:110px;height:150px;object-fit:cover;border-radius:14px;border:2px solid #fff;background:#222;z-index:6;transform:scaleX(-1)}
+#userCamLabel{position:absolute;right:18px;top:195px;font-size:11px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:10px;z-index:7}
+.callControls{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:14px;z-index:8;flex-wrap:wrap}
+.callBtn{width:58px;height:58px;border-radius:50%;border:none;font-size:24px;cursor:pointer;background:rgba(255,255,255,.2);color:#fff}
+.callBtn.active{background:#fff;color:#000}
+.callBtn.end{background:#ff3b30;width:66px;height:66px;font-size:28px}
+.callBtn.see{background:#1a5cff;width:auto;padding:0 16px;border-radius:28px;font-size:14px;font-weight:bold}
+#voiceModal{background:#0a0a1a;text-align:center;padding-top:60px}
 </style>
 </head>
 <body>
-<div class="badge">4</div>
+<div class="badge">LIVE CAM</div>
 <header><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department</p><small id="userLine">Guest • All Things ON</small></header>
 <div class="tabs">
 <button class="active" onclick="showPage('chatPage',this)">💬 Chat</button>
@@ -45,123 +62,147 @@ img{max-width:100%;border-radius:10px}
 <button onclick="showPage('gamePage',this)">🎮 Game</button>
 <button onclick="showPage('loginPage',this)">🔐 Login</button>
 </div>
-
 <div id="chatPage" class="page active">
-<div id="chatBox"><div class="msg">🤖 <b>FORANEO_AI:</b> Hello! I can now SEE photos. Upload a screenshot, then ask What's on it - I will read it.</div></div>
+<div id="chatBox"><div class="msg">🤖 <b>FORANEO_AI:</b> Hello! Upload a photo or tap Video Call - I will see your LIVE camera.</div></div>
 <div style="margin-top:8px">
 <span class="chip" onclick="document.getElementById('fileInput').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4</span>
 <span class="chip" onclick="voiceNote()">▶️ Voice Note</span>
 <span class="chip" onclick="voiceCall()">🗣 Voice Call</span>
-<span class="chip" onclick="videoCall()">👤 Video Call</span>
+<span class="chip" onclick="videoCall()">👤 Video Call - LIVE CAM</span>
 <input type="file" id="fileInput" style="display:none" onchange="handleFile(event)">
 </div>
 </div>
-
 <div id="imagePage" class="page">
 <div class="card"><h3>🎨 Image / Logo Generator</h3><input id="imgPrompt" placeholder="e.g. FORANEO lion logo, blue and white"><select id="imgStyle"><option>Logo</option><option>Poster</option><option>Profile Picture</option><option>Business Card</option></select><button onclick="genImage()">Generate Idea</button><div id="imgResult"></div></div>
-<div class="card"><h3>📸 AI Photo - I SEE It</h3><p>Upload a photo and I will tell you what is really on it.</p><input type="file" accept="image/*" onchange="handleFile(event)"><img id="photoPreview" style="display:none;margin-top:10px"><p id="photoAIReply"></p></div>
+<div class="card"><h3>📸 AI Photo - I READ It</h3><input type="file" accept="image/*" onchange="handleFile(event)"><img id="photoPreview" style="display:none;margin-top:10px"><p id="photoAIReply"></p></div>
 <div class="card"><h3>🖼️ Gallery</h3><div id="gallery"></div></div>
 </div>
-
 <div id="calcPage" class="page"><div class="card"><h3>🧮 Calculator</h3><div id="calcDisplay">0</div><div class="calcGrid"><button onclick="calcPress('7')">7</button><button onclick="calcPress('8')">8</button><button onclick="calcPress('9')">9</button><button onclick="calcPress('/')">÷</button><button onclick="calcPress('4')">4</button><button onclick="calcPress('5')">5</button><button onclick="calcPress('6')">6</button><button onclick="calcPress('*')">×</button><button onclick="calcPress('1')">1</button><button onclick="calcPress('2')">2</button><button onclick="calcPress('3')">3</button><button onclick="calcPress('-')">-</button><button onclick="calcPress('0')">0</button><button onclick="calcPress('.')">.</button><button onclick="calcPress('C')">C</button><button onclick="calcPress('+')">+</button></div><button style="width:100%;margin-top:10px" onclick="calcPress('=')">= Equals</button></div></div>
-
 <div id="gamePage" class="page"><div class="card"><h3>🎮 Guess The Number</h3><p>I am thinking 1-10. Guess!</p><div style="text-align:center;font-size:60px" id="gameBox">🎲</div><input id="guessInput" type="number" placeholder="1 - 10"><button onclick="playGuess()">Guess</button><button onclick="newGame()">New Game</button><p id="gameMsg"></p><p>Score: <span id="score">0</span></p></div></div>
-
 <div id="loginPage" class="page"><div class="card"><h3>🔐 Login / Settings</h3><input id="userName" placeholder="Your name"><button onclick="saveName()">Save Name</button><p id="loginMsg"></p><hr><button onclick="clearHistory()">Clear History</button><button onclick="exportChat()">Copy Chat</button></div></div>
 
 <div class="bottom">
-<button onclick="document.getElementById('fileInput').click()">📎</button>
-<button onclick="voiceNote()">▶️</button>
-<button onclick="videoCall()">👤</button>
 <input id="askInput" placeholder="Ask FORANEO_AI...">
 <button class="send" onclick="sendText()">Send</button>
 </div>
 
-<div id="videoModal"><div class="aiFace">👤</div><h2>FORANEO_AI - Video Call</h2><p id="videoStatus">Connected - Listening...</p><p id="videoAIReply" style="padding:0 20px"></p><button onclick="videoListen()" style="padding:12px 20px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">🎤 Speak to AI</button> <button onclick="closeVideo()" style="padding:12px 24px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">📞 End Call</button></div>
-<div id="voiceModal"><div class="aiFace">🗣️</div><h2>FORANEO_AI - Voice Call</h2><p id="voiceStatus">Connected - Tap Speak</p><p id="voiceAIReply" style="padding:0 20px"></p><button onclick="voiceCallListen()" style="padding:12px 20px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">🎤 Speak to AI</button> <button onclick="closeVoice()" style="padding:12px 24px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">📞 End Call</button></div>
+<div id="videoModal">
+<div class="callTop"><div><b>FORANEO_AI</b><br><span style="background:transparent;padding:0;font-size:11px;opacity:.8">Video Call • <span id="callTimer">00:00</span></span></div><span>● LIVE</span></div>
+<div id="aiVideoArea">
+<div style="position:relative"><div class="aiAvatar" id="aiAvatar">🧑‍💼</div><div class="aiEyes blink">👀</div></div>
+<h3 style="margin:12px 0 4px">FORANEO_AI</h3>
+<p id="videoStatus">Connecting...</p>
+<p style="font-size:12px;opacity:.7">AI Assistant • Foraneo Net</p>
+</div>
+<video id="userCam" autoplay playsinline muted></video>
+<div id="userCamLabel">You</div>
+<div id="videoAIReply">Connecting...</div>
+<div class="callControls">
+<button class="callBtn" id="muteBtn" onclick="toggleMute()">🎤</button>
+<button class="callBtn" onclick="switchCamera()">🔄</button>
+<button class="callBtn see" onclick="showAIWhatISee()">👀 Let AI SEE Me</button>
+<button class="callBtn" onclick="videoListen()">💬</button>
+<button class="callBtn end" onclick="closeVideo()">📞</button>
+</div>
+<canvas id="snapCanvas" style="display:none"></canvas>
+</div>
+
+<div id="voiceModal"><div style="font-size:90px;margin-top:40px">🗣️</div><h2>FORANEO_AI - Voice Call</h2><p id="voiceStatus">Connected - Tap Speak</p><p id="voiceAIReply" style="padding:0 20px"></p><button onclick="voiceCallListen()" style="padding:12px 20px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">🎤 Speak to AI</button> <button onclick="closeVoice()" style="padding:12px 24px;border-radius:20px;border:1px solid #fff;background:#fff;color:#1a5cff">📞 End Call</button></div>
 
 <script>
 let calcVal="",score=0,secret=Math.floor(Math.random()*10)+1;
-let lastImageData=null,lastFileName="";
+let lastImageData=null,lastFileName="",lastOCRText="";
+let camStream=null,useFront=true,callStart=0,callTimerInt=null,isMuted=false;
 function clean(t){return String(t||"").replace(/\*\*/g,"").replace(/\*/g,"").replace(/###/g,"").replace(/##/g,"").replace(/#/g,"");}
 function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
 function addMsg(who,text,isMe){var box=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg '+(isMe?'me':'');d.innerHTML=(isMe?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+clean(text);box.appendChild(d);box.scrollTop=box.scrollHeight;try{localStorage.setItem('foraneo_chat',box.innerHTML)}catch(e){}}
 function loadHistory(){try{var h=localStorage.getItem('foraneo_chat');if(h)document.getElementById('chatBox').innerHTML=h;}catch(e){} try{var n=localStorage.getItem('foraneo_name');if(n)document.getElementById('userLine').textContent=n+' • All Things ON';}catch(e){}}
-function clearHistory(){localStorage.removeItem('foraneo_chat');document.getElementById('chatBox').innerHTML='<div class="msg">🤖 <b>FORANEO_AI:</b> History cleared.</div>';alert('History cleared');lastImageData=null;}
+function clearHistory(){localStorage.removeItem('foraneo_chat');document.getElementById('chatBox').innerHTML='<div class="msg">🤖 <b>FORANEO_AI:</b> History cleared.</div>';lastImageData=null;lastOCRText="";}
 function saveName(){var n=document.getElementById('userName').value.trim();if(!n)return alert('Type your name');localStorage.setItem('foraneo_name',n);document.getElementById('userLine').textContent=n+' • All Things ON';document.getElementById('loginMsg').textContent='Saved: '+n;}
 function exportChat(){navigator.clipboard.writeText(document.getElementById('chatBox').innerText).then(()=>alert('Chat copied!'));}
-
 async function getAIReply(q){
-  try{var res=await puter.ai.chat("You are FORANEO_AI, built by FORANEO (PTY) LTD. Answer simply, friendly, short clear English, no ** stars. Question: "+q);if(res&&res.message&&res.message.content)return clean(res.message.content);if(typeof res==='string')return clean(res);return "Sorry, try again.";}catch(e){return "I could not reach internet AI. Check data and try again. You asked: "+q;}
+  try{var res=await puter.ai.chat("You are FORANEO_AI, built by FORANEO (PTY) LTD. Answer simply, friendly, short clear English, no ** stars. Question: "+q);if(res&&res.message&&res.message.content)return clean(res.message.content);if(typeof res==='string')return clean(res);return "Sorry, try again.";}catch(e){return "I could not reach internet AI. Check data and try again.";}
 }
-
-// *** VISION - AI REALLY SEES IMAGE ***
+async function readTextFromImage(dataUrl){try{var r=await Tesseract.recognize(dataUrl,'eng',{});return (r.data.text||"").trim();}catch(e){return "";}}
 async function analyzeImage(dataUrl,question){
   try{
-    var res=await puter.ai.chat([{role:"user",content:[{type:"text",text:"You are FORANEO_AI. Look at this image carefully and answer in simple clear English, no ** stars. Question: "+question},{type:"image_url",image_url:{url:dataUrl}}]}],{model:"gpt-4o"});
-    if(res&&res.message&&res.message.content)return clean(res.message.content);
-    if(typeof res==='string')return clean(res);
-    // Fallback - try without model option
-    var res2=await puter.ai.chat([{role:"user",content:[{type:"text",text:question},{type:"image_url",image_url:{url:dataUrl}}]}]);
-    if(res2&&res2.message&&res2.message.content)return clean(res2.message.content);
-    return "I got the image but could not read it. Please try uploading again.";
-  }catch(e){return "I can see you uploaded an image but vision failed: "+e.message+". Try again.";}
+    var visionPromise=puter.ai.chat(question+" - Look at this image and answer from what you see.",dataUrl);
+    var timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),15000));
+    var res=await Promise.race([visionPromise,timeout]);
+    if(res&&res.message&&res.message.content&&res.message.content.length>10)return clean(res.message.content);
+    if(typeof res==='string'&&res.length>10)return clean(res);
+  }catch(e){console.log("vision failed",e);}
+  var ocr=lastOCRText||await readTextFromImage(dataUrl); lastOCRText=ocr;
+  if(ocr&&ocr.length>5){ return await getAIReply("Text from image: "+ocr+". User asks: "+question+". Answer from that text."); }
+  return "I got your image but could not read it. Try a clearer photo.";
 }
-
 async function handleFile(e){
-  var f=e.target.files[0];if(!f)return;
-  lastFileName=f.name;
-  addMsg('You','Uploaded: '+f.name,true);
+  var f=e.target.files[0];if(!f)return; lastFileName=f.name; addMsg('You','Uploaded: '+f.name,true);
   if(f.type.startsWith('image/')){
-    var r=new FileReader();
-    r.onload=async function(){
-      lastImageData=r.result;
-      var img=document.getElementById('photoPreview');if(img){img.src=r.result;img.style.display='block';}
-      addMsg('FORANEO_AI','Got it! I can see your image now. Reading it...',false);
-      var reply=await analyzeImage(r.result,"Describe everything you see in this image in detail. Read all text, prices, app name, buttons, and explain what information is shown.");
-      addMsg('FORANEO_AI',reply,false);
-      document.getElementById('photoAIReply').textContent='🤖 FORANEO_AI: '+reply;
-      speakAI(reply);
-    };
-    r.readAsDataURL(f);
-  }else if(f.type.startsWith('audio/')||f.type.startsWith('video/')){
-    addMsg('FORANEO_AI','Got your '+f.type+' file: '+f.name+'. Tell me what you want me to do with it - transcribe, describe, or explain?',false);
-  }else{
-    addMsg('FORANEO_AI','Got your file: '+f.name+'. What do you want me to do with it?',false);
-  }
+    var r=new FileReader(); r.onload=async function(){ lastImageData=r.result; lastOCRText=""; var img=document.getElementById('photoPreview');if(img){img.src=r.result;img.style.display='block';} addMsg('FORANEO_AI','Got it! Reading it...',false); var reply=await analyzeImage(r.result,"Describe everything you see in this image in detail."); addMsg('FORANEO_AI',reply,false); document.getElementById('photoAIReply').textContent='🤖 '+reply; speakAI(reply); }; r.readAsDataURL(f);
+  }else{ addMsg('FORANEO_AI','Got your file: '+f.name+'. What do you want me to do with it?',false); }
   e.target.value='';
 }
-
 async function sendText(){
-  var inp=document.getElementById('askInput');var q=inp.value.trim();if(!q)return;
-  addMsg('You',q,true);inp.value='';
-  addMsg('FORANEO_AI','Thinking...',false);
-  var box=document.getElementById('chatBox');
-  var reply;
-  // If user has uploaded an image and asks about it, use VISION not text
-  var l=q.toLowerCase();
-  if(lastImageData && (l.includes("what")||l.includes("on it")||l.includes("this")||l.includes("screenshot")||l.includes("understand")||l.includes("explain")||l.includes("show")||l.includes("image")||l.includes("photo")||l.includes("info"))){
-    reply=await analyzeImage(lastImageData,q+" - Answer by looking at the uploaded image, read all text and details you actually see. Do NOT ask user to paste text.");
-  }else{
-    reply=await getAIReply(q);
-  }
-  if(box.lastChild)box.lastChild.remove();
-  addMsg('FORANEO_AI',reply,false);
+  var inp=document.getElementById('askInput');var q=inp.value.trim();if(!q)return; addMsg('You',q,true);inp.value=''; addMsg('FORANEO_AI','Thinking...',false); var box=document.getElementById('chatBox'); var reply; var l=q.toLowerCase();
+  if(lastImageData && (l.includes("what")||l.includes("on it")||l.includes("this")||l.includes("screenshot")||l.includes("understand")||l.includes("explain")||l.includes("show")||l.includes("image")||l.includes("photo")||l.includes("info")||l.includes("read"))){
+    if(lastOCRText){ reply=await getAIReply("Text from uploaded image: "+lastOCRText+". User asks: "+q+". Answer from that text."); } else { reply=await analyzeImage(lastImageData,q); }
+  }else{ reply=await getAIReply(q); }
+  if(box.lastChild)box.lastChild.remove(); addMsg('FORANEO_AI',reply,false);
 }
 document.getElementById('askInput').addEventListener('keypress',function(e){if(e.key==='Enter')sendText();});
-function speakAI(t){try{speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(clean(t).slice(0,400)));}catch(e){}}
+function speakAI(t){
+  var av=document.getElementById('aiAvatar'); if(av) av.classList.add('talking');
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(clean(t).slice(0,400)); u.onend=function(){if(av)av.classList.remove('talking');}; speechSynthesis.speak(u); setTimeout(()=>{if(av)av.classList.remove('talking');},5000);}catch(e){if(av)av.classList.remove('talking');}
+}
 function calcPress(v){if(v==='C'){calcVal="";document.getElementById('calcDisplay').textContent='0';return;}if(v==='='){try{calcVal=String(eval(calcVal));document.getElementById('calcDisplay').textContent=calcVal;}catch(e){document.getElementById('calcDisplay').textContent='Error';calcVal="";}return;}calcVal+=v;document.getElementById('calcDisplay').textContent=calcVal;}
-function playGuess(){var g=parseInt(document.getElementById('guessInput').value);if(!g)return;if(g===secret){score++;document.getElementById('score').textContent=score;document.getElementById('gameMsg').textContent='Correct!';document.getElementById('gameBox').textContent='🏆';}else if(g<secret){document.getElementById('gameMsg').textContent='Too low - try higher!';}else{document.getElementById('gameMsg').textContent='Too high - try lower!';}}
+function playGuess(){var g=parseInt(document.getElementById('guessInput').value);if(!g)return;if(g===secret){score++;document.getElementById('score').textContent=score;document.getElementById('gameMsg').textContent='Correct!';document.getElementById('gameBox').textContent='🏆';}else if(g<secret){document.getElementById('gameMsg').textContent='Too low!';}else{document.getElementById('gameMsg').textContent='Too high!';}}
 function newGame(){secret=Math.floor(Math.random()*10)+1;document.getElementById('gameMsg').textContent='New game! Guess 1-10';document.getElementById('gameBox').textContent='🎲';document.getElementById('guessInput').value='';}
 function genImage(){var p=document.getElementById('imgPrompt').value||'FORANEO logo';var s=document.getElementById('imgStyle').value;document.getElementById('imgResult').innerHTML='<div class="card"><b>Your '+s+' idea:</b><br>'+p+'<br><br><div style="background:#1a5cff;color:#fff;padding:30px;border-radius:12px;text-align:center;font-size:28px;font-weight:bold">'+p.toUpperCase()+'</div></div>';document.getElementById('gallery').innerHTML+='<div style="background:#1a5cff;color:#fff;padding:15px;border-radius:10px;margin:5px 0;text-align:center">'+p+'</div>';}
 async function listenAndReply(mode){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Voice not supported. Try Chrome.');return;}var R=new (window.SpeechRecognition||window.webkitSpeechRecognition)();R.onresult=async function(e){var t=e.results[0][0].transcript;addMsg('You','🎤 '+t,true);var reply=await getAIReply(t);addMsg('FORANEO_AI',reply,false);speakAI(reply);if(mode==='video')document.getElementById('videoAIReply').textContent='🤖 AI: '+reply;if(mode==='voice')document.getElementById('voiceAIReply').textContent='🤖 AI: '+reply;};R.start();}
 function voiceNote(){listenAndReply('note');}
-function voiceCall(){document.getElementById('voiceModal').style.display='block';var hello='Hello! This is FORANEO AI on a voice call. How can I help you? Tap Speak to AI and talk to me.';document.getElementById('voiceAIReply').textContent='🤖 AI: '+hello;speakAI(hello);}
+function voiceCall(){document.getElementById('voiceModal').style.display='block';var hello='Hello! This is FORANEO AI on a voice call. How can I help you?';document.getElementById('voiceAIReply').textContent='🤖 AI: '+hello;speakAI(hello);}
 function voiceCallListen(){listenAndReply('voice');}
 function closeVoice(){document.getElementById('voiceModal').style.display='none';speechSynthesis.cancel();}
-function videoCall(){document.getElementById('videoModal').style.display='block';var hello='Hello! This is FORANEO AI on video call. I can see and hear you. How can I help you?';document.getElementById('videoAIReply').textContent='🤖 AI: '+hello;speakAI(hello);}
+function toggleMute(){isMuted=!isMuted;var b=document.getElementById('muteBtn');b.textContent=isMuted?'🔇':'🎤';b.classList.toggle('active',isMuted);if(camStream)camStream.getAudioTracks().forEach(t=>t.enabled=!isMuted);}
+async function startCamera(){
+  try{
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());}
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode: useFront ? "user" : "environment"},audio:true});
+    var v=document.getElementById('userCam'); v.srcObject=camStream; await v.play();
+    document.getElementById('videoStatus').textContent='LIVE • Connected';
+    return true;
+  }catch(e){ document.getElementById('videoStatus').textContent='Camera blocked. Allow camera, then try again.'; return false; }
+}
+async function videoCall(){
+  document.getElementById('videoModal').style.display='block';
+  document.getElementById('videoStatus').textContent='Connecting... Please Allow Camera';
+  document.getElementById('videoAIReply').textContent='Connecting...';
+  callStart=Date.now(); if(callTimerInt)clearInterval(callTimerInt);
+  callTimerInt=setInterval(()=>{var s=Math.floor((Date.now()-callStart)/1000);var m=String(Math.floor(s/60)).padStart(2,'0');var ss=String(s%60).padStart(2,'0');document.getElementById('callTimer').textContent=m+':'+ss;},1000);
+  var ok=await startCamera();
+  var hello= ok ? 'Hello! I can see you now. You are live on video. Tap Let AI SEE Me and I will describe what I see.' : 'Camera permission needed. Allow camera and try again.';
+  document.getElementById('videoAIReply').textContent='🤖 AI: '+hello; speakAI(hello);
+}
+function switchCamera(){ useFront=!useFront; startCamera(); }
+function closeVideo(){
+  document.getElementById('videoModal').style.display='none';
+  if(callTimerInt)clearInterval(callTimerInt);
+  if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;}
+  speechSynthesis.cancel(); var av=document.getElementById('aiAvatar'); if(av)av.classList.remove('talking');
+}
+async function showAIWhatISee(){
+  var v=document.getElementById('userCam');
+  if(!v.srcObject||v.videoWidth==0){ document.getElementById('videoAIReply').textContent='Camera not ready yet. Wait 2 sec and try again.'; return; }
+  document.getElementById('videoStatus').textContent='AI is looking at you...';
+  document.getElementById('videoAIReply').textContent='👀 AI is seeing you now... wait 10 sec';
+  var canvas=document.getElementById('snapCanvas'); canvas.width=v.videoWidth; canvas.height=v.videoHeight; var ctx=canvas.getContext('2d'); ctx.drawImage(v,0,0,canvas.width,canvas.height);
+  var dataUrl=canvas.toDataURL('image/jpeg',0.85); lastImageData=dataUrl;
+  var reply=await analyzeImage(dataUrl,"Look at this LIVE camera photo of the person on video call. Describe what you see: who is it, what are they wearing, where are they, what is their expression, what is in the background. Talk to them directly like a real video call.");
+  document.getElementById('videoAIReply').textContent='🤖 AI: '+reply; document.getElementById('videoStatus').textContent='LIVE • AI saw you!';
+  addMsg('FORANEO_AI','[Video Call - I saw you live] '+reply,false); speakAI(reply);
+}
 function videoListen(){listenAndReply('video');}
-function closeVideo(){document.getElementById('videoModal').style.display='none';speechSynthesis.cancel();}
 loadHistory();
 </script>
 </body>
