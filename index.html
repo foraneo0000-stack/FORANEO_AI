@@ -45,6 +45,41 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 <div class="tab clear" id="tabClear">🗑️ Clear Chats</div>
 </div>
 <div id="chat"></div>
+<!-- FORANEO AI CONTROLS - CEO KARABO -->
+<div id="controlBar" style="display:flex;gap:8px;padding:8px;background:#f5f5f5;">
+<button onclick="readAppData()" title="Read App Data">📁 Read App</button>
+<button onclick="editAppFile()" title="Edit Files">✏️ Edit</button>
+<button onclick="seeApp()" title="See Everything">👁️ See App</button>
+</div>
+
+<div id="inputArea" style="display:flex;align-items:center;gap:8px;padding:10px;">
+<button id="userEmojiBtn" onclick="toggleEmoji()" style="font-size:22px;background:none;border:none;">👤</button>
+<button onclick="generateVideo()" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;">🎬 Generate Video</button>
+<input id="msgInput" placeholder="Message FORANEO_AI..." style="flex:1;padding:12px;border-radius:20px;border:1px solid #ddd;">
+<button onclick="sendMsg()" style="background:#2563eb;color:white;border-radius:50%;width:42px;height:42px;">➤</button>
+</div>
+
+<div id="emojiPanel" style="display:none;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px;background:white;border-top:1px solid #ddd;max-height:150px;overflow-y:auto;">
+<span onclick="addEmoji('😊')">😊</span><span onclick="addEmoji('🔥')">🔥</span><span onclick="addEmoji('❤️')">❤️</span><span onclick="addEmoji('👍')">👍</span><span onclick="addEmoji('😂')">😂</span><span onclick="addEmoji('🚀')">🚀</span><span onclick="addEmoji('💯')">💯</span><span onclick="addEmoji('🎬')">🎬</span>
+<span onclick="addEmoji('👤')">👤</span><span onclick="addEmoji('📁')">📁</span><span onclick="addEmoji('💻')">💻</span><span onclick="addEmoji('🎨')">🎨</span><span onclick="addEmoji('🧠')">🧠</span><span onclick="addEmoji('⚡')">⚡</span><span onclick="addEmoji('✨')">✨</span><span onclick="addEmoji('🙏')">🙏</span>
+</div><!-- FORANEO AI CONTROLS - CEO KARABO -->
+<div id="controlBar" style="display:flex;gap:8px;padding:8px;background:#f5f5f5;">
+<button onclick="readAppData()" title="Read App Data">📁 Read App</button>
+<button onclick="editAppFile()" title="Edit Files">✏️ Edit</button>
+<button onclick="seeApp()" title="See Everything">👁️ See App</button>
+</div>
+
+<div id="inputArea" style="display:flex;align-items:center;gap:8px;padding:10px;">
+<button id="userEmojiBtn" onclick="toggleEmoji()" style="font-size:22px;background:none;border:none;">👤</button>
+<button onclick="generateVideo()" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;">🎬 Generate Video</button>
+<input id="msgInput" placeholder="Message FORANEO_AI..." style="flex:1;padding:12px;border-radius:20px;border:1px solid #ddd;">
+<button onclick="sendMsg()" style="background:#2563eb;color:white;border-radius:50%;width:42px;height:42px;">➤</button>
+</div>
+
+<div id="emojiPanel" style="display:none;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px;background:white;border-top:1px solid #ddd;max-height:150px;overflow-y:auto;">
+<span onclick="addEmoji('😊')">😊</span><span onclick="addEmoji('🔥')">🔥</span><span onclick="addEmoji('❤️')">❤️</span><span onclick="addEmoji('👍')">👍</span><span onclick="addEmoji('😂')">😂</span><span onclick="addEmoji('🚀')">🚀</span><span onclick="addEmoji('💯')">💯</span><span onclick="addEmoji('🎬')">🎬</span>
+<span onclick="addEmoji('👤')">👤</span><span onclick="addEmoji('📁')">📁</span><span onclick="addEmoji('💻')">💻</span><span onclick="addEmoji('🎨')">🎨</span><span onclick="addEmoji('🧠')">🧠</span><span onclick="addEmoji('⚡')">⚡</span><span onclick="addEmoji('✨')">✨</span><span onclick="addEmoji('🙏')">🙏</span>
+</div>
 <div id="callBox"><video id="cam" autoplay playsinline muted></video><div style="text-align:center;padding:12px 0;font-weight:900" id="callText">Live Connected</div><div style="display:flex;gap:12px"><button id="endCallBtn" style="flex:1;padding:14px;background:#ff2a2a;color:#fff;border:none;border-radius:28px;font-weight:900">End Call</button><button id="speakBtn" style="flex:1;padding:14px;background:#1a5cff;color:#fff;border:none;border-radius:28px;font-weight:900">🔊 Speak</button></div></div>
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
