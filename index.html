@@ -96,8 +96,9 @@ function addBubble(r,t,i,skipSave){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
 if(i){
-if(typeof i==='string' && (i.endsWith('.mp4')||i.includes('pexels')||i.includes('video')){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
-else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
+if(typeof i==='string' && (i.includes('.mp4')||i.includes('pexels')||i.includes('video'))){
+let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);
+}else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
 }
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){
@@ -107,7 +108,6 @@ saveLocal();
 }
 }
 (function restore(){
-// === INTRO MUST BE WHAT'S UP? ===
 if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
 else{addBubble('ai',"WHAT'S UP? ",null,true);}
 updateSignBtn();
@@ -121,28 +121,18 @@ function startVoiceNote(){if(lock) return; let SR=window.SpeechRecognition||wind
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
 function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
-
 - Code
 - Display
 - Help with modern morale
 - Culture / religion
-
 INFORMATION OF FORANEO (PTY) LTD
-━━━━━━━━━━━━━━━━━━━━━━
 Company: FORANEO (PTY) LTD
 CEO: KARABO Langa
 Motto: forego
 Focus: Tech, AI, Training and Education
-Departments:
-    - Grabaciones Foraneo
-    - Foraneo Net
-    - Escuela Foraneo
-    - Foraneo Black Marks Tattoos
+Departments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI Product: FORANEO_AI
-━━━━━━━━━━━━━━━━━━━━━━
-
 Chats stay until you press Clear Chats manually.`);}
 function doBusiness(){addBubble('ai','Business Help:\n- Business plan\n- Marketing strategy\n- Costing & Pricing\n- SWOT Analysis\n- Proposals\n- Financial planning');}
 function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create websites\n- Debug code\n- Explain concepts\n- Build apps\n- Learn to code');}
