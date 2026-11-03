@@ -76,7 +76,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
-<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div><div class="pill" id="pillWhatCan">📚 What can you do?</div></div>
+<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div>
 <div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div>
 <div class="row">
 <button class="btnEmoji" id="btnEmoji">🗣</button>
@@ -119,7 +119,30 @@ async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia(
 function startVoiceNote(){if(lock) return; let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','▶️ Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handle(txt,false);};r.onend=()=>lock=false;}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai','FORANEO_AI can do:\n- Code: Python, JS, HTML, Java, SQL\n- Display & design help\n- Modern morale support\n- Culture / Religion info\n- Reads images instantly\n- Generates logos/images\n- Business help\n- Assignments\n- Calculator, Games, Voice, Video');}
+function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
+
+- Code
+- Display
+- Help with modern morale
+- Culture / religion
+
+INFORMATION OF FORANEO (PTY) LTD
+━━━━━━━━━━━━━━━━━━━━━━
+Company: FORANEO (PTY) LTD
+CEO: KARABO Langa
+Motto: forego
+Focus: Tech, AI, Training and Education
+Departments:
+    - Grabaciones Foraneo
+    - Foraneo Net
+    - Escuela Foraneo
+    - Foraneo Black Marks Tattoos
+Address: 50226 Masodi, Mokopane, 0600
+Hours: Monday to Sunday 3:00 PM to 5:40 PM
+AI Product: FORANEO_AI
+━━━━━━━━━━━━━━━━━━━━━━
+
+Chats stay until you press Clear Chats manually.`);}
 function doBusiness(){addBubble('ai','Business Help:\n- Business plan\n- Marketing strategy\n- Costing & Pricing\n- SWOT Analysis\n- Proposals\n- Financial planning');}
 function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create websites\n- Debug code\n- Explain concepts\n- Build apps\n- Learn to code');}
 function focusInput(){inp.focus();}
