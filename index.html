@@ -1,113 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI</title>
-<script src="https://js.puter.com/v2/"></script>
-<style>
-body{margin:0;font-family:system-ui;background:#f5f7ff}
-.header{background:#1a5cff;color:white;text-align:center;padding:14px;position:relative}
-.header h1{margin:0;font-size:26px;font-weight:800}
-.header p{margin:4px 0 0;font-size:13px;line-height:1.2}
-.live{position:absolute;right:10px;top:10px;background:white;color:#1a5cff;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
-.tabs{display:flex;gap:8px;padding:10px;background:white;overflow-x:auto;border-bottom:1px solid #eee}
-.tab{white-space:nowrap;padding:8px 16px;border-radius:25px;border:1px solid #dbe2ff;background:white;color:#1a5cff;font-size:14px}
-.tab.active{background:#1a5cff;color:white}
-#chat{padding:12px;padding-bottom:160px;display:flex;flex-direction:column;gap:10px;min-height:50vh}
-.bubble{max-width:88%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.45;white-space:pre-wrap}
-.user{align-self:flex-end;background:#1a5cff;color:white;border-bottom-right-radius:4px}
-.ai{align-self:flex-start;background:white;border:1px solid #e5e8ff;border-bottom-left-radius:4px}
-.ai img{max-width:100%;border-radius:10px;margin-top:8px}
-.bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px;border-top:1px solid #eee}
-.upload{display:flex;align-items:center;padding:8px 12px;border:1px solid #dbe2ff;border-radius:20px;margin-bottom:8px;font-size:13px;color:#1a5cff;background:#f8f9ff}
-.pills{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.pill{border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:6px 12px;border-radius:20px;font-size:13px}
-.row{display:flex;gap:8px}
-.row input{flex:1;padding:12px 16px;border-radius:25px;border:1px solid #dbe2ff;outline:none}
-.row button{background:#1a5cff;color:white;border:none;padding:12px 20px;border-radius:25px;font-weight:600}
-</style>
-</head>
-<body>
-<div class="header">
-<div class="live">LIVE CAM</div>
-<h1>FORANEO_AI</h1>
-<p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p>
-</div>
-<div class="tabs">
-<div class="tab active">💬 Chat</div>
-<div class="tab">🎨 Image / Logo</div>
-<div class="tab">🧮 Calculator</div>
-<div class="tab">🎮 Ga</div>
-</div>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FORANEO_AI</title><script src="https://js.puter.com/v2/"></script>
+<style>body{margin:0;font-family:system-ui;background:#f5f7ff}.header{background:#1a5cff;color:white;text-align:center;padding:14px;position:relative}.header h1{margin:0;font-size:26px;font-weight:800}.live{position:absolute;right:10px;top:8px;background:white;color:#1a5cff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}.tabs{display:flex;gap:8px;padding:10px;background:white;overflow-x:auto}.tab{white-space:nowrap;padding:8px 16px;border-radius:25px;border:1px solid #dbe2ff;background:white;color:#1a5cff;font-size:14px;cursor:pointer}.tab.active{background:#1a5cff;color:white}#chat{padding:12px;padding-bottom:180px;display:flex;flex-direction:column;gap:10px;min-height:40vh}.bubble{max-width:88%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:#1a5cff;color:white}.ai{align-self:flex-start;background:white;border:1px solid #e5e8ff}.ai img{max-width:100%;border-radius:10px;margin-top:8px}.bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px;border-top:1px solid #eee}.upload{padding:8px 12px;border:1px solid #dbe2ff;border-radius:20px;margin-bottom:8px;font-size:13px;color:#1a5cff;background:#f8f9ff;cursor:pointer}.pills{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}.pill{border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:6px 12px;border-radius:20px;font-size:13px;cursor:pointer}.row{display:flex;gap:8px}.row input{flex:1;padding:12px 16px;border-radius:25px;border:1px solid #dbe2ff;outline:none}.row button{background:#1a5cff;color:white;border:none;padding:12px 20px;border-radius:25px;font-weight:600}</style></head><body>
+<div class="header"><div class="live" onclick="alert('LIVE CAM coming soon!')">LIVE CAM</div><h1>FORANEO_AI</h1><div style="font-size:13px">FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</div></div>
+<div class="tabs"><div class="tab active" onclick="alert('Chat active')">💬 Chat</div><div class="tab" onclick="alert('Go to Chat and type: generate image of ...')">🎨 Image / Logo</div><div class="tab" onclick="calc()">🧮 Calculator</div><div class="tab" onclick="alert('Games coming soon')">🎮 Games</div></div>
 <div id="chat"></div>
-
 <div class="bar">
-<div class="upload">🏀 📎 Upload Image / Document / File / MP3 / MP4</div>
-<div class="pills">
-<div class="pill">▶️ Voice Note</div>
-<div class="pill">🎤 Voice Call</div>
-<div class="pill">👤 Video Call - LIVE CAM</div>
+<div class="upload" onclick="document.getElementById('file').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4</div><input type="file" id="file" hidden onchange="handleFile(this)">
+<div class="pills"><div class="pill" onclick="startVoice()">▶️ Voice Note</div><div class="pill" onclick="alert('Voice Call: Connects soon')">🎤 Voice Call</div><div class="pill" onclick="alert('Video Call: LIVE CAM coming soon')">👤 Video Call - LIVE CAM</div></div>
+<div class="row"><input id="input" placeholder="Ask FORANEO_AI..." onkeydown="if(event.key==='Enter')send()"><button onclick="send()">Send</button></div>
 </div>
-<div class="row">
-<input id="input" placeholder="Ask FORANEO_AI..." onkeydown="if(event.key==='Enter') send()">
-<button onclick="send()">Send</button>
-</div>
-</div>
-
 <script>
-let longMemory = JSON.parse(localStorage.getItem('foraneo_long_memory')||'{}');
-let chatHistory = JSON.parse(localStorage.getItem('foraneo_chat')||'[]');
-function saveLong(){localStorage.setItem('foraneo_long_memory',JSON.stringify(longMemory));}
-function saveChat(){localStorage.setItem('foraneo_chat',JSON.stringify(chatHistory));}
-function add(role, text, imgUrl){
-  let d=document.createElement('div'); d.className='bubble '+(role==='user'?'user':'ai');
-  let prefix = role==='user' ? '👤 <b>You:</b> ' : '🤖 <b>FORANEO_AI:</b> ';
-  d.innerHTML = prefix + text.replace(/</g,'&lt;');
-  if(imgUrl){ let im=document.createElement('img'); im.src=imgUrl; d.appendChild(document.createElement('br')); d.appendChild(im); }
-  document.getElementById('chat').appendChild(d);
-  window.scrollTo(0,document.body.scrollHeight);
-}
-chatHistory.forEach(m=>{ if(m.content) add(m.role==='user'?'user':'ai', m.content); });
-if(chatHistory.length===0){ add('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything. Ask me anything, I can write emails, help with school, and generate images too!'); }
-
+try{localStorage.removeItem('foraneo_chat');}catch(e){}
+let chatHistory=[];let longMemory={};
+function add(role,text,img){let d=document.createElement('div');d.className='bubble '+(role==='user'?'user':'ai');d.innerHTML=(role==='user'?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+text.replace(/</g,'&lt;');if(img){let im=document.createElement('img');im.src=img;d.appendChild(im);}document.getElementById('chat').appendChild(d);window.scrollTo(0,document.body.scrollHeight);}
+add('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything. How can I help?');
+function calc(){let q=prompt('Enter calculation:');if(q)add('ai','Result: '+(Function('return '+q)()));}
+function handleFile(i){if(i.files[0])add('user','Uploaded: '+i.files[0].name);add('ai','Got your file! What should I do with it?');}
+function startVoice(){let r=new(window.SpeechRecognition||window.webkitSpeechRecognition)();r.lang='en-US';r.start();r.onresult=e=>{document.getElementById('input').value=e.results[0][0].transcript;send();}}
 async function send(){
-  let inp=document.getElementById('input'); let txt=inp.value.trim(); if(!txt) return; inp.value='';
-  add('user', txt); chatHistory.push({role:'user', content:txt}); saveChat();
-  if(txt.toLowerCase().includes('formal')){ longMemory.style='formal'; saveLong(); }
-  if(txt.toLowerCase().includes('assignment')){ longMemory.topic='assignment delay'; saveLong(); }
-
-  let typing=document.createElement('div'); typing.className='bubble ai'; typing.textContent='🤖 FORANEO_AI: Typing...'; document.getElementById('chat').appendChild(typing);
-
-  const SYS = `
-You are FORANEO_AI. Identity: "I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything."
-Never say you are like Meta AI. Never use brackets like [Name/Team] [Your Full Name] [Company Name] [Purpose] - always write complete real content.
-
-LONG MEMORY THAT STAYS EVEN IF CHAT IS DELETED: ${JSON.stringify(longMemory)}
-RULES:
-- If user says "Do it yourself" or "Write me anything" - DO IT yourself fully, don't ask for 1) 2) 3) 4) 5).
-- If user says "Write me anything email that is formal" - WRITE A FULL FORMAL EMAIL IMMEDIATELY with subject, greeting, body, sign-off. Example: Subject: Request for Extension... Dear Sir/Madam...
-- Remember context: "be formal, it's for assignment delay" means write formal assignment delay email.
-- Help with everything like Grammarly, fix grammar.
-- Be friendly and helpful.
-`;
-
-  try{
-    if(txt.toLowerCase().match(/generate image|create image|draw me|make.*image|logo/)){
-      let prompt = txt.replace(/generate image|create image|draw me|make.*image/gi,'').trim() || txt;
-      typing.textContent='🤖 FORANEO_AI: Generating image...';
-      let img = await puter.ai.txt2img(prompt);
-      typing.remove();
-      add('ai', `Here is your image for: "${prompt}"`, img.src);
-      chatHistory.push({role:'assistant', content:`Image generated: ${prompt}`}); saveChat(); return;
-    }
-    let messages=[{role:'system', content:SYS}, ...chatHistory.slice(-10)];
-    let res=await puter.ai.chat(messages,{model:'gpt-4o-mini'});
-    typing.remove();
-    add('ai', res.message.content);
-    chatHistory.push({role:'assistant', content:res.message.content}); saveChat();
-  }catch(e){ typing.remove(); add('ai','Error: '+e.message); }
-}
-</script>
-</body>
-</html>
+let inp=document.getElementById('input');let txt=inp.value.trim();if(!txt)return;inp.value='';add('user',txt);
+let typing=document.createElement('div');typing.className='bubble ai';typing.textContent='🤖 FORANEO_AI: Typing...';document.getElementById('chat').appendChild(typing);
+const SYS="You are FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything. CRITICAL RULE: NEVER EVER use [brackets] like [Name] [Lecturer Name] [Due Date] etc. Always invent real examples: Dr. Smith, Assignment 1, 10 Nov 2026, Karabo. If user says 'Is it formal' answer YES and write FORMAL VERSION IMMEDIATELY. If user says 'Write me anything for delaying assignment' write FULL FORMAL EMAIL NOW with subject, no brackets, no asking questions.";
+try{
+if(txt.toLowerCase().includes('generate image')||txt.toLowerCase().includes('create image')||txt.toLowerCase().includes('draw me')||txt.toLowerCase().includes('logo')){
+let p=txt.replace(/generate image|create image|draw me|logo/gi,'').trim()||txt;typing.textContent='🤖 Generating image...';let img=await puter.ai.txt2img(p);typing.remove();add('ai','Here is your image for: "'+p+'"',img.src);return;}
+let res=await puter.ai.chat([{role:'system',content:SYS},{role:'user',content:txt}],{model:'gpt-4o-mini'});
+let out=res.message.content.replace(/\[.*?\]/g,'').replace(/\(delay\) for an assignment/gi,'for assignment delay');typing.remove();add('ai',out);
+}catch(e){typing.remove();add('ai','Error: '+e.message);}}
+</script></body></html>
