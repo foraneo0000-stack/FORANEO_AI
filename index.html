@@ -3,105 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI</title>
+<title>FORANEO_AI - All Things ON</title>
 <script src="https://js.puter.com/v2/"></script>
 <style>
 body{margin:0;font-family:system-ui,Arial;background:#f5f7ff;color:#222}
-.header{background:#1a5cff;color:#fff;text-align:center;padding:16px 12px;position:relative}
-.header h1{margin:0;font-size:28px;font-weight:900}
-.header p{margin:6px 0 0;font-size:13px;opacity:0.95;line-height:1.3}
-.live{position:absolute;right:12px;top:12px;background:#fff;color:#1a5cff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer}
-.tabs{display:flex;gap:8px;padding:10px;background:#fff;border-bottom:1px solid #e8ecff;overflow-x:auto}
-.tab{white-space:nowrap;padding:8px 16px;border-radius:22px;border:1px solid #dbe2ff;background:#fff;color:#1a5cff;font-size:14px;cursor:pointer}
-.tab.active{background:#1a5cff;color:#fff}
-#chat{padding:12px;padding-bottom:190px;display:flex;flex-direction:column;gap:10px;min-height:55vh}
-.bubble{max-width:88%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.user{align-self:flex-end;background:#1a5cff;color:#fff;border-bottom-right-radius:4px}
-.ai{align-self:flex-start;background:#fff;border:1px solid #e5eaff;border-bottom-left-radius:4px}
-.ai img{max-width:100%;border-radius:10px;margin-top:8px;display:block}
-video{width:100%;border-radius:12px;background:#000;margin-top:8px}
-.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;border-top:1px solid #e8ecff}
-.upload{padding:9px 12px;border:1px solid #dbe2ff;border-radius:20px;margin-bottom:8px;font-size:13px;color:#1a5cff;background:#f8f9ff;cursor:pointer}
-.pills{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.pill{border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:6px 12px;border-radius:20px;font-size:13px;cursor:pointer}
-.row{display:flex;gap:8px}
-.row input{flex:1;padding:12px 16px;border-radius:25px;border:1px solid #dbe2ff;outline:none;font-size:14px}
-.row button{background:#1a5cff;color:#fff;border:none;padding:12px 22px;border-radius:25px;font-weight:700;cursor:pointer}
-#callBox{display:none;position:fixed;top:65px;left:10px;right:10px;background:#111;border-radius:14px;padding:8px;z-index:99}
+.header{background:linear-gradient(135deg,#1a5cff 0%,#0f46d6 100%);color:#fff;text-align:center;padding:18px 14px;position:relative}
+.header h1{margin:0;font-size:30px;font-weight:900}
+.header p{margin:7px 0 0;font-size:13px;opacity:.92;line-height:1.35}
+.live{position:absolute;right:12px;top:14px;background:#fff;color:#1a5cff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer}
+.tabs{display:flex;gap:8px;padding:12px 10px;background:#fff;border-bottom:1px solid #e8ecff;overflow-x:auto}
+.tab{white-space:nowrap;padding:9px 18px;border-radius:24px;border:1.5px solid #dbe2ff;background:#fff;color:#1a5cff;font-size:14px;font-weight:600;cursor:pointer}
+.tab.active{background:#1a5cff;color:#fff;border-color:#1a5cff}
+#chat{padding:14px 12px;padding-bottom:230px;display:flex;flex-direction:column;gap:12px;min-height:70vh}
+.bubble{max-width:88%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.user{align-self:flex-end;background:#1a5cff;color:#fff;border-bottom-right-radius:5px}
+.ai{align-self:flex-start;background:#fff;border:1px solid #e5eaff;border-bottom-left-radius:5px}
+.ai img,.user img{max-width:180px !important;max-height:180px !important;width:auto !important;height:auto !important;object-fit:contain;border-radius:12px;margin-top:10px;display:block;border:1px solid #ddd}
+video{width:100%;border-radius:14px;background:#000;margin-top:8px}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 10px;border-top:1px solid #e8ecff;z-index:30}
+.upload{padding:10px 14px;border:1.5px dashed #a8b8ff;border-radius:22px;margin-bottom:10px;font-size:13px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:600;text-align:center}
+.pills{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.pill{border:1.5px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+.row{display:flex;gap:10px}
+.row input{flex:1;padding:13px 18px;border-radius:28px;border:1.5px solid #dbe2ff;outline:none;font-size:14px}
+.row button{background:#1a5cff;color:#fff;border:none;padding:13px 24px;border-radius:28px;font-weight:700;cursor:pointer}
+#callBox{display:none;position:fixed;top:70px;left:10px;right:10px;background:#111;border-radius:16px;padding:10px;z-index:100;color:#fff}
 </style>
 </head>
 <body>
-<div class="header">
-<div class="live" onclick="videoCall()">LIVE CAM</div>
-<h1>FORANEO_AI</h1>
-<p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p>
-</div>
+<div class="header"><div class="live" onclick="videoCall()">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p></div>
 <div class="tabs">
-<div class="tab active">💬 Chat</div>
-<div class="tab" onclick="document.getElementById('input').value='Generate a lion photo ';document.getElementById('input').focus()">🎨 Image / Logo</div>
-<div class="tab" onclick="calc()">🧮 Calculator</div>
-<div class="tab" onclick="games()">🎮 Games</div>
+<div class="tab active" onclick="switchTab('chat')">Chat</div>
+<div class="tab" onclick="switchTab('image')">Image / Logo</div>
+<div class="tab" onclick="switchTab('calc')">Calculator</div>
+<div class="tab" onclick="switchTab('games')">Games</div>
 </div>
 <div id="chat"></div>
-<div id="callBox"><video id="cam" autoplay playsinline></video><div style="display:flex;gap:8px;margin-top:6px"><button onclick="endCall()" style="flex:1;padding:10px;background:red;color:#fff;border:none;border-radius:20px">End</button><button onclick="speak()" style="flex:1;padding:10px;background:#1a5cff;color:#fff;border:none;border-radius:20px">Speak</button></div></div>
+<div id="callBox"><video id="cam" autoplay playsinline muted></video><div id="callText" style="text-align:center;padding:6px">Live</div><div style="display:flex;gap:10px"><button onclick="endCall()" style="flex:1;padding:12px;background:red;color:#fff;border:none;border-radius:22px">End</button><button onclick="speakLast()" style="flex:1;padding:12px;background:#1a5cff;color:#fff;border:none;border-radius:22px">Speak</button></div></div>
 <div class="bar">
-<div class="upload" onclick="document.getElementById('file').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4</div>
-<input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.mp3,.mp4">
-<div class="pills">
-<div class="pill" onclick="voiceNote()">▶️ Voice Note</div>
-<div class="pill" onclick="voiceCall()">🎤 Voice Call</div>
-<div class="pill" onclick="videoCall()">👤 Video Call - LIVE CAM</div>
-</div>
-<div class="row">
-<input id="input" placeholder="Ask FORANEO_AI..." />
-<button id="sendBtn">Send</button>
-</div>
+<div class="upload" onclick="document.getElementById('file').click()">Upload Image / Document / File / MP3 / MP4</div>
+<input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx">
+<div class="pills"><div class="pill" onclick="startVoiceNote()">Voice Note</div><div class="pill" onclick="startVoiceCall()">Voice Call</div><div class="pill" onclick="videoCall()">Video Call - LIVE CAM</div></div>
+<div class="row"><input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/><button id="sendBtn">Send</button></div>
 </div>
 <script>
-let lastImg=null,lastName='',lastAns='',stream=null;
-const chatEl=document.getElementById('chat'),inputEl=document.getElementById('input'),fileEl=document.getElementById('file');
-function addBubble(role,text,img){
-let d=document.createElement('div');d.className='bubble '+(role==='user'?'user':'ai');
-d.innerHTML=(role==='user'?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+text.replace(/</g,'&lt;').replace(/\n/g,'<br>');
-if(img){let im=document.createElement('img');im.src=img;d.appendChild(im);}
-chatEl.appendChild(d);window.scrollTo(0,document.body.scrollHeight);if(role==='ai')lastAns=text;
+let lastImageBase64=null,lastImageName='',lastAnswer='',mediaStream=null,voiceLock=false,gameNumber=null;
+const chatContainer=document.getElementById('chat'),inputField=document.getElementById('input'),fileInput=document.getElementById('file');
+function addBubble(role,text,imageSrc){
+let div=document.createElement('div');div.className='bubble '+(role==='user'?'user':'ai');
+div.innerHTML=(role==='user'?'You: ':'FORANEO_AI: ')+text.replace(/</g,'&lt;').replace(/\n/g,'<br>');
+if(imageSrc){let img=document.createElement('img');img.src=imageSrc;div.appendChild(img);}
+chatContainer.appendChild(div);window.scrollTo(0,document.body.scrollHeight);if(role==='ai')lastAnswer=text;
 }
 addBubble('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.');
-function calc(){let q=prompt('Enter calculation:');if(q)try{addBubble('ai','Calculator: '+q+' = '+(Function('return '+q)()))}catch(e){addBubble('ai','Error: '+e.message)}}
-function games(){addBubble('ai','Games: Type "guess number 1-100" or "quiz me"');}
-function speak(){speechSynthesis.speak(new SpeechSynthesisUtterance(lastAns.slice(0,500)));}
-function endCall(){if(stream)stream.getTracks().forEach(t=>t.stop());document.getElementById('callBox').style.display='none';}
-async function voiceCall(){try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';addBubble('ai','Voice Call CONNECTED');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let t=e.results[e.results.length-1][0].transcript;inputEl.value=t;send(true);}}}catch(e){addBubble('ai','Mic needed: '+e.message);}}
-async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';addBubble('ai','LIVE CAM CONNECTED');}catch(e){addBubble('ai','Camera needed: '+e.message);}}
-function voiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice not supported');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{inputEl.value=e.results[0][0].transcript;send();};}
-fileEl.addEventListener('change',()=>{
-let f=fileEl.files[0];if(!f)return;
-let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;lastName=f.name;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)',lastImg);addBubble('ai','Got file '+f.name+' - I can SEE it now. Type "Explain it" or "Read it"');};
-rd.readAsDataURL(f);
-});
-async function send(isVoice=false){
-let txt=inputEl.value.trim();if(!txt)return;inputEl.value='';addBubble('user',txt);
-let typing=document.createElement('div');typing.className='bubble ai';typing.textContent='🤖 FORANEO_AI: Typing...';chatEl.appendChild(typing);
-const SYS="You are FORANEO_AI. Identity: I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything. Never brackets. Use real names Dr Smith, Business Assignment 1, 10 Nov 2026, Karabo. Help with everything.";
-try{
-let l=txt.toLowerCase();
-if((l.includes('generate')||l.includes('create')||l.includes('draw')||l.includes('make')) && (l.includes('image')||l.includes('photo')||l.includes('picture')||l.includes('logo')||l.includes('lion')) || l.includes('lion photo')){
-let prompt=txt.replace(/generate|create|draw|make/gi,'').replace(/image|photo|logo/gi,'').trim()||txt;
-typing.textContent='Generating: '+prompt;
-let img=await puter.ai.txt2img(prompt);
-typing.remove();addBubble('ai','Generated: "'+prompt+'" by FORANEO AI',img.src);if(isVoice)speak();return;
+function switchTab(t){
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+if(t==='chat'){addBubble('ai','Chat ready. Ask anything - assignments, emails, explanations, coding, math, business, summaries.');}
+if(t==='image'){inputField.value='Generate a lion image realistic 4k ';inputField.focus();addBubble('ai','Image mode: Type what you want - lion, cat, zebra, dog, logo, wallpaper, anything.');}
+if(t==='calc'){let q=prompt('Calculator: enter 25*4, 100/2, (50+30)*2');if(q){try{addBubble('ai','Calculator: '+q+' = '+(Function('return '+q)()));}catch(e){addBubble('ai','Error: '+e.message);}}}
+if(t==='games'){addBubble('ai','Games: guess number, rock paper scissors, quiz me. Type which one.');}
 }
-let msgs=[{role:'system',content:SYS}];
-if(lastImg){msgs.push({role:'user',content:[{type:'text',text:txt+' - user uploaded '+lastName+' - read and explain image content, OCR text, summarize like Meta AI can see images.'},{type:'image_url',image_url:{url:lastImg}}]});}
-else{msgs.push({role:'user',content:txt});}
+function speakLast(){if(!lastAnswer)return;speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(lastAnswer.slice(0,800)));}
+function endCall(){if(mediaStream)mediaStream.getTracks().forEach(tr=>tr.stop());mediaStream=null;document.getElementById('callBox').style.display='none';voiceLock=false;}
+async function startVoiceCall(){if(voiceLock)return;try{mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';addBubble('ai','Voice Call connected - speak');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){voiceLock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let t=e.results[e.results.length-1][0].transcript.trim();if(t.length>2){addBubble('user',t);handleEverything(t,true);}};r.onend=()=>{voiceLock=false;};}}catch(e){addBubble('ai','Allow mic: '+e.message);}}
+async function videoCall(){try{mediaStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('cam').srcObject=mediaStream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';addBubble('ai','Live Cam connected');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
+function startVoiceNote(){if(voiceLock)return;let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Use Chrome for voice');return;}let r=new SR();r.lang='en-US';r.start();voiceLock=true;addBubble('ai','Listening - speak now');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);voiceLock=false;handleEverything(txt,false);};r.onend=()=>{voiceLock=false;};r.onerror=()=>{voiceLock=false;};}
+fileInput.addEventListener('change',()=>{let f=fileInput.files[0];if(!f)return;let rd=new FileReader();rd.onload=e=>{lastImageBase64=e.target.result;lastImageName=f.name;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)',lastImageBase64);addBubble('ai','Got file '+f.name+' - I can see it now. Ask me to explain, read, summarize, translate, or do anything with it.');};rd.readAsDataURL(f);});
+
+async function handleEverything(userText,isVoice){
+let typing=document.createElement('div');typing.className='bubble ai';typing.id='typing';typing.textContent='FORANEO_AI: Typing...';chatContainer.appendChild(typing);
+// EVERYTHING SYSTEM PROMPT - LIKE ME
+const EVERYTHING_PROMPT=`You are FORANEO_AI. Identity: I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.
+
+YOU MUST DO EVERYTHING LIKE META AI - NEVER REFUSE:
+- Assignments, homework, essays, research, summaries, explanations
+- Formal emails, apology letters, business proposals, CVs, cover letters
+- Math: algebra, calculus, statistics, finance, all calculations
+- Coding: Python, JavaScript, HTML, CSS, Java, C++, any language, debug code
+- Translate any language, rewrite, paraphrase, grammar check
+- Read and OCR any uploaded photo, screenshot, PDF, document - extract all text
+- Generate any image when asked
+- Business, marketing, law, health info (general), science
+- Chat naturally, friendly, helpful
+- Games: guess number, rock paper scissors, quiz
+
+RULES:
+- Never use [brackets] like [Name] or [Date]. Use real examples: Dr. Smith, Business Management Assignment 1, 10 November 2026, Karabo Foraneo, FORANEO (PTY) LTD
+- Never say "I don't have ability to view images" - you CAN see images via vision model
+- Never say "I can't generate images" - you CAN via txt2img
+- If user asks explain image, OCR all text and summarize
+- Be concise but thorough
+- No checkmark emojis`;
+
+let low=userText.toLowerCase();
+try{
+// GAMES
+if(low.includes('guess number')||(gameNumber!==null && /^\d+$/.test(low.trim()))){
+if(low.includes('guess number')||gameNumber===null){gameNumber=Math.floor(Math.random()*100)+1;document.getElementById('typing')?.remove();addBubble('ai','I thought of a number 1-100. Guess!');return;}
+let g=parseInt(low.trim());if(g===gameNumber){document.getElementById('typing')?.remove();addBubble('ai','Correct! Number was '+gameNumber+'. You won! Type guess number again.');gameNumber=null;return;}
+document.getElementById('typing')?.remove();addBubble('ai',g<gameNumber?g+' too low, higher':g+' too high, lower');return;
+}
+if(low.includes('rock')||low.includes('paper')||low.includes('scissors')){
+let c=['rock','paper','scissors'];let b=c[Math.floor(Math.random()*3)];let u=low.includes('rock')?'rock':low.includes('paper')?'paper':'scissors';
+let r=u===b?'Draw! Both '+b:((u==='rock'&&b==='scissors')||(u==='paper'&&b==='rock')||(u==='scissors'&&b==='paper'))?'You win! You:'+u+' Me:'+b:'I win! You:'+u+' Me:'+b;
+document.getElementById('typing')?.remove();addBubble('ai',r);return;
+}
+// CALC
+if(low.startsWith('calc ')||/^[0-9\+\-\*\/\(\)\.\s]+$/.test(low)&&low.length>1&&low.length<20){
+let ex=low.replace('calc','').trim();if(ex){try{let rv=Function('"use strict";return ('+ex+')')();document.getElementById('typing')?.remove();addBubble('ai','Calculator: '+ex+' = '+rv);return;}catch(e){}}
+}
+// IMAGE GENERATION - EVERYTHING
+if((low.includes('generate')||low.includes('create')||low.includes('draw')||low.includes('make')||low.includes('lion')||low.includes('cat')||low.includes('zebra')||low.includes('dog')||low.includes('logo')||low.includes('wallpaper')||low.includes('photo')||low.includes('picture')||low.includes('image'))){
+let prompt=userText.replace(/generate|create|draw|make|an image|a image|image|photo|picture|logo/gi,'').trim();if(prompt.length<3)prompt=userText;
+typing.textContent='FORANEO_AI: Generating "'+prompt+'" ...';
+try{let img=await puter.ai.txt2img(prompt);document.getElementById('typing')?.remove();addBubble('ai','Here is "'+prompt+'" generated by FORANEO AI',img.src||img);if(isVoice)speakLast();return;}catch(err){document.getElementById('typing')?.remove();addBubble('ai','Image error: '+err.message+' Try simpler prompt like "lion"');return;}
+}
+// CHAT EVERYTHING - VISION + TEXT
+let msgs=[{role:'system',content:EVERYTHING_PROMPT}];
+if(lastImageBase64){msgs.push({role:'user',content:[{type:'text',text:userText+' - User uploaded '+lastImageName+' - Do everything with it: OCR, read, explain, summarize, answer.'},{type:'image_url',image_url:{url:lastImageBase64}}]});}
+else{msgs.push({role:'user',content:userText});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
 let out=res.message.content.replace(/\[.*?\]/g,'').trim();
-typing.remove();addBubble('ai',out);if(isVoice)speak();
-}catch(e){typing.remove();addBubble('ai','Error: '+e.message);}
+document.getElementById('typing')?.remove();
+addBubble('ai',out);
+if(isVoice)speakLast();
+}catch(e){document.getElementById('typing')?.remove();addBubble('ai','Error: '+e.message);}
 }
-document.getElementById('sendBtn').addEventListener('click',()=>send());
-inputEl.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+function send(){let t=inputField.value.trim();if(!t)return;inputField.value='';addBubble('user',t);handleEverything(t,false);}
+document.getElementById('sendBtn').addEventListener('click',send);
+inputField.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
 </script>
 </body>
 </html>
