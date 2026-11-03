@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FORANEO_AI</title>
+<title>FORANEO_AI - SMART MEMORY</title>
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -84,19 +84,19 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 <input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
-<div class="small">FORANEO_AI • Reads images instantly • Generates logos • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture/Religion • Business • All subjects • CEO KARABO • forego</div>
+<div class="small">FORANEO_AI • Reads images • Generates • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture • Business • CEO KARABO • forego • SMART MEMORY</div>
 </div>
 <script>
 let lastImg=null,lastAns='',stream=null,lock=false,chatHistory=[],localHistory=[],currentUser=null;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_v13')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
-function saveLocal(){try{localStorage.setItem('foraneo_final_v13',JSON.stringify(localHistory));}catch(e){}}
+try{localHistory=JSON.parse(localStorage.getItem('foraneo_smart_v1')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
+function saveLocal(){try{localStorage.setItem('foraneo_smart_v1',JSON.stringify(localHistory));}catch(e){}}
 function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+(currentUser.email||'User').split('@')[0];}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
 if(i){
-if(i.endsWith('.mp4')||i.includes('video')&&i.startsWith('http')){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
+if(typeof i==='string' && (i.endsWith('.mp4')||i.includes('pexels')||i.includes('video'))){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
 else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
 }
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
@@ -108,10 +108,10 @@ saveLocal();
 }
 (function restore(){
 if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
-else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO: KARABO Langa Motto: forego',null,true);}
+else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa Motto: forego. I remember our full conversation from start to finish like Meta AI. How can I help?',null,true);}
 updateSignBtn();
 })();
-function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared manually. FORANEO (PTY) LTD - CEO KARABO - forego',null,true);}}
+function clearChatsManual(){if(confirm('Clear all chats? Start fresh but I will still be smart like before?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared. Starting fresh — but I am still smart FORANEO_AI, remembering new conversation from start to finish. CEO KARABO - forego',null,true);}}
 function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastAns.slice(0,2200));u.rate=1.04;speechSynthesis.speak(u);}catch(e){}}
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;}
 async function startVoiceCall(){if(lock) return; try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';document.getElementById('callText').innerText='🎤 Voice Call Connected';addBubble('ai','🎤 Voice call connected.');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt.length>2){addBubble('user',txt);handle(txt,true);}};r.onend=()=>lock=false;}}catch(e){addBubble('ai','Allow microphone: '+e.message);}}
@@ -139,9 +139,10 @@ Departments:
     - Foraneo Black Marks Tattoos
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI Product: FORANEO_AI
+AI Product: FORANEO_AI - SMART MEMORY
 ━━━━━━━━━━━━━━━━━━━━━━
 
+I remember full conversation from start to finish like Meta AI.
 Chats stay until you press Clear Chats manually.`);}
 function doBusiness(){addBubble('ai','Business Help:\n- Business plan\n- Marketing strategy\n- Costing & Pricing\n- SWOT Analysis\n- Proposals\n- Financial planning');}
 function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create websites\n- Debug code\n- Explain concepts\n- Build apps\n- Learn to code');}
@@ -150,15 +151,14 @@ function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern
 function showAuth(){document.getElementById('authModal').style.display='flex';}
 function hideAuth(){document.getElementById('authModal').style.display='none';}
 async function googleLogin(){
-let s=document.getElementById('authStatus');s.innerText='Signing in with Google...';
-try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User', provider:'google'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}}
-catch(e){currentUser={email:'google_user@gmail.com',provider:'google'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in (Demo Google) - Your chats are now saved.'); hideAuth();}
+let s=document.getElementById('authStatus');s.innerText='Signing in...';
+try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}}
+catch(e){currentUser={email:'google_user@gmail.com'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in (Demo Google)'); hideAuth();}
 }
 function emailLogin(){
 let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus');
 if(!em || !pw){s.innerText='Enter email & password'; return;}
-if(!em.includes('@')){s.innerText='Invalid email'; return;}
-currentUser={email:em,provider:'email'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed up / Logged in with Email: '+em); hideAuth();
+currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed up / Logged in with Email: '+em); hideAuth();
 }
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
@@ -190,14 +190,22 @@ document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('AUTO_READ_IMAGE: Uploaded "'+f.name+'". Immediately describe it fully.', false);};
+rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('AUTO_READ_IMAGE: Describe this image fully, read any text.', false);};
 rd.readAsDataURL(f);
 });
 async function handle(text,isVoice){
 let raw=text; let l=text.toLowerCase().trim();
+
+// SMART FIRST MESSAGE MEMORY - FROM START
+if(l.includes('what was my first message') || l.includes('my first message today')){
+ let first = localHistory.find(m=>m.r==='user' && !m.text.toLowerCase().includes('first message'));
+ if(first){ addBubble('ai','From the start of our conversation today, your first message was: "'+first.text+'" — I remember full history like Meta AI does.'); return; }
+ else { addBubble('ai','This is the start — you have not sent a message yet in this thread.'); return; }
+}
+
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
 try{
-let isCarVideo = (l.includes('car') && l.includes('video')) || l.includes('a video of a car') || l==='car video';
+let isCarVideo = (l.includes('car') && l.includes('video')) || l.includes('a video of a car');
 if(isCarVideo){
 typing.remove();
 let realCarVideo = 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
@@ -205,26 +213,41 @@ addBubble('ai','Here is a real video of a car for you, CEO KARABO. FORANEO (PTY)
 return;
 }
 let isGen=false; 
-let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','create an image','generate an image'];
+let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper'];
 for(let t of triggers){if(l.includes(t)) isGen=true;}
 if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) isGen=true;
-let blocks=['in the image','in this image','the image is','is it good','auto_read_image','what is in this image','describe','what do you think was the prompt','what is this'];
+let blocks=['in the image','in this image','the image is','auto_read_image','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
-p = p + ', high quality photo, clean image, blue and white theme';
-typing.innerHTML='FORANEO_AI: Generating "'+p.substring(0,60)+'" ...';
-try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Here is "'+raw+'" - Generated by FORANEO_AI.', img.src||img); return;}
+p = p + ', high quality photo';
+typing.innerHTML='FORANEO_AI: Generating...';
+try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Generated: '+raw, img.src||img); return;}
 catch(e){typing.remove(); addBubble('ai','Could not generate: '+e.message); return;}
 }
-let msgs=[{role:'system',content:`You are FORANEO_AI. CEO KARABO Langa, Motto forego. FORANEO (PTY) LTD. Respond to: ${raw}`}];
+// ===== SMART LIKE META AI - FULL HISTORY FROM START TO FINISH =====
+let fullHistory = chatHistory.map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
+let msgs=[
+{role:'system',content:`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego.
+
+You are SMART like Meta AI:
+- You remember ENTIRE conversation from start to finish
+- Full history so far:\n${fullHistory}
+- You reply naturally, you track context, you reference earlier messages
+- You answer like a smart friend + professional CEO assistant
+- You are helpful, concise but thorough
+- You never say you forgot unless user cleared chats
+
+Now user says: ${raw}
+Reply as FORANEO_AI, remember full thread.`}
+];
 if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
-let out=(res.message?.content||res.content||'').toString().replace(/\[.*?\]/g,'').replace(/###/g,'').replace(/\*\*/g,'').trim();
-typing.remove(); addBubble('ai',out||'I am here.'); if(isVoice) speakLast();
+let out=(res.message?.content||res.content||'').toString().trim();
+typing.remove(); addBubble('ai',out||'I am here, CEO.'); if(isVoice) speakLast();
 }catch(e){typing.remove(); addBubble('ai','Error: '+e.message); }
 }
 </script>
 </body>
-</html>
+                                                                                                                                                                                                                                                                                                                 </html>
