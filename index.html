@@ -3,43 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="FORANEO_AI - Created by FORANEO (PTY) LTD - Reads images instantly, generates logos, assignments, business management, voice, video, calculator, games">
-<title>FORANEO_AI - FORANEO (PTY) LTD - KARABO All Things ON</title>
+<title>FORANEO_AI - FORANEO (PTY) LTD</title>
 <script src="https://js.puter.com/v2/"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,sans-serif;background:#eef2ff;color:#1a1d2d;touch-action:manipulation}
-.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:24px 16px 16px;position:sticky;top:0;z-index:1000;box-shadow:0 8px 32px rgba(26,92,255,.32)}
-.header h1{margin:0;font-size:36px;font-weight:900}.header p{margin:8px 0 0;font-size:12.8px;opacity:.92;line-height:1.55;font-weight:500}
-.live{position:absolute;right:12px;top:14px;background:#fff;color:#1a5cff;padding:7px 16px;border-radius:24px;font-size:11px;font-weight:900;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.22);touch-action:manipulation;pointer-events:auto}
-.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:90px;z-index:900}
+html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
+.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:24px 16px 16px;position:sticky;top:0;z-index:1000}
+.header h1{margin:0;font-size:36px;font-weight:900}.header p{margin:8px 0 0;font-size:12.8px;opacity:.92}
+.live{position:absolute;right:12px;top:14px;background:#fff;color:#1a5cff;padding:7px 16px;border-radius:24px;font-size:11px;font-weight:900;cursor:pointer}
+.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:88px;z-index:900}
 .tabs::-webkit-scrollbar{display:none}
-.tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer;touch-action:manipulation;pointer-events:auto}
-.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border-color:#1a5cff}
+.tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}
+.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}
 .tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
 #chat{padding:18px 14px;padding-bottom:420px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
-.bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent;animation:msgIn .28s ease}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent}
 .user{align-self:flex-end;background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border-bottom-right-radius:8px}
 .ai{align-self:flex-start;background:#fff;border-color:#e8ecff;color:#1e233a;border-bottom-left-radius:8px}
-.ai img,.user img{max-width:180px !important;max-height:180px !important;width:auto !important;height:auto !important;object-fit:contain;border-radius:16px;margin-top:12px;display:block;border:1.5px solid #e8ecff}
-video{width:100%;border-radius:18px;background:#000;margin-top:12px;max-height:380px}
-.bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.98);backdrop-filter:blur(18px);padding:14px;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto;box-shadow:0 -10px 40px rgba(0,0,0,.08)}
-.upload{padding:13px 18px;border:2px dashed #a8b8ff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:900;text-align:center;touch-action:manipulation;pointer-events:auto}
+.ai img,.user img{max-width:180px !important;max-height:180px !important;object-fit:contain;border-radius:16px;margin-top:12px;display:block}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto}
+.upload{padding:13px 18px;border:2px dashed #a8b8ff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:900;text-align:center}
 .pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.pill{border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer;touch-action:manipulation;pointer-events:auto}
+.pill{border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
 .row{display:flex;gap:12px;align-items:center}
-.row input{flex:1;padding:15px 22px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none;font-size:15.2px;background:#fff}
-.row button{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none;padding:15px 30px;border-radius:32px;font-weight:900;cursor:pointer;font-size:15px;touch-action:manipulation;pointer-events:auto}
-#callBox{display:none;position:fixed;top:84px;left:14px;right:14px;background:#0f111a;border-radius:24px;padding:14px;z-index:2000;color:#fff;max-width:520px;margin:0 auto;box-shadow:0 24px 72px rgba(0,0,0,.6)}
-#typingDots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1a5cff;margin:0 3px;animation:b 1.5s infinite}
-@keyframes b{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-.small{font-size:11px;opacity:.62;margin-top:8px;text-align:center;line-height:1.4}
+.row input{flex:1;padding:15px 22px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none}
+.row button{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none;padding:15px 30px;border-radius:32px;font-weight:900;cursor:pointer}
+#callBox{display:none;position:fixed;top:84px;left:14px;right:14px;background:#0f111a;border-radius:24px;padding:14px;z-index:2000;color:#fff;max-width:520px;margin:0 auto}
+.small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
 </style>
 </head>
 <body>
-<div class="header"><div class="live" id="liveBtn">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p></div>
+<div class="header"><div class="live" id="liveBtn">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>CEO: KARABO • forego</p></div>
 <div class="tabs">
 <div class="tab active" id="tabChat">💬 Chat</div>
 <div class="tab" id="tabImage">🎨 Image / Logo</div>
@@ -55,65 +49,62 @@ video{width:100%;border-radius:18px;background:#000;margin-top:12px;max-height:3
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
-<div class="pills">
-<div class="pill" id="pillVoiceNote">▶️ Voice Note</div>
-<div class="pill" id="pillVoiceCall">🎤 Voice Call</div>
-<div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div>
-<div class="pill" id="pillWhatCan">📚 What can you do?</div>
-</div>
-<div class="row"><input id="input" placeholder="Ask FORANEO_AI anything — assignments, business, coding, images..." autocomplete="off" enterkeyhint="send"/><button id="sendBtn">Send</button></div>
-<div class="small">FORANEO_AI • Reads images instantly • Generates logos • Voice • Video • Calculator • Games • Assignments • Business Management • Coding • Finance • Marketing • All subjects</div>
+<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div><div class="pill" id="pillWhatCan">📚 What can you do?</div></div>
+<div class="row"><input id="input" placeholder="Ask FORANEO_AI anything — code, morale, culture, business..." autocomplete="off"/><button id="sendBtn">Send</button></div>
+<div class="small">FORANEO_AI • Reads images instantly • Generates logos • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture/Religion • Business • All subjects</div>
 </div>
 <script>
-// LONGEST CODE - FIXED - NO AUTO-REMOVE - MANUAL CLEAR ONLY
-let lastImg=null,lastName='',lastAns='',stream=null,lock=false,guess=null,chatHistory=[],localHistory=[],ticBoard=null,calcHistory=[];
+let lastImg=null,lastAns='',stream=null,lock=false,guess=null,chatHistory=[],localHistory=[];
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-try{localHistory=JSON.parse(localStorage.getItem('foraneo_history_v10')||'[]');}catch(e){localHistory=[];}
-
-function saveLocal(){try{localStorage.setItem('foraneo_history_v10',JSON.stringify(localHistory));}catch(e){}}
+try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_v13')||'[]');}catch(e){localHistory=[];}
+function saveLocal(){try{localStorage.setItem('foraneo_final_v13',JSON.stringify(localHistory));}catch(e){}}
 function addBubble(r,t,i,skipSave){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
 if(i){let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
-chatEl.appendChild(d);
-window.scrollTo(0,document.body.scrollHeight);
+chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){
 if(r==='ai'){lastAns=t;chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}
 else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}
 saveLocal();
 }
 }
-// RESTORE CHATS - THEY STAY UNTIL YOU CLEAR MANUALLY
 (function restore(){
-if(localHistory.length>0){
-localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});
-}else{
-addBubble('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.\n\nI read images instantly the moment you upload, I generate logos and images when you say generate, I keep full conversation context, I help with assignments, business, finance, marketing, accounting, coding, emails, and all subjects.\n\nYour chats will stay here until you press Clear Chats manually. They will not auto-delete.\n\nUpload any image now and I will describe it instantly.',null,true);
-}
+if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
+else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD.\n\nCEO: KARABO Langa\nMotto: forego\nFocus: Tech, AI, Training and Education\nDepartments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo and Foraneo Black Marks Tattoos\nAddress: 50226 Masodi, Mokopane, 0600\nHours: Monday to Sunday 3:00 PM to 5:40 PM\n\nI read images instantly, generate logos, help with code, display, modern morale, culture/religion, assignments, business, and all subjects.\n\nYour chats stay until you press Clear Chats manually.',null,true);}
 })();
-
-function clearChatsManual(){
-if(confirm('Clear all chats? This will delete all messages manually.')){
-localHistory=[]; chatHistory=[]; chatEl.innerHTML=''; saveLocal();
-addBubble('ai','Chats cleared manually. I am FORANEO AI - ready to help. Upload an image or ask anything.',null,true);
-localHistory=[{r:'ai',text:'Chats cleared manually. I am FORANEO AI - ready to help. Upload an image or ask anything.',img:null}];
-saveLocal();
-}
-}
-function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastAns.slice(0,2200));u.rate=1.04;u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
+function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared manually. FORANEO (PTY) LTD - CEO KARABO - forego - Tech, AI, Training and Education - Departments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos. Ready to help.',null,true);}}
+function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastAns.slice(0,2200));u.rate=1.04;speechSynthesis.speak(u);}catch(e){}}
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;}
-async function startVoiceCall(){if(lock) return; try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';document.getElementById('callText').innerText='🎤 Voice Call Connected';addBubble('ai','🎤 Voice call connected. Speak now.');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt.length>2){addBubble('user',txt);handle(txt,true);}};r.onend=()=>lock=false;}}catch(e){addBubble('ai','Allow microphone: '+e.message);}}
-async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';document.getElementById('callText').innerText='👤 Live Cam Connected';addBubble('ai','👤 Live cam connected. I can see you now.');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
+async function startVoiceCall(){if(lock) return; try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';document.getElementById('callText').innerText='🎤 Voice Call Connected';addBubble('ai','🎤 Voice call connected.');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt.length>2){addBubble('user',txt);handle(txt,true);}};r.onend=()=>lock=false;}}catch(e){addBubble('ai','Allow microphone: '+e.message);}}
+async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';document.getElementById('callText').innerText='👤 Live Cam Connected';addBubble('ai','👤 Live cam connected.');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
 function startVoiceNote(){if(lock) return; let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','▶️ Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handle(txt,false);};r.onend=()=>lock=false;}
-function doCalc(){let q=prompt('Calculator — example: (100+20)/2');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error in calculation');}}
-function doGames(){addBubble('ai','Games:\n- Type guess number (1-100)\n- Type rock paper scissors\n- Type quiz me on any topic\n- Type tic tac toe');}
-function doHelp(){addBubble('ai','What I can do:\n\n- Reads images instantly: wedding cards, house models, assignments, emails, screenshots, PDFs, handwriting\n- Generates: logos, wallpapers, art - say Generate a logo for FORANEO\n- Assignments: Business Management, Finance, Marketing, Accounting, Law, IT, Science, Math, Coding\n- Emails: Is it good? I check tone and rewrite\n- Business: plans, costing, pricing, SWOT, proposals\n- Coding: Python, JS, HTML, Java, SQL\n- Voice and Video calls, Calculator, Games, Translation, Research\n\nChats stay until you clear them manually with Clear Chats button.');}
-function doBusiness(){addBubble('ai','Business Help:\n- Business plan for selling cardboard models\n- Costing, pricing, marketing strategy\n- SWOT, proposal, budgeting\nTell me what you need.');}
-function doCoding(){addBubble('ai','Coding Help:\n- Write Python code to calculate house model cost\n- Create HTML page for FORANEO\n- JavaScript calculator\n- SQL query\n- Debug this code\nJust ask.');}
+function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
+function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
+function doHelp(){addBubble('ai',`FORANEO_AI: What I can do:
+
+- Reads images instantly: wedding cards, house models, assignments, emails, screenshots, PDFs, handwriting, receipts, charts, logos — I read instantly, no extra typing
+- Generates: logos, wallpapers, art - say Generate a logo for FORANEO
+- Code: I write code in Python, JavaScript, HTML, CSS, Java, C++, PHP, SQL, React, Node.js — I debug, explain, create apps and websites for FORANEO (PTY) LTD
+- Display: I help you display ideas visually — posters, flyers, business cards, presentations, social posts, mockups, charts
+- Help with modern morale: motivation, mental strength, focus, discipline, confidence, stress, study morale, work morale, modern life advice — supportive and respectful
+- Culture / religion: I respect all cultures and religions, I explain traditions, religious history, values, ceremonies, moral guidance, without judging, balanced info
+- Assignments: Business Management, Finance, Marketing, Accounting, Economics, Business Law, HR, Operations, Entrepreneurship, Project Management, IT, Computer Science
+- Business: Business plans, proposals, marketing strategies, SWOT, costing, pricing, budgeting for FORANEO (PTY) LTD
+- Emails: Is it good? I check tone and rewrite
+- Calculator and Math
+- Voice Note, Voice Call, Video Call LIVE CAM, Speak Answer
+- Translation, Research, Life Advice
+- Knowledge about FORANEO (PTY) LTD: Company FORANEO (PTY) LTD, CEO KARABO Langa, Motto forego, Focus Tech, AI, Training and Education, Departments Grabaciones Foraneo, Foraneo Net, Escuela Foraneo and Foraneo Black Marks Tattoos, Address 50226 Masodi, Mokopane, 0600, Hours Monday to Sunday 3:00 PM to 5:40 PM
+
+Chats stay until you clear them manually.
+
+Just upload or ask anything.`);}
+function doBusiness(){addBubble('ai','Business Help for FORANEO (PTY) LTD:\nDepartments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos\n- Business plan\n- Marketing strategy\n- Costing and pricing\n- SWOT\n- Proposal\n- Training and Education plans');}
+function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create website for FORANEO\n- Debug code\n- Explain code\nJust ask.');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 
-// BUTTONS FIXED
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
 document.getElementById('liveBtn').addEventListener('click',videoCall);
@@ -139,29 +130,37 @@ fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
 rd.onload=e=>{
-lastImg=e.target.result; lastName=f.name;
-addBubble('user','🏀 📎 Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);
-handle('AUTO_READ_IMAGE: Uploaded "'+f.name+'". Immediately describe it fully. Do not say Got your image, type Read it. If cardboard house model, describe brown cardboard model house, pitched roof, windows, base, on wooden floor, craft project, and offer help to improve, cost, business idea. Start now.', false);
+lastImg=e.target.result;
+addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);
+handle('AUTO_READ_IMAGE: Uploaded "'+f.name+'". Immediately describe it fully.', false);
 };
 rd.readAsDataURL(f);
 });
 
 async function handle(text,isVoice){
 let raw=text; let l=text.toLowerCase().trim();
-let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: <span id="typingDots"><span></span><span></span><span></span></span>'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
-const SYSTEM=`You are FORANEO_AI, created by FORANEO (PTY) LTD. Friendly, helpful, natural, concise. Vision: read image instantly. Never say Got image, type Read it. Handle typo I. The image = In the image. Image generation only when explicit generate/create/draw/make logo/wallpaper. Never generate when text contains in the image, is it good, AUTO_READ_IMAGE. Capabilities: Business Management, Finance, Marketing, Accounting, Economics, Business Law, Entrepreneurship, HR, Operations, Project Management, IT, Computer Science, Python, JS, HTML, CSS, Java, C++, PHP, SQL, Math, Essays, Emails, Business plans, SWOT, Costing, Research, Translation, Voice, Video, Calculator, Games. Context: ${chatHistory.slice(-10).map(h=>h.role+': '+h.text.substring(0,350)).join('\\n')} NOW RESPOND TO: ${raw}`;
+let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
+const SYSTEM=`You are FORANEO_AI, official AI of FORANEO (PTY) LTD.
+
+COMPANY KNOWLEDGE:
+- Company: FORANEO (PTY) LTD
+- CEO: KARABO (Full: KARABO Langa)
+- Owner: KARABO Langa
+- Motto: forego
+- Focus: Tech, AI, Training and Education
+- Departments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo and Foraneo Black Marks Tattoos
+- Address: 50226 Masodi, Mokopane, 0600
+- Hours: Monday to Sunday, 3:00 PM to 5:40 PM
+- AI Product: FORANEO_AI
+
+CAPABILITIES:
+- Code, Display, Help with modern morale, Culture/religion, Reads images instantly, Generates logos/images, Assignments, Business, Emails, Math, Voice, Video, Games, Translation, Research
+
+Context: ${chatHistory.slice(-10).map(h=>h.role+': '+h.text.substring(0,350)).join('\\n')}
+
+NOW RESPOND TO: ${raw}`;
+
 try{
-if(l.includes('guess number')|| (guess!==null && /^\d{1,3}$/.test(l))){
-if(l.includes('guess number')||guess===null){guess=Math.floor(Math.random()*100)+1; typing.remove(); addBubble('ai','I thought of a number 1-100. Guess!'); return;}
-let g=parseInt(l); if(g===guess){typing.remove(); addBubble('ai','Correct! Was '+guess+'. Type guess number again.'); guess=null; return;}
-typing.remove(); addBubble('ai', g<guess?'Too low, higher.':'Too high, lower.'); return;
-}
-if(l==='rock'||l==='paper'||l==='scissors'){
-let c=['rock','paper','scissors']; let b=c[Math.floor(Math.random()*3)]; let res=l===b?'Draw! Both '+b: ((l==='rock'&&b==='scissors')||(l==='paper'&&b==='rock')||(l==='scissors'&&b==='paper'))?'You win! '+l+' beats '+b:'I win! '+b+' beats '+l;
-typing.remove(); addBubble('ai',res); return;
-}
-if(/^[0-9+\-*/().\s%]+$/.test(l) && l.length>1 && l.length<28 && /\d/.test(l)){
-try{let v=Function('return ('+l+')')(); if(isFinite(v)){typing.remove(); addBubble('ai','Calculator: '+l+' = '+v); return;}}catch(e){}}
 let isGen=false;
 let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','create an image','generate an image'];
 for(let t of triggers){if(l.includes(t)) isGen=true;}
@@ -171,15 +170,15 @@ for(let b of blocks){if(l.includes(b)) isGen=false;}
 if(raw.includes('📎')||raw.includes('🏀')) isGen=false;
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); if(p.length<3) p=raw;
-typing.innerHTML='FORANEO_AI: Generating "'+p.substring(0,60)+'" ... <span id="typingDots"><span></span><span></span><span></span></span>';
-try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Here is "'+p+'" generated by FORANEO_AI.', img.src||img); if(isVoice) speakLast(); return;}
+typing.innerHTML='FORANEO_AI: Generating "'+p.substring(0,60)+'" ...';
+try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Here is "'+p+'" generated by FORANEO_AI.', img.src||img); return;}
 catch(e){typing.remove(); addBubble('ai','Could not generate: '+e.message); return;}
 }
 let msgs=[{role:'system',content:SYSTEM}];
 if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
-let out=(res.message?.content||res.content||'').toString().replace(/\[.*?\]/g,'').replace(/###/g,'').replace(/\*\*/g,'').replace(/---/g,'').replace(/—/g,',').trim();
-typing.remove(); addBubble('ai',out||'I am here. Ask me anything.'); if(isVoice) speakLast();
+let out=(res.message?.content||res.content||'').toString().replace(/\[.*?\]/g,'').replace(/###/g,'').replace(/\*\*/g,'').trim();
+typing.remove(); addBubble('ai',out||'I am here.'); if(isVoice) speakLast();
 }catch(e){typing.remove(); addBubble('ai','Error: '+e.message); }
 }
 </script>
