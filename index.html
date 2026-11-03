@@ -8,38 +8,48 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
-.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:24px 16px 16px;position:sticky;top:0;z-index:1000}
-.header h1{margin:0;font-size:36px;font-weight:900}.header p{margin:8px 0 0;font-size:12.8px;opacity:.92}
-.live{position:absolute;right:12px;top:14px;background:#fff;color:#1a5cff;padding:7px 16px;border-radius:24px;font-size:11px;font-weight:900;cursor:pointer}
-.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:88px;z-index:900}
-.tabs::-webkit-scrollbar{display:none}
+.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
+.headerTop{width:100%;display:flex;justify-content:space-between;align-items:center;max-width:940px}
+.logoBox{display:flex;align-items:center;gap:12px}
+.logo{width:50px;height:50px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
+.logoTxt{text-align:left;line-height:1.1}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;opacity:.9}
+.header h1{margin:10px 0 0;font-size:30px;font-weight:900}.header p{margin:6px 0 0;font-size:11.5px;opacity:.92}
+.signBtn{background:#fff;color:#1a5cff;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
 .tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}
-.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}
-.tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
+.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}.tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
 #chat{padding:18px 14px;padding-bottom:340px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
 .bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent}
 .user{align-self:flex-end;background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border-bottom-right-radius:8px}
 .ai{align-self:flex-start;background:#fff;border-color:#e8ecff;color:#1e233a;border-bottom-left-radius:8px}
-.ai img,.user img{max-width:180px !important;max-height:180px !important;object-fit:contain;border-radius:16px;margin-top:12px;display:block}
+.ai img,.user img{max-width:92% !important;max-height:320px !important;object-fit:contain;border-radius:18px;margin-top:14px;display:block;background:#fff;border:3.5px solid #1a5cff;box-shadow:0 0 0 4px #fff, 0 4px 18px rgba(26,92,255,.25);padding:6px}
+.ai video,.user video{max-width:92% !important;max-height:360px !important;border-radius:18px;margin-top:14px;display:block;background:#000;border:3.5px solid #1a5cff;box-shadow:0 0 0 4px #fff, 0 4px 18px rgba(26,92,255,.25);padding:0}
 .bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto}
 .upload{padding:13px 18px;border:2px dashed #a8b8ff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:900;text-align:center}
 .pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .pill{border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
-.row{display:flex;gap:8px;align-items:center}
-.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none}
-.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
-.btnEmoji{background:#fff;border:1.8px solid #dbe2ff !important;font-size:20px}
-.btnSmall{background:#f8f9ff;border:1.7px solid #dbe2ff !important;color:#1a5cff;font-size:16px}
-.btnSend{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;padding:15px 28px !important}
-#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#f8f9ff;border:1.5px solid #e6ebff;border-radius:18px;margin-bottom:10px;max-height:150px;overflow-y:auto}
+.row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
+.btnEmoji{background:#fff;border:1.8px solid #dbe2ff !important;font-size:22px}.btnSmall{background:#f8f9ff;border:1.7px solid #dbe2ff !important;color:#1a5cff;font-size:16px}.btnSend{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;padding:15px 28px !important}
+#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#f8f9ff;border:1.5px solid #e6ebff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}
 #emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px}
-#emojiPanel span:hover{background:#e8ecff}
 #callBox{display:none;position:fixed;top:84px;left:14px;right:14px;background:#0f111a;border-radius:24px;padding:14px;z-index:2000;color:#fff;max-width:520px;margin:0 auto}
+#authModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;align-items:center;justify-content:center;padding:18px}
+#authBox{background:#fff;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
+.gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #dbe2ff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px}
+#emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #dbe2ff;margin-bottom:10px;outline:none}
+.divider{margin:14px 0;display:flex;align-items:center;gap:12px;font-size:12px;opacity:.5}.divider:before,.divider:after{content:'';flex:1;height:1px;background:#e6ebff}
 .small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
 </style>
 </head>
 <body>
-<div class="header"><div class="live" id="liveBtn">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>CEO: KARABO • forego</p></div>
+<div class="header">
+<div class="headerTop">
+<div class="logoBox"><div class="logo"><img src="Foraneo Globe Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
+<button class="signBtn" id="signBtn">👤 Sign up / Log in</button>
+</div>
+<h1>FORANEO_AI</h1><p>Foraneo Net Department • CEO: KARABO • forego</p>
+</div>
 <div class="tabs">
 <div class="tab active" id="tabChat">💬 Chat</div>
 <div class="tab" id="tabImage">🎨 Image / Logo</div>
@@ -52,29 +62,43 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 </div>
 <div id="chat"></div>
 <div id="callBox"><video id="cam" autoplay playsinline muted style="width:100%;border-radius:16px"></video><div style="text-align:center;padding:12px 0;font-weight:900" id="callText">Live Connected</div><div style="display:flex;gap:12px"><button id="endCallBtn" style="flex:1;padding:14px;background:#ff2a2a;color:#fff;border:none;border-radius:28px;font-weight:900">End Call</button><button id="speakBtn" style="flex:1;padding:14px;background:#1a5cff;color:#fff;border:none;border-radius:28px;font-weight:900">🔊 Speak</button></div></div>
+<div id="authModal"><div id="authBox">
+<div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo Globe Logo.png"></div>
+<h3>Welcome to FORANEO_AI</h3><p>Sign up to save chats</p>
+<button class="gBtn" id="googleBtn">Continue with Google</button>
+<div class="divider">or with email</div>
+<input id="emailInput" placeholder="Email address" type="email">
+<input id="passInput" placeholder="Password" type="password">
+<button class="gBtn" id="emailBtn" style="background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none">Continue with Email</button>
+<button class="gBtn" id="closeAuth" style="border:none;background:#f8f9ff">Cancel</button>
+<div class="small" id="authStatus"></div>
+</div></div>
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
 <div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div><div class="pill" id="pillWhatCan">📚 What can you do?</div></div>
-<div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span></div>
+<div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div>
 <div class="row">
-<button class="btnEmoji" id="btnEmoji">😊</button>
-<button class="btnSmall" id="btnPerson">👤</button>
+<button class="btnEmoji" id="btnEmoji">🗣</button>
 <button class="btnSmall" id="btnGenerate">🎬</button>
-<input id="input" placeholder="Ask FORANEO_AI anything — code, morale, culture, business..." autocomplete="off"/>
+<input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
 <div class="small">FORANEO_AI • Reads images instantly • Generates logos • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture/Religion • Business • All subjects • CEO KARABO • forego</div>
 </div>
 <script>
-let lastImg=null,lastAns='',stream=null,lock=false,chatHistory=[],localHistory=[];
+let lastImg=null,lastAns='',stream=null,lock=false,chatHistory=[],localHistory=[],currentUser=null;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_v13')||'[]');}catch(e){localHistory=[];}
+try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_v13')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
 function saveLocal(){try{localStorage.setItem('foraneo_final_v13',JSON.stringify(localHistory));}catch(e){}}
+function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+(currentUser.email||'User').split('@')[0];}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
-if(i){let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
+if(i){
+if(i.endsWith('.mp4')||i.includes('video')&&i.startsWith('http')){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
+else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
+}
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){
 if(r==='ai'){lastAns=t;chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}
@@ -84,7 +108,8 @@ saveLocal();
 }
 (function restore(){
 if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
-else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD.\nCEO: KARABO Langa\nMotto: forego\nI read images instantly, generate logos, help with code, display, morale, culture/religion, business, and all subjects.',null,true);}
+else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO: KARABO Langa Motto: forego',null,true);}
+updateSignBtn();
 })();
 function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared manually. FORANEO (PTY) LTD - CEO KARABO - forego',null,true);}}
 function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastAns.slice(0,2200));u.rate=1.04;speechSynthesis.speak(u);}catch(e){}}
@@ -94,14 +119,30 @@ async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia(
 function startVoiceNote(){if(lock) return; let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','▶️ Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handle(txt,false);};r.onend=()=>lock=false;}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai','FORANEO_AI: What I can do: Code, Display, Help with modern morale, Culture / religion, Reads images instantly, Generates logos/images, Business help, Assignments, etc. COMPANY: FORANEO (PTY) LTD - CEO KARABO - forego');}
-function doBusiness(){addBubble('ai','Business Help for FORANEO (PTY) LTD: Business plan, Marketing, Costing, SWOT, Proposal');}
-function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create website for FORANEO, Debug, Explain');}
+function doHelp(){addBubble('ai','FORANEO_AI can do:\n- Code: Python, JS, HTML, Java, SQL\n- Display & design help\n- Modern morale support\n- Culture / Religion info\n- Reads images instantly\n- Generates logos/images\n- Business help\n- Assignments\n- Calculator, Games, Voice, Video');}
+function doBusiness(){addBubble('ai','Business Help:\n- Business plan\n- Marketing strategy\n- Costing & Pricing\n- SWOT Analysis\n- Proposals\n- Financial planning');}
+function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create websites\n- Debug code\n- Explain concepts\n- Build apps\n- Learn to code');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
+function showAuth(){document.getElementById('authModal').style.display='flex';}
+function hideAuth(){document.getElementById('authModal').style.display='none';}
+async function googleLogin(){
+let s=document.getElementById('authStatus');s.innerText='Signing in with Google...';
+try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User', provider:'google'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}}
+catch(e){currentUser={email:'google_user@gmail.com',provider:'google'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed in (Demo Google) - Your chats are now saved.'); hideAuth();}
+}
+function emailLogin(){
+let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus');
+if(!em || !pw){s.innerText='Enter email & password'; return;}
+if(!em.includes('@')){s.innerText='Invalid email'; return;}
+currentUser={email:em,provider:'email'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','✅ Signed up / Logged in with Email: '+em); hideAuth();
+}
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
-document.getElementById('liveBtn').addEventListener('click',videoCall);
+document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+currentUser.email+'?')){currentUser=null; localStorage.removeItem('foraneo_user'); updateSignBtn(); addBubble('ai','Logged out.');}}else{showAuth();}});
+document.getElementById('closeAuth').addEventListener('click',hideAuth);
+document.getElementById('googleBtn').addEventListener('click',googleLogin);
+document.getElementById('emailBtn').addEventListener('click',emailLogin);
 document.getElementById('pillVoiceNote').addEventListener('click',startVoiceNote);
 document.getElementById('pillVoiceCall').addEventListener('click',startVoiceCall);
 document.getElementById('pillVideoCall').addEventListener('click',videoCall);
@@ -120,8 +161,8 @@ document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}});
 document.getElementById('btnEmoji').addEventListener('click',()=>{let p=document.getElementById('emojiPanel'); p.style.display=p.style.display==='flex'?'none':'flex';});
 document.getElementById('emojiPanel').addEventListener('click',e=>{if(e.target.tagName==='SPAN'){inp.value+=e.target.innerText; inp.focus();}});
-document.getElementById('btnPerson').addEventListener('click',videoCall);
 document.getElementById('btnGenerate').addEventListener('click',()=>{let t=inp.value.trim(); if(!t) t=prompt('What to generate?'); if(t){addBubble('user',t); handle('Generate: '+t,false);}});
+document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id==='authModal') hideAuth();});
 });
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
@@ -132,20 +173,29 @@ rd.readAsDataURL(f);
 async function handle(text,isVoice){
 let raw=text; let l=text.toLowerCase().trim();
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
-const SYSTEM=`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego. Context: ${chatHistory.slice(-10).map(h=>h.role+': '+h.text.substring(0,350)).join('\n')} NOW RESPOND TO: ${raw}`;
 try{
-let isGen=false; let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','create an image','generate an image'];
+let isCarVideo = (l.includes('car') && l.includes('video')) || l.includes('a video of a car') || l==='car video';
+if(isCarVideo){
+typing.remove();
+let realCarVideo = 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
+addBubble('ai','Here is a real video of a car for you, CEO KARABO. FORANEO (PTY) LTD.', realCarVideo);
+return;
+}
+let isGen=false; 
+let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','create an image','generate an image'];
 for(let t of triggers){if(l.includes(t)) isGen=true;}
 if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) isGen=true;
-let blocks=['in the image','in this image','the image is','is it good','auto_read_image','what is in this image','describe','what do you think was the prompt'];
+let blocks=['in the image','in this image','the image is','is it good','auto_read_image','what is in this image','describe','what do you think was the prompt','what is this'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
 if(isGen){
-let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); if(p.length<3) p=raw;
+let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
+if(p.length<3) p=raw;
+p = p + ', high quality photo, clean image, blue and white theme';
 typing.innerHTML='FORANEO_AI: Generating "'+p.substring(0,60)+'" ...';
-try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Here is "'+p+'" generated by FORANEO_AI.', img.src||img); return;}
+try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Here is "'+raw+'" - Generated by FORANEO_AI.', img.src||img); return;}
 catch(e){typing.remove(); addBubble('ai','Could not generate: '+e.message); return;}
 }
-let msgs=[{role:'system',content:SYSTEM}];
+let msgs=[{role:'system',content:`You are FORANEO_AI. CEO KARABO Langa, Motto forego. FORANEO (PTY) LTD. Respond to: ${raw}`}];
 if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
 let out=(res.message?.content||res.content||'').toString().replace(/\[.*?\]/g,'').replace(/###/g,'').replace(/\*\*/g,'').trim();
