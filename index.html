@@ -108,7 +108,7 @@ saveLocal();
 }
 (function restore(){
 if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
-else{addBubble('ai','I am FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa Motto: forego. I remember our conversation from start to finish. How can I help?',null,true);}
+else{addBubble('ai','I am FORANEO_AI, WHAT'S UP?',null,true);}
 updateSignBtn();
 })();
 function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared. Starting fresh — FORANEO_AI is ready. CEO KARABO - forego',null,true);}}
