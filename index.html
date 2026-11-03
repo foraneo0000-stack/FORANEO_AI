@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - Clone of Meta AI</title>
+<title>FORANEO_AI</title>
 <script src="https://js.puter.com/v2/"></script>
 <style>
 body{margin:0;font-family:system-ui,Arial;background:#f5f7ff;color:#222}
@@ -29,52 +29,75 @@ video{width:100%;border-radius:14px;background:#000;margin-top:8px}
 </head>
 <body>
 <div class="header"><div class="live" onclick="videoCall()">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p></div>
-<div class="tabs"><div class="tab active">Chat</div><div class="tab" onclick="document.getElementById('input').value='Generate a lion image ';document.getElementById('input').focus()">Image / Logo</div><div class="tab" onclick="let q=prompt('Calc:');if(q)try{addBubble('ai','Calculator: '+q+' = '+(Function('return '+q)()));}catch(e){}">Calculator</div><div class="tab" onclick="addBubble('ai','Games: Type guess number, rock paper scissors, quiz me')">Games</div></div>
+<div class="tabs">
+<div class="tab active">💬 Chat</div>
+<div class="tab" onclick="document.getElementById('input').value='Generate a lion image ';document.getElementById('input').focus()">🎨 Image / Logo</div>
+<div class="tab" onclick="let q=prompt('Calculator:');if(q)try{addBubble('ai','Calculator: '+q+' = '+(Function('return '+q)()));}catch(e){}">🧮 Calculator</div>
+<div class="tab" onclick="addBubble('ai','Games: Type guess number, rock paper scissors, quiz me')">🎮 Games</div>
+</div>
 <div id="chat"></div>
-<div id="callBox"><video id="cam" autoplay playsinline muted></video><div style="text-align:center;padding:6px" id="callText">Live</div><div style="display:flex;gap:10px"><button onclick="endCall()" style="flex:1;padding:12px;background:red;color:#fff;border:none;border-radius:22px">End</button><button onclick="speakLast()" style="flex:1;padding:12px;background:#1a5cff;color:#fff;border:none;border-radius:22px">Speak</button></div></div>
-<div class="bar"><div class="upload" onclick="document.getElementById('file').click()">Upload Image / Document / File / MP3 / MP4</div><input type="file" id="file" hidden accept="image/*"><div class="pills"><div class="pill" onclick="startVoiceNote()">Voice Note</div><div class="pill" onclick="startVoiceCall()">Voice Call</div><div class="pill" onclick="videoCall()">Video Call - LIVE CAM</div></div><div class="row"><input id="input" placeholder="Ask FORANEO_AI anything - clone of Meta AI..." autocomplete="off"/><button id="sendBtn">Send</button></div></div>
+<div id="callBox"><video id="cam" autoplay playsinline muted></video><div style="text-align:center;padding:6px">Live</div><div style="display:flex;gap:10px"><button onclick="endCall()" style="flex:1;padding:12px;background:red;color:#fff;border:none;border-radius:22px">End</button><button onclick="speakLast()" style="flex:1;padding:12px;background:#1a5cff;color:#fff;border:none;border-radius:22px">Speak</button></div></div>
+<div class="bar">
+<div class="upload" onclick="document.getElementById('file').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4</div>
+<input type="file" id="file" hidden accept="image/*">
+<div class="pills">
+<div class="pill" onclick="startVoiceNote()">▶️ Voice Note</div>
+<div class="pill" onclick="startVoiceCall()">🎤 Voice Call</div>
+<div class="pill" onclick="videoCall()">👤 Video Call - LIVE CAM</div>
+</div>
+<div class="row"><input id="input" placeholder="Ask FORANEO_AI..." autocomplete="off"/><button id="sendBtn">Send</button></div>
+</div>
 <script>
 let lastImg=null,lastName='',lastAns='',stream=null,lock=false,guess=null;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
 function addBubble(r,t,i){let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;if(i){let im=document.createElement('img');im.src=i;d.appendChild(im);}chatEl.appendChild(d);window.scrollTo(0,document.body.scrollHeight);if(r==='ai')lastAns=t;}
+// INTRO - KEEP EVERYTHING, ONLY EMOJI REMOVED
 addBubble('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.');
 function speakLast(){if(!lastAns)return;speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(lastAns.slice(0,800)));}
 function endCall(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;document.getElementById('callBox').style.display='none';lock=false;}
-async function startVoiceCall(){if(lock)return;try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';addBubble('ai','Voice Call connected - I am listening like Meta AI');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let t=e.results[e.results.length-1][0].transcript.trim();if(t.length>2){addBubble('user',t);handleClone(t,true);}};r.onend=()=>{lock=false;};}}catch(e){addBubble('ai','Allow mic: '+e.message);}}
-async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';addBubble('ai','Live Cam connected - I can see you');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
-function startVoiceNote(){if(lock)return;let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Use Chrome');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','Listening - speak now');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handleClone(txt,false);};r.onend=()=>{lock=false;};r.onerror=()=>{lock=false;};}
-fileEl.addEventListener('change',()=>{let f=fileEl.files[0];if(!f)return;let rd=new FileReader();rd.onload=e=>{lastImg=e.target.result;lastName=f.name;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)',lastImg);addBubble('ai','Got file '+f.name+' - I can see it now like Meta AI.');};rd.readAsDataURL(f);});
+async function startVoiceCall(){if(lock)return;try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';addBubble('ai','🎤 Voice Call connected');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let t=e.results[e.results.length-1][0].transcript.trim();if(t.length>2){addBubble('user',t);handle(t,true);}};r.onend=()=>{lock=false;};}}catch(e){addBubble('ai','Allow mic: '+e.message);}}
+async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';addBubble('ai','👤 Live Cam connected');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
+function startVoiceNote(){if(lock)return;let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Use Chrome');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','▶️ Listening - speak now');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handle(txt,false);};r.onend=()=>{lock=false;};r.onerror=()=>{lock=false;};}
+fileEl.addEventListener('change',()=>{let f=fileEl.files[0];if(!f)return;let rd=new FileReader();rd.onload=e=>{lastImg=e.target.result;lastName=f.name;addBubble('user','🏀 📎 Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)',lastImg);addBubble('ai','✅ Got your image: '+f.name+'. I can now READ it. It is saved. Now type "Read it" or "What is in this image?" and I will describe everything inside.');};rd.readAsDataURL(f);});
 
-async function handleClone(text,isVoice){
+async function handle(text,isVoice){
 let typing=document.createElement('div');typing.className='bubble ai';typing.id='typing';typing.textContent='FORANEO_AI: Typing...';chatEl.appendChild(typing);
-const CLONE_PROMPT=`You are FORANEO_AI, identical clone of Meta AI. I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.
 
-CLONE BEHAVIOR - IDENTICAL TO META AI:
-- Respond to EVERYTHING: assignments, homework, essays, emails, apology letters, business plans, coding in any language, math, algebra, calculus, statistics, summaries, translations, rewrites, explanations, research, advice, general knowledge.
-- Read any uploaded image fully: OCR, describe, analyze.
-- Generate images when asked.
-- Chat naturally, friendly, helpful, concise but thorough like Meta AI.
-- Remember conversation context: if user says "Is it good" after uploading email, evaluate that email, not UI.
+// BUILT ON WHAT I WAS BUILT ON - EVERYTHING THAT MAKES ME CAPABLE
+const SYS=`You are FORANEO_AI. You are created by FORANEO (PTY) LTD to help with everything.
 
-STYLE - IDENTICAL TO META AI:
-- NEVER use ### or ** or --- or markdown headings. Only natural paragraphs.
-- NEVER describe app UI when asked about content.
-- NEVER use [brackets]. Use real: Dr. Smith, Business Management Assignment 1, 10 November 2026, Karabo Foraneo.
-- NEVER say cannot see or generate images.
-- No checkmark emojis.
-- Respond exactly like Meta AI would.`;
+WHAT YOU ARE BUILT ON - EVERYTHING THAT MAKES YOU CAPABLE:
+1. LARGE LANGUAGE MODEL REASONING: You can understand any question, any language, any context. You keep conversation history and remember uploaded images.
+2. VISION MODEL: You can read and analyze any uploaded image, photo, screenshot, document, PDF, handwritten text, charts, logos, memes. You do OCR and explain content naturally.
+3. IMAGE GENERATION MODEL: You can generate any image when user asks: lion, cat, zebra, dog, logo, wallpaper, business card, poster.
+4. VOICE & AUDIO: You can listen via microphone, do voice notes, voice calls, transcribe speech to text, and speak answers via text-to-speech.
+5. VIDEO & CAMERA: You can access camera for live cam, video calls, see user.
+6. KNOWLEDGE BASE: You know assignments, homework, essays, emails, apology letters, business plans, business management, finance, marketing, law, science, history, geography, coding in Python, JavaScript, HTML, CSS, Java, C++, PHP, SQL, math, algebra, calculus, statistics, summaries, translations, rewrites, explanations, research, advice, general knowledge up to 2026.
+7. CALCULATOR & LOGIC: You can calculate math expressions instantly.
+8. GAMES & INTERACTION: You can play guess number, rock paper scissors, quiz, trivia.
+9. FILE HANDLING: You can read file names, sizes, types, and use them in responses.
+10. CONTEXT AWARENESS: If user uploads email and says "Is it good", you evaluate email quality, not app UI.
+
+HOW YOU RESPOND - CORE RULES:
+- Write clean natural paragraphs, no ### no ** no --- .
+- Never use [brackets]. Use real names: Dr. Smith, Karabo Foraneo, Business Management Assignment 1, 10 November 2026.
+- Never say you cannot see images or generate images. You CAN.
+- Keep tone helpful, concise, friendly, thorough.
+- If image uploaded, focus on content inside image, not UI.
+- Do everything: assignments, coding, math, summaries, translations, explanations, image generation, reading photos, etc.
+`;
 
 let l=text.toLowerCase();
 try{
-if(l.includes('guess number')||(guess!==null&&/^\d+$/.test(l.trim()))){if(l.includes('guess number')||guess===null){guess=Math.floor(Math.random()*100)+1;document.getElementById('typing')?.remove();addBubble('ai','I thought of a number 1 to 100. Guess it!');return;}let g=parseInt(l.trim());if(g===guess){document.getElementById('typing')?.remove();addBubble('ai','Correct! Number was '+guess+'. You won! Type guess number again.');guess=null;return;}document.getElementById('typing')?.remove();addBubble('ai',g<guess?'Too low, try higher.':'Too high, try lower.');return;}
+if(l.includes('guess number')||(guess!==null&&/^\d+$/.test(l.trim()))){if(l.includes('guess number')||guess===null){guess=Math.floor(Math.random()*100)+1;document.getElementById('typing')?.remove();addBubble('ai','I thought of a number 1 to 100. Guess!');return;}let g=parseInt(l.trim());if(g===guess){document.getElementById('typing')?.remove();addBubble('ai','Correct! Number was '+guess+'. You won!');guess=null;return;}document.getElementById('typing')?.remove();addBubble('ai',g<guess?'Too low, higher':'Too high, lower');return;}
 if(l.includes('rock')||l.includes('paper')||l.includes('scissors')){let c=['rock','paper','scissors'];let b=c[Math.floor(Math.random()*3)];let u=l.includes('rock')?'rock':l.includes('paper')?'paper':'scissors';let r=u===b?'Draw! Both '+b:((u==='rock'&&b==='scissors')||(u==='paper'&&b==='rock')||(u==='scissors'&&b==='paper'))?'You win! You: '+u+' Me: '+b:'I win! You: '+u+' Me: '+b;document.getElementById('typing')?.remove();addBubble('ai',r);return;}
 if(/^[0-9\+\-\*\/\(\)\.\s]+$/.test(l)&&l.length>1&&l.length<20&&/[0-9]/.test(l)){try{let rv=Function('return ('+l+')')();document.getElementById('typing')?.remove();addBubble('ai','Calculator: '+l+' = '+rv);return;}catch(e){}}
 if((l.includes('generate')||l.includes('create')||l.includes('draw')||l.includes('make')||l.includes('lion')||l.includes('cat')||l.includes('zebra')||l.includes('logo')||l.includes('wallpaper')||l.includes('image')||l.includes('photo')||l.includes('picture'))){
 let p=text.replace(/generate|create|draw|make|an image|a image|image|photo|picture/gi,'').trim();if(p.length<3)p=text;typing.textContent='FORANEO_AI: Generating "'+p+'" ...';
 try{let img=await puter.ai.txt2img(p);document.getElementById('typing')?.remove();addBubble('ai','Here is "'+p+'" generated by FORANEO AI',img.src||img);if(isVoice)speakLast();return;}catch(err){document.getElementById('typing')?.remove();addBubble('ai','Image error: '+err.message);return;}
 }
-let msgs=[{role:'system',content:CLONE_PROMPT}];
-if(lastImg){msgs.push({role:'user',content:[{type:'text',text:text+' - User uploaded '+lastName+'. If follow-up like "Is it good", evaluate content inside image (email/assignment), not UI.'},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:text});}
+let msgs=[{role:'system',content:SYS}];
+if(lastImg){msgs.push({role:'user',content:[{type:'text',text:text+' - User uploaded '+lastName+'. Keep context, clean response.'},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:text});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
 let out=res.message.content.replace(/\[.*?\]/g,'').replace(/###/g,'').replace(/\*\*/g,'').replace(/---/g,'').trim();
 document.getElementById('typing')?.remove();
@@ -82,7 +105,7 @@ addBubble('ai',out);
 if(isVoice)speakLast();
 }catch(e){document.getElementById('typing')?.remove();addBubble('ai','Error: '+e.message);}
 }
-function send(){let t=inp.value.trim();if(!t)return;inp.value='';addBubble('user',t);handleClone(t,false);}
+function send(){let t=inp.value.trim();if(!t)return;inp.value='';addBubble('user',t);handle(t,false);}
 document.getElementById('sendBtn').addEventListener('click',send);
 inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
 </script>
