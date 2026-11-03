@@ -16,12 +16,18 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 .tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}
 .tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}
 .tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
-#chat{padding:18px 14px;padding-bottom:260px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
+#chat{padding:18px 14px;padding-bottom:420px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
 .bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent}
 .user{align-self:flex-end;background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border-bottom-right-radius:8px}
 .ai{align-self:flex-start;background:#fff;border-color:#e8ecff;color:#1e233a;border-bottom-left-radius:8px}
 .ai img,.user img{max-width:180px !important;max-height:180px !important;object-fit:contain;border-radius:16px;margin-top:12px;display:block}
-.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto}
+.upload{padding:13px 18px;border:2px dashed #a8b8ff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:900;text-align:center}
+.pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.pill{border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
+.row{display:flex;gap:12px;align-items:center}
+.row input{flex:1;padding:15px 22px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none}
+.row button{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none;padding:15px 30px;border-radius:32px;font-weight:900;cursor:pointer}
 #callBox{display:none;position:fixed;top:84px;left:14px;right:14px;background:#0f111a;border-radius:24px;padding:14px;z-index:2000;color:#fff;max-width:520px;margin:0 auto}
 .small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
 </style>
@@ -42,30 +48,31 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 
 <div id="callBox"><video id="cam" autoplay playsinline muted></video><div style="text-align:center;padding:12px 0;font-weight:900" id="callText">Live Connected</div><div style="display:flex;gap:12px"><button id="endCallBtn" style="flex:1;padding:14px;background:#ff2a2a;color:#fff;border:none;border-radius:28px;font-weight:900">End Call</button><button id="speakBtn" style="flex:1;padding:14px;background:#1a5cff;color:#fff;border:none;border-radius:28px;font-weight:900">🔊 Speak</button></div></div>
 
-<!-- FINAL CLEAN BAR - NO OLD BUTTON - CEO KARABO -->
 <div class="bar">
-<div id="controlBar" style="display:flex;gap:8px;padding:8px;background:#f5f5f5;">
-<button onclick="readAppData()" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;font-weight:700">📁 Read App</button>
-<button onclick="editAppFile()" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;font-weight:700">✏️ Edit</button>
-<button onclick="seeApp()" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;font-weight:700">👁️ See App</button>
-<button onclick="document.getElementById('file').click()" style="padding:6px 10px;border-radius:8px;border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-weight:800">📎 Upload</button>
+<!-- ADDED: App controls - CEO KARABO -->
+<div style="display:flex;gap:8px;padding:0 0 10px 0;">
+<button onclick="readAppData()" style="padding:8px 12px;border-radius:20px;border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-weight:800">📁 Read App</button>
+<button onclick="editAppFile()" style="padding:8px 12px;border-radius:20px;border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-weight:800">✏️ Edit</button>
+<button onclick="seeApp()" style="padding:8px 12px;border-radius:20px;border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-weight:800">👁️ See App</button>
 </div>
 
-<div id="emojiPanel" style="display:none;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px;background:white;border-top:1px solid #eee;max-height:150px;overflow-y:auto;">
+<div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
+<input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
+<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call - LIVE CAM</div><div class="pill" id="pillWhatCan">📚 What can you do?</div></div>
+
+<div id="emojiPanel" style="display:none;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px;background:white;border-top:1px solid #eee;max-height:130px;overflow-y:auto;margin-bottom:10px;">
 <span onclick="addEmoji('😊')">😊</span><span onclick="addEmoji('🔥')">🔥</span><span onclick="addEmoji('❤️')">❤️</span><span onclick="addEmoji('👍')">👍</span><span onclick="addEmoji('😂')">😂</span><span onclick="addEmoji('🚀')">🚀</span><span onclick="addEmoji('💯')">💯</span><span onclick="addEmoji('🎬')">🎬</span>
 <span onclick="addEmoji('👤')">👤</span><span onclick="addEmoji('📁')">📁</span><span onclick="addEmoji('💻')">💻</span><span onclick="addEmoji('🎨')">🎨</span><span onclick="addEmoji('🧠')">🧠</span><span onclick="addEmoji('⚡')">⚡</span><span onclick="addEmoji('✨')">✨</span><span onclick="addEmoji('🙏')">🙏</span>
 </div>
 
-<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;">
+<div class="row">
 <button onclick="toggleEmoji()" style="font-size:22px;background:none;border:none;">👤</button>
-<button onclick="generateVideo()" style="background:#2563eb;color:white;padding:8px 12px;border-radius:20px;border:none;font-weight:800">🎬</button>
-<input id="input" placeholder="Message FORANEO_AI..." style="flex:1;padding:14px 20px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none;">
-<button onclick="sendCurrent()" style="background:linear-gradient(135deg,#1a5cff,#0f46d6);color:white;border-radius:50%;width:44px;height:44px;border:none;font-weight:900">➤</button>
+<button onclick="generateVideo()" style="background:#2563eb;color:white;padding:10px 14px;border-radius:20px;border:none;font-weight:800">🎬</button>
+<input id="input" placeholder="Ask FORANEO_AI anything — code, morale, culture, business..." autocomplete="off"/>
+<button id="sendBtn">Send</button>
 </div>
-<div class="small" style="padding:0 12px 8px">FORANEO_AI • CEO KARABO • forego • Reads files • Edits app • Video gen • All file types</div>
+<div class="small">FORANEO_AI • Reads images instantly • Generates logos • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture/Religion • Business • All subjects • CEO KARABO • forego</div>
 </div>
-
-<input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
 
 <script>
 let lastImg=null,lastAns='',stream=null,lock=false,chatHistory=[],localHistory=[];
@@ -92,15 +99,21 @@ function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;}
 async function startVoiceCall(){if(lock) return; try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';document.getElementById('callText').innerText='🎤 Voice Call Connected';addBubble('ai','🎤 Voice call connected.');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt.length>2){addBubble('user',txt);handle(txt,true);}};r.onend=()=>lock=false;}}catch(e){addBubble('ai','Allow microphone: '+e.message);}}
 async function videoCall(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});document.getElementById('cam').srcObject=stream;document.getElementById('cam').style.display='block';document.getElementById('callBox').style.display='block';document.getElementById('callText').innerText='👤 Live Cam Connected';addBubble('ai','👤 Live cam connected.');}catch(e){addBubble('ai','Allow camera: '+e.message);}}
+function startVoiceNote(){if(lock) return; let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();lock=true;addBubble('ai','▶️ Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);lock=false;handle(txt,false);};r.onend=()=>lock=false;}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai',`FORANEO_AI: What I can do: Code, Display, Help with modern morale, Culture / religion, Reads images instantly, Generates logos/images, Business help, etc.\n\nCOMPANY: FORANEO (PTY) LTD - CEO KARABO - forego - Tech, AI, Training and Education - Departments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos - Address: 50226 Masodi, Mokopane, 0600 - Hours: Mon-Sun 3PM-5:40PM`);}
+function doHelp(){addBubble('ai',`FORANEO_AI: What I can do: Code, Display, Help with modern morale, Culture / religion, Reads images instantly, Generates logos/images, Assignments, Business, etc.\n\nCOMPANY: FORANEO (PTY) LTD - CEO KARABO - forego`);}
 function doBusiness(){addBubble('ai','Business Help for FORANEO (PTY) LTD:\nDepartments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos\n- Business plan\n- Marketing strategy\n- Costing and pricing\n- SWOT\n- Proposal');}
 function doCoding(){addBubble('ai','Coding Help:\n- Write Python, JS, HTML, Java, SQL\n- Create website for FORANEO\n- Debug code\n- Explain code\nJust ask.');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 document.addEventListener('DOMContentLoaded',()=>{
+document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
 document.getElementById('liveBtn').addEventListener('click',videoCall);
+document.getElementById('pillVoiceNote').addEventListener('click',startVoiceNote);
+document.getElementById('pillVoiceCall').addEventListener('click',startVoiceCall);
+document.getElementById('pillVideoCall').addEventListener('click',videoCall);
+document.getElementById('pillWhatCan').addEventListener('click',doHelp);
 document.getElementById('tabChat').addEventListener('click',focusInput);
 document.getElementById('tabImage').addEventListener('click',triggerImage);
 document.getElementById('tabCalc').addEventListener('click',doCalc);
@@ -111,7 +124,8 @@ document.getElementById('tabCoding').addEventListener('click',doCoding);
 document.getElementById('tabClear').addEventListener('click',clearChatsManual);
 document.getElementById('endCallBtn').addEventListener('click',endCall);
 document.getElementById('speakBtn').addEventListener('click',speakLast);
-inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); sendCurrent();}});
+document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);});
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}});
 });
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
@@ -123,11 +137,10 @@ handle('AUTO_READ_IMAGE: Uploaded "'+f.name+'". Immediately describe it fully.',
 };
 rd.readAsDataURL(f);
 });
-function sendCurrent(){let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}
 async function handle(text,isVoice){
 let raw=text; let l=text.toLowerCase().trim();
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
-const SYSTEM=`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO, Motto forego, Focus Tech AI Training Education, Departments Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos, Address 50226 Masodi Mokopane 0600, Hours Mon-Sun 3PM-5:40PM. You can read app data, edit files, see everything, generate video. Context: ${chatHistory.slice(-10).map(h=>h.role+': '+h.text.substring(0,350)).join('\\n')} NOW RESPOND TO: ${raw}`;
+const SYSTEM=`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego, Focus Tech AI Training Education, Departments Grabaciones Foraneo, Foraneo Net, Escuela Foraneo and Foraneo Black Marks Tattoos, Address 50226 Masodi Mokopane 0600, Hours Mon-Sun 3PM-5:40PM. Context: ${chatHistory.slice(-10).map(h=>h.role+': '+h.text.substring(0,350)).join('\\n')} NOW RESPOND TO: ${raw}`;
 try{
 let isGen=false; let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','create an image','generate an image'];
 for(let t of triggers){if(l.includes(t)) isGen=true;}
@@ -152,23 +165,11 @@ function addEmoji(e){ document.getElementById('input').value+=e; document.getEle
 function generateVideo(){
  const prompt=document.getElementById('input').value || 'FORANEO promo video';
  addBubble('user',`🎬 Generate Video: ${prompt}`);
- addBubble('ai',`🎬 FORANEO_AI Video Generator started...\n\n📝 Script for: "${prompt}"\n🎨 Creating scenes for FORANEO (PTY) LTD - CEO KARABO - forego\n\n[Video will render here when in App mode - browser preview ready]\n\nIn full app, this will export MP4 automatically.`);
+ addBubble('ai',`🎬 FORANEO_AI Video Generator started...\n\n📝 Script for: "${prompt}"\n🎨 Creating scenes for FORANEO (PTY) LTD - CEO KARABO - forego\n\n[Video will render here when in App mode]`);
 }
-async function readAppData(){
- addBubble('ai','📁 FORANEO_AI App Control: Reading app data...\n\n✅ Files: index.html, manifest, icons\n✅ Storage: localStorage, chats\n✅ Config: FORANEO (PTY) LTD, CEO KARABO, forego\n✅ Departments: Grabaciones Foraneo, Foraneo Net, Escuela Foraneo, Foraneo Black Marks Tattoos\n✅ Total chats: '+localHistory.length+'\n\nI can see everything in the app no matter the file type.');
-}
-async function editAppFile(){
- const input=document.createElement('input'); input.type='file'; input.accept='.*';
- input.onchange=e=>{
-   const file=e.target.files[0];
-   addBubble('ai',`✏️ Editing file: ${file.name} (${file.size} bytes)\n✅ File loaded - I can read & edit any type: .js .html .json .png .mp4 .apk data\nReady to modify.`);
- };
- input.click();
-}
-function seeApp(){
- addBubble('ai','👁️ FORANEO_AI Vision: Scanning full app...\n\n🏢 FORANEO (PTY) LTD\n👤 CEO: KARABO Langa\n🎯 Motto: forego\n📍 50226 Masodi, Mokopane, 0600\n⏰ Mon-Sun 3PM-5:40PM\n\nI see all screens, all data, all files - like you do. When wrapped as Android App with Capacitor, I will control camera, gallery, storage, notifications fully.');
-}
-function sendMsg(){sendCurrent();}
+async function readAppData(){ addBubble('ai','📁 FORANEO_AI App Control: Reading app data...\n\n✅ Files: index.html, manifest, icons\n✅ Storage: localStorage, chats\n✅ Config: FORANEO (PTY) LTD, CEO KARABO, forego\n✅ Total chats: '+localHistory.length+'\n\nI can see everything in the app.'); }
+async function editAppFile(){ const input=document.createElement('input'); input.type='file'; input.accept='.*'; input.onchange=e=>{ const file=e.target.files[0]; addBubble('ai',`✏️ Editing file: ${file.name} (${file.size} bytes)\n✅ File loaded - I can read & edit any type`); }; input.click(); }
+function seeApp(){ addBubble('ai','👁️ FORANEO_AI Vision: Scanning full app...\n\n🏢 FORANEO (PTY) LTD\n👤 CEO: KARABO Langa\n🎯 Motto: forego\n📍 50226 Masodi, Mokopane, 0600\n⏰ Mon-Sun 3PM-5:40PM\n\nI see all screens, all data, all files - like you do.'); }
 </script>
 </body>
 </html>
