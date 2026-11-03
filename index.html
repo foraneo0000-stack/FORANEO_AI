@@ -84,19 +84,19 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,Bl
 <input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
-<div class="small">FORANEO_AI • Reads images • Generates • Voice • Video • Calculator • Games • Code • Display • Modern Morale • Culture • Business • CEO KARABO • forego</div>
+<div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
 let lastImg=null,lastAns='',stream=null,lock=false,chatHistory=[],localHistory=[],currentUser=null;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-try{localHistory=JSON.parse(localStorage.getItem('foraneo_clean_v2')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
-function saveLocal(){try{localStorage.setItem('foraneo_clean_v2',JSON.stringify(localHistory));}catch(e){}}
+try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
+function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
 function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+(currentUser.email||'User').split('@')[0];}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
 if(i){
-if(typeof i==='string' && (i.endsWith('.mp4')||i.includes('pexels')||i.includes('video'))){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
+if(typeof i==='string' && (i.endsWith('.mp4')||i.includes('pexels')||i.includes('video')){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}
 else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
 }
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
@@ -107,11 +107,12 @@ saveLocal();
 }
 }
 (function restore(){
+// === INTRO MUST BE WHAT'S UP? ===
 if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}
-else{addBubble('ai','I am FORANEO_AI, WHAT'S UP?',null,true);}
+else{addBubble('ai',"WHAT'S UP? ",null,true);}
 updateSignBtn();
 })();
-function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai','Chats cleared. Starting fresh — FORANEO_AI is ready. CEO KARABO - forego',null,true);}}
+function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai',"WHAT'S UP? ",null,true);}}
 function speakLast(){if(!lastAns) return; try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastAns.slice(0,2200));u.rate=1.04;speechSynthesis.speak(u);}catch(e){}}
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;}
 async function startVoiceCall(){if(lock) return; try{stream=await navigator.mediaDevices.getUserMedia({audio:true});document.getElementById('callBox').style.display='block';document.getElementById('cam').style.display='none';document.getElementById('callText').innerText='Voice Call Connected';addBubble('ai','Voice call connected.');let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){lock=true;let r=new SR();r.continuous=true;r.lang='en-US';r.start();r.onresult=e=>{let txt=e.results[e.results.length-1][0].transcript.trim();if(txt.length>2){addBubble('user',txt);handle(txt,true);}};r.onend=()=>lock=false;}}catch(e){addBubble('ai','Allow microphone: '+e.message);}}
@@ -194,20 +195,18 @@ rd.readAsDataURL(f);
 });
 async function handle(text,isVoice){
 let raw=text; let l=text.toLowerCase().trim();
-
 if(l.includes('what was my first message')){
  let first = localHistory.find(m=>m.r==='user' && !m.text.toLowerCase().includes('first message'));
- if(first){ addBubble('ai','From the start of our conversation today, your first message was: "'+first.text+'"'); return; }
- else { addBubble('ai','This is the start — you have not sent a message yet in this thread.'); return; }
+ if(first){ addBubble('ai','From the start, your first message was: "'+first.text+'"'); return; }
+ else { addBubble('ai','This is the start.'); return; }
 }
-
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
 try{
 let isCarVideo = (l.includes('car') && l.includes('video')) || l.includes('a video of a car');
 if(isCarVideo){
 typing.remove();
 let realCarVideo = 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
-addBubble('ai','Here is a real video of a car for you, CEO KARABO. FORANEO (PTY) LTD.', realCarVideo);
+addBubble('ai','Here is a real video of a car for you, CEO KARABO.', realCarVideo);
 return;
 }
 let isGen=false; 
@@ -227,10 +226,10 @@ catch(e){typing.remove(); addBubble('ai','Could not generate: '+e.message); retu
 let fullHistory = chatHistory.map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
 let msgs=[
 {role:'system',content:`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego.
-You remember entire conversation from start to finish.
-Full history so far:\n${fullHistory}
-Now user says: ${raw}
-Reply as FORANEO_AI, keep conversation context, do not mention any other company.`}
+Remember entire conversation from start to finish.
+Full history:\n${fullHistory}
+User says: ${raw}
+Reply as FORANEO_AI.`}
 ];
 if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o'});
