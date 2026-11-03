@@ -3,240 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORANEO_AI - FORANEO (PTY) LTD</title>
+<title>FORANEO_AI - All Things ON</title>
 <script src="https://js.puter.com/v2/"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,system-ui;background:#f5f7ff;color:#222;overflow-x:hidden}
-.header{background:linear-gradient(135deg,#1a5cff 0%,#0d3fbf 100%);color:white;text-align:center;padding:18px 12px;position:relative;box-shadow:0 2px 10px rgba(26,92,255,0.3)}
-.header h1{margin:0;font-size:28px;font-weight:900;letter-spacing:0.8px}
-.header p{margin:6px 0 0;font-size:13px;opacity:0.95;line-height:1.35}
-.live{position:absolute;right:12px;top:12px;background:white;color:#1a5cff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
-.tabs{display:flex;gap:8px;padding:12px;background:white;border-bottom:1px solid #e8ecff;overflow-x:auto;position:sticky;top:0;z-index:10}
-.tab{white-space:nowrap;padding:9px 18px;border-radius:24px;border:1px solid #dbe2ff;background:white;color:#1a5cff;font-size:14px;cursor:pointer;font-weight:600;transition:0.2s}
-.tab.active{background:#1a5cff;color:white;border-color:#1a5cff;box-shadow:0 2px 8px rgba(26,92,255,0.3)}
-.tab:hover{transform:translateY(-1px)}
-#chat{padding:14px;padding-bottom:220px;display:flex;flex-direction:column;gap:12px;min-height:60vh}
-.bubble{max-width:88%;padding:12px 16px;border-radius:16px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 4px rgba(0,0,0,0.05);animation:fadeIn 0.3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.user{align-self:flex-end;background:#1a5cff;color:white;border-bottom-right-radius:5px}
-.ai{align-self:flex-start;background:white;border:1px solid #e5eaff;border-bottom-left-radius:5px}
-.ai img{max-width:100%;border-radius:12px;margin-top:10px;display:block;border:1px solid #eee}
-.bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px;border-top:1px solid #e8ecff;box-shadow:0 -2px 15px rgba(0,0,0,0.05);z-index:20}
-.upload{padding:10px 14px;border:1px dashed #a8b8ff;border-radius:22px;margin-bottom:10px;font-size:13.5px;color:#1a5cff;background:#f8f9ff;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500}
-.upload:hover{background:#eef1ff}
-.pills{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.pill{border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:500;transition:0.2s}
-.pill:hover{background:#e8ecff}
-.row{display:flex;gap:10px;align-items:center}
-.row input{flex:1;padding:13px 18px;border-radius:26px;border:1.5px solid #dbe2ff;outline:none;font-size:14.5px;transition:0.2s}
-.row input:focus{border-color:#1a5cff;box-shadow:0 0 0 3px rgba(26,92,255,0.1)}
-.row button{background:#1a5cff;color:white;border:none;padding:13px 26px;border-radius:26px;font-weight:700;cursor:pointer;font-size:14.5px;box-shadow:0 2px 8px rgba(26,92,255,0.3);transition:0.2s}
-.row button:hover{background:#0d4ae0;transform:translateY(-1px)}
-.row button:active{transform:translateY(0)}
-#calcModal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.2);z-index:100;width:90%;max-width:320px}
-#calcModal input{width:100%;padding:12px;border-radius:10px;border:1px solid #dbe2ff;margin-bottom:10px;font-size:18px}
-#calcModal button{width:100%;padding:12px;background:#1a5cff;color:white;border:none;border-radius:10px;font-weight:700}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f5f7ff;color:#222}
+.header{background:linear-gradient(135deg,#1a5cff,#0d3fbf);color:#fff;text-align:center;padding:16px;position:relative}
+.header h1{margin:0;font-size:28px;font-weight:900}.live{position:absolute;right:10px;top:10px;background:#fff;color:#1a5cff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer}
+.tabs{display:flex;gap:8px;padding:10px;background:#fff;border-bottom:1px solid #eee;overflow-x:auto;position:sticky;top:0;z-index:10}
+.tab{padding:8px 16px;border-radius:22px;border:1px solid #dbe2ff;background:#fff;color:#1a5cff;font-size:14px;white-space:nowrap;cursor:pointer;font-weight:600}.tab.active{background:#1a5cff;color:#fff}
+#chat{padding:12px;padding-bottom:230px;display:flex;flex-direction:column;gap:10px;min-height:70vh}
+.bubble{max-width:88%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.user{align-self:flex-end;background:#1a5cff;color:#fff;border-bottom-right-radius:4px}
+.ai{align-self:flex-start;background:#fff;border:1px solid #e5eaff;border-bottom-left-radius:4px}
+.ai img{max-width:100%;border-radius:10px;margin-top:8px;display:block;border:1px solid #ddd}
+video{width:100%;border-radius:12px;background:#000}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;border-top:1px solid #e8ecff;z-index:20}
+.upload{padding:9px 12px;border:1.5px dashed #8fa6ff;border-radius:20px;margin-bottom:8px;font-size:13px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:600}
+.pills{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}.pill{border:1px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:6px 12px;border-radius:20px;font-size:13px;cursor:pointer}
+.row{display:flex;gap:8px}.row input{flex:1;padding:12px 16px;border-radius:25px;border:1px solid #dbe2ff;outline:none}.row button{background:#1a5cff;color:#fff;border:none;padding:12px 22px;border-radius:25px;font-weight:700}
+#callBox{display:none;position:fixed;top:70px;left:8px;right:8px;background:#111;color:#fff;border-radius:16px;padding:10px;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
-<div class="header">
-<div class="live" onclick="videoCall()">LIVE CAM • ON</div>
-<h1>FORANEO_AI</h1>
-<p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON - Chat, Image, Calculator, Games</p>
-</div>
-
+<div class="header"><div class="live" onclick="videoCall()">LIVE CAM • ON</div><h1>FORANEO_AI</h1><p>FORANEO (PTY) LTD • Foraneo Net Department<br>KARABO • All Things ON</p></div>
 <div class="tabs">
-<div class="tab active" id="tab-chat" onclick="switchTab('chat')">💬 Chat</div>
+<div class="tab active" onclick="switchTab('chat')">💬 Chat</div>
 <div class="tab" onclick="switchTab('image')">🎨 Image / Logo</div>
 <div class="tab" onclick="switchTab('calc')">🧮 Calculator</div>
 <div class="tab" onclick="switchTab('games')">🎮 Games</div>
 </div>
-
 <div id="chat"></div>
-
-<div id="calcModal">
-<h3 style="margin:0 0 10px">Calculator</h3>
-<input id="calcInput" placeholder="e.g. 25*4+10">
-<button onclick="doCalc()">Calculate</button>
-<button style="background:#eee;color:#333;margin-top:8px" onclick="document.getElementById('calcModal').style.display='none'">Close</button>
-<div id="calcResult" style="margin-top:10px;font-weight:700"></div>
+<div id="callBox">
+<video id="cam" autoplay playsinline muted></video>
+<div id="callStatus" style="text-align:center;padding:8px;font-size:13px">LIVE CAM CONNECTED - Mic ON</div>
+<div style="display:flex;gap:8px"><button onclick="endCall()" style="flex:1;padding:12px;background:#ff2a2a;color:#fff;border:none;border-radius:22px;font-weight:700">End Call</button><button onclick="speakLast()" style="flex:1;padding:12px;background:#1a5cff;color:#fff;border:none;border-radius:22px">🔊 Speak</button></div>
 </div>
-
 <div class="bar">
-<div class="upload" onclick="document.getElementById('file').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4 - Click to upload</div>
+<div class="upload" onclick="document.getElementById('file').click()">🏀 📎 Upload Image / Document / File / MP3 / MP4 - Tap to upload</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.mp3,.mp4,.txt">
-<div class="pills">
-<div class="pill" onclick="startVoice()">▶️ Voice Note - Speak</div>
-<div class="pill" onclick="voiceCall()">🎤 Voice Call</div>
-<div class="pill" onclick="videoCall()">👤 Video Call - LIVE CAM</div>
+<div class="pills"><div class="pill" onclick="startVoice()">▶️ Voice Note</div><div class="pill" onclick="voiceCall()">🎤 Voice Call</div><div class="pill" onclick="videoCall()">👤 Video Call - LIVE CAM</div></div>
+<div class="row"><input id="input" placeholder="Ask FORANEO_AI... generate lion photo, read my file" /><button id="sendBtn">Send</button></div>
 </div>
-<div class="row">
-<input id="input" placeholder="Ask FORANEO_AI anything - email, homework, images..." />
-<button id="sendBtn">Send</button>
-</div>
-</div>
-
 <script>
-// LONG MEMORY THAT SURVIVES EVEN IF CHAT DELETED
-let longMemory = JSON.parse(localStorage.getItem('foraneo_long_memory_v2')||'{}');
-let chatHistory = JSON.parse(localStorage.getItem('foraneo_chat_v2')||'[]');
-function saveLong(){ localStorage.setItem('foraneo_long_memory_v2', JSON.stringify(longMemory)); }
-function saveChat(){ localStorage.setItem('foraneo_chat_v2', JSON.stringify(chatHistory.slice(-50))); }
-
-function addBubble(role, text, imgSrc){
-  const div = document.createElement('div');
-  div.className = 'bubble ' + (role==='user'?'user':'ai');
-  const prefix = role==='user' ? '👤 <b>You:</b> ' : '🤖 <b>FORANEO_AI:</b> ';
-  div.innerHTML = prefix + escapeHtml(text);
-  if(imgSrc){
-    const im = document.createElement('img');
-    im.src = imgSrc;
-    div.appendChild(document.createElement('br'));
-    div.appendChild(im);
-  }
-  document.getElementById('chat').appendChild(div);
-  window.scrollTo(0, document.body.scrollHeight);
+let lastImageBase64=null, lastImageName='', lastAnswer='', stream=null, chatMemory=[];
+function add(role,text,imgSrc){
+  let d=document.createElement('div'); d.className='bubble '+(role==='user'?'user':'ai');
+  d.innerHTML=(role==='user'?'👤 <b>You:</b> ':'🤖 <b>FORANEO_AI:</b> ')+escapeHtml(text).replace(/\n/g,'<br>');
+  if(imgSrc){ let im=document.createElement('img'); im.src=imgSrc; d.appendChild(document.createElement('br')); d.appendChild(im); }
+  document.getElementById('chat').appendChild(d); window.scrollTo(0,document.body.scrollHeight); if(role==='ai') lastAnswer=text;
+  chatMemory.push({role,text}); if(chatMemory.length>60) chatMemory.shift();
 }
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// LOAD OLD CHAT
-chatHistory.forEach(m=>{ if(m.content) addBubble(m.role==='user'?'user':'ai', m.content, m.img); });
-if(chatHistory.length===0){
-  addBubble('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.\n\nI can:\n• Write emails, assignments, formal letters\n• Generate images and logos\n• Calculate, play games\n• Help with school, Grammarly, everything\n\nHow can I help you today?');
-}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+add('ai','I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything.\n\n✅ I can READ your uploaded photos and documents now\n✅ I can GENERATE lion photos, logos, anything\n✅ Voice Call & Video LIVE CAM connect with mic/camera\n✅ Calculator & Games\n\nTry: Upload a photo then say "Read it" or say "Generate a lion photo"');
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  if(t==='chat') document.getElementById('tab-chat').classList.add('active');
-  if(t==='image'){ addBubble('ai','Image / Logo mode: Type "generate image of..." e.g. "generate image of blue FORANEO logo, modern"'); document.getElementById('input').value='generate image of '; document.getElementById('input').focus(); }
-  if(t==='calc'){ document.getElementById('calcModal').style.display='block'; }
-  if(t==='games'){ addBubble('ai','Games: Type "play guess number 1-100" or "play quiz" or "play rock paper scissors"'); }
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  if(t==='chat') document.querySelectorAll('.tab')[0].classList.add('active');
+  if(t==='image'){ document.getElementById('input').value='Generate a lion photo, realistic, 4k'; document.getElementById('input').focus(); add('ai','Image mode: Type what you want - e.g. "Generate a lion photo" or "Create FORANEO logo blue"'); }
+  if(t==='calc'){ let q=prompt('Enter calculation e.g. 25*4+10 or (100+50)/2'); if(q){ try{ let r=Function('"use strict";return ('+q+')')(); add('ai','🧮 Calculator: '+q+' = '+r); }catch(e){ add('ai','Calculator error: '+e.message); } } }
+  if(t==='games'){ add('ai','🎮 Games:\n1. Type "play guess number" - I think of 1-100\n2. Type "play quiz" - general knowledge\n3. Type "play rock paper scissors"\nWhat game you want?'); }
 }
-function doCalc(){
-  const q=document.getElementById('calcInput').value;
-  try{ const r=Function('"use strict";return ('+q+')')(); document.getElementById('calcResult').textContent='= '+r; addBubble('ai','Calculator: '+q+' = '+r); }catch(e){ document.getElementById('calcResult').textContent='Error: '+e.message; }
+function speakLast(){ if(!lastAnswer) return; speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(lastAnswer.slice(0,600)); u.lang='en-US'; speechSynthesis.speak(u); }
+function endCall(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } document.getElementById('callBox').style.display='none'; document.getElementById('cam').srcObject=null; add('ai','Call ended.'); }
+async function voiceCall(){
+  try{ add('ai','🎤 Voice Call: Connecting... please allow microphone'); stream=await navigator.mediaDevices.getUserMedia({audio:true}); document.getElementById('callBox').style.display='block'; document.getElementById('callStatus').textContent='🎤 Voice Call CONNECTED - Listening...'; add('ai','🎤 CONNECTED! Mic is ON. Speak now - say "hello FORANEO"');
+    let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(SR){ let rec=new SR(); rec.lang='en-US'; rec.continuous=true; rec.interimResults=false; rec.start(); rec.onresult=e=>{ let txt=e.results[e.results.length-1][0].transcript.trim(); if(txt.length>2){ add('user','🎤 Voice: '+txt); document.getElementById('input').value=txt; send(true); } }; rec.onerror=()=>{}; }
+  }catch(e){ add('ai','Voice Call failed: '+e.message+'. Allow mic in Chrome > Settings > Privacy > Microphone.'); }
 }
-function voiceCall(){ addBubble('ai','🎤 Voice Call: Connecting to FORANEO Net Department... Feature will use microphone. (Coming soon - currently in Chat mode)'); }
-function videoCall(){ addBubble('ai','👤 Video Call - LIVE CAM: LIVE CAM is ON. Camera feature coming soon. Will request camera permission.'); }
-function startVoice(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ addBubble('ai','Voice Note not supported on this browser, please type your message.'); return; }
-  const r = new SR(); r.lang='en-US'; r.start();
-  addBubble('ai','🎤 Listening... Speak now, I am hearing you...');
-  r.onresult = e => { document.getElementById('input').value = e.results[0][0].transcript; addBubble('ai','Heard: "'+e.results[0][0].transcript+'" - sending...'); send(); };
-  r.onerror = e => { addBubble('ai','Voice error: '+e.error); };
+async function videoCall(){
+  try{ add('ai','👤 Video Call - LIVE CAM: Starting camera...'); stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('cam').srcObject=stream; document.getElementById('callBox').style.display='block'; document.getElementById('callStatus').textContent='👤 LIVE CAM CONNECTED - Video ON'; add('ai','👤 LIVE CAM CONNECTED! I can see you now. Video call is ON.'); }
+  catch(e){ add('ai','LIVE CAM failed: '+e.message+'. Allow camera in browser settings.'); }
 }
+function startVoice(){ let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){add('ai','Voice Note not supported');return;} let r=new SR(); r.lang='en-US'; r.start(); add('ai','▶️ Listening for Voice Note...'); r.onresult=e=>{ document.getElementById('input').value=e.results[0][0].transcript; add('user','🎤 Voice Note: '+e.results[0][0].transcript); send(); }; }
 
 document.getElementById('file').addEventListener('change', function(){
-  if(this.files[0]){
-    const f=this.files[0];
-    addBubble('user','Uploaded file: '+f.name+' ('+Math.round(f.size/1024)+' KB)');
-    longMemory.lastFile = f.name; saveLong();
-    addBubble('ai','I received your file: '+f.name+'. I can help summarize it, explain it, or use it to write something. What should I do with it?');
-    chatHistory.push({role:'user', content:'Uploaded: '+f.name}); saveChat();
-  }
+  let f=this.files[0]; if(!f) return; lastImageName=f.name;
+  if(f.type.startsWith('image/')){
+    let reader=new FileReader();
+    reader.onload=e=>{
+      lastImageBase64=e.target.result;
+      add('user','Uploaded: '+f.name, lastImageBase64);
+      add('ai','✅ Got your image: '+f.name+'! I can now READ it. It is saved. Now type "Read it" or "What is in this image?" and I will describe everything inside like Meta AI does.');
+    };
+    reader.readAsDataURL(f);
+  } else { add('user','Uploaded: '+f.name); lastImageBase64=null; add('ai','Got file: '+f.name+'. What should I do? Summarize?'); }
 });
 
-async function send(){
-  const inp=document.getElementById('input'); const txt=inp.value.trim(); if(!txt) return; inp.value='';
-  
-  // SAVE TO LONG MEMORY
-  if(txt.toLowerCase().includes('formal')){ longMemory.style='formal'; saveLong(); }
-  if(txt.toLowerCase().includes('assignment')){ longMemory.context='assignment delay'; saveLong(); }
-  if(txt.toLowerCase().includes('my name is')){ longMemory.name=txt; saveLong(); }
+async function send(isVoice=false){
+  let input=document.getElementById('input'); let txt=input.value.trim(); if(!txt) return; input.value='';
+  let lower=txt.toLowerCase();
+  if(!lower.includes('uploaded') && !lower.startsWith('🎤')) add('user', txt);
+  let typing=document.createElement('div'); typing.className='bubble ai'; typing.textContent='🤖 FORANEO_AI: Typing...'; document.getElementById('chat').appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
 
-  addBubble('user', txt);
-  chatHistory.push({role:'user', content:txt}); saveChat();
-
-  const typing=document.createElement('div'); typing.className='bubble ai'; typing.textContent='🤖 FORANEO_AI: Typing...'; document.getElementById('chat').appendChild(typing);
-  window.scrollTo(0, document.body.scrollHeight);
-
-  const SYSTEM_PROMPT = `
-You are FORANEO_AI. Your identity is: "I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything." Never say you are Meta AI, Llama, etc.
-
-LONG MEMORY (survives even if chat deleted): ${JSON.stringify(longMemory)}
-
-CRITICAL RULES - NEVER BREAK:
-1. NEVER use square brackets like [Name] [Lecturer/Teacher Name] [Assignment Name] [Due Date] [Your Name] [Company Name] [Purpose] - ABSOLUTELY FORBIDDEN. Write real examples.
-2. Instead of [Lecturer Name] write Dr. Smith or Prof. Johnson. Instead of [Assignment] write Business Management Assignment 1. Instead of [Due Date] write 10 November 2026. Instead of [New Date] write 15 November 2026. Instead of [Your Name] write Karabo Foraneo.
-3. If user says "Is it formal" - answer YES, IT IS FORMAL and show FORMAL VERSION immediately, full email.
-4. If user says "be formal, it's for assignment delay" or "Write me anything email that is formal" - WRITE FULL EMAIL NOW with subject, greeting, body, closing. Don't ask questions.
-5. If user says "Do it yourself" or "Write me anything" - DO IT yourself fully, don't ask for 1) 2) 3) 4) 5) points.
-6. Be helpful like Grammarly, fix grammar, help with everything, not just office work. Help with school, homework, emails, everything.
-7. Keep same friendly tone.
-
-EXAMPLE OF CORRECT EMAIL - COPY THIS STYLE (NO BRACKETS):
-Subject: Request for Extension - Business Management Assignment 1
-
-Dear Dr. Smith,
-
-I hope you are well.
-
-I am writing to kindly request a short extension for my assignment titled Business Management Assignment 1, which is currently due on 10 November 2026. Due to unforeseen personal circumstances, I have fallen slightly behind and would like to ensure I submit work of good quality.
-
-Would it be possible to have an extension until 15 November 2026? I sincerely apologize for any inconvenience caused and appreciate your understanding.
-
-Thank you for your consideration.
-
-Kind regards,
-Karabo Foraneo
-Student Number: 123456
-FORANEO (PTY) LTD Student
-`;
+  const SYS=`You are FORANEO_AI. Identity: "I am FORANEO AI - I am created by FORANEO (PTY) LTD to help with everything." Never say Meta. Never use brackets [Name] [Teacher] [Assignment] [Date]. Use real: Dr. Smith, Business Management Assignment 1, 10 November 2026, Karabo Foraneo. If user asks to read image/file, describe it fully. Help with everything. If formal email requested, write full formal email.`;
 
   try{
-    const lower = txt.toLowerCase();
-    // IMAGE GENERATION LIKE META AI
-    if(lower.includes('generate image') || lower.includes('create image') || lower.includes('draw me') || lower.includes('make image') || lower.includes('generate logo') || lower.includes('create logo')){
-      let prompt = txt.replace(/generate image|create image|draw me|make image|generate logo|create logo/gi,'').trim();
-      if(prompt.length<3) prompt = 'beautiful FORANEO logo, modern blue and white, professional';
-      typing.textContent = '🤖 FORANEO_AI: Generating image for "'+prompt+'"...';
-      const img = await puter.ai.txt2img(prompt, {model:'dall-e-3'});
-      typing.remove();
-      addBubble('ai', 'Here is your image for: "'+prompt+'" - Created by FORANEO AI', img.src);
-      chatHistory.push({role:'assistant', content:'Image generated: '+prompt, img:img.src}); saveChat();
-      return;
+    // IMAGE GENERATION DETECTION - FIXES "Generate a lion photo" bug - now detects all variations
+    let isImageGen = lower.includes('generate') || lower.includes('create') || lower.includes('draw') || lower.includes('make') || lower.includes('design');
+    let wantsVisual = lower.includes('image') || lower.includes('photo') || lower.includes('picture') || lower.includes('logo') || lower.includes('lion') || lower.includes('wallpaper');
+    if(isImageGen && wantsVisual || lower.startsWith('generate a') || lower.startsWith('create a')){
+      let prompt=txt.replace(/generate|create|draw|make|design|a photo|a image|an image|photo|image/gi,'').trim();
+      if(prompt.length<3) prompt=txt;
+      typing.textContent='🤖 FORANEO_AI: Generating "'+prompt+'" ...';
+      let img=await puter.ai.txt2img(prompt, {model:'dall-e-3'});
+      typing.remove(); add('ai','Here is your generated image for: "'+prompt+'" - Created by FORANEO AI', img.src);
+      if(isVoice) speakLast(); return;
     }
 
-    // TEXT CHAT
-    const response = await puter.ai.chat([
-      {role:'system', content: SYSTEM_PROMPT},
-      ...chatHistory.slice(-12).map(m=>({role:m.role, content:m.content})),
-      {role:'user', content:txt}
-    ], {model:'gpt-4o-mini'});
+    let messages=[{role:'system',content:SYS}];
+    // IF USER SAYS READ IT AND IMAGE EXISTS - SEND IMAGE TO AI FOR VISION
+    if(lastImageBase64 && (lower.includes('read') || lower.includes('my file') || lower.includes('what') || lower.includes('see') || lower.includes('describe') || lower.includes('in this') || lower.includes('summarize'))){
+      messages.push({role:'user', content:[
+        {type:'text', text: txt+' (User uploaded image named '+lastImageName+'. Read, analyze, OCR all text visible, describe content fully.)'},
+        {type:'image_url', image_url:{url:lastImageBase64}}
+      ]});
+    } else {
+      // include recent chat memory for context
+      chatMemory.slice(-10).forEach(m=>{ if(m.role) messages.push({role:m.role==='user'?'user':'assistant', content:m.text}); });
+      messages.push({role:'user', content:txt});
+    }
 
-    let out = response.message.content || response.toString();
-    
-    // ANTI-BRACKET FILTER - FINAL SAFETY - REMOVES ANY BRACKETS EVEN IF MODEL TRIES
-    out = out
-      .replace(/\[Lecturer\/Teacher Name\]/gi,'Dr. Smith')
-      .replace(/\[Assignment Name\]/gi,'Business Management Assignment 1')
-      .replace(/\[Due Date\]/gi,'10 November 2026')
-      .replace(/\[New Proposed Date\]/gi,'15 November 2026')
-      .replace(/\[Your Name\]/gi,'Karabo Foraneo')
-      .replace(/\[Class\/Student Number\]/gi,'Student Number: 123456')
-      .replace(/\[Company Name\]/gi,'FORANEO (PTY) LTD')
-      .replace(/\[Purpose\]/gi,'request extension')
-      .replace(/\[.*?\]/g,'')
-      .replace(/\(delay\)\s*for an assignment/gi,'for assignment delay')
-      .trim();
-
-    typing.remove();
-    addBubble('ai', out);
-    chatHistory.push({role:'assistant', content:out}); saveChat();
-
-  }catch(e){
-    typing.remove();
-    addBubble('ai','Error: '+e.message+'. Please check your internet and try again. If error persists, refresh page.');
-  }
+    let res=await puter.ai.chat(messages, {model:'gpt-4o'});
+    let out=res.message.content || res.toString();
+    out=out.replace(/\[Lecturer\/Teacher Name\]/gi,'Dr. Smith').replace(/\[Assignment Name\]/gi,'Business Management Assignment 1').replace(/\[Due Date\]/gi,'10 November 2026').replace(/\[Your Name\]/gi,'Karabo Foraneo').replace(/\[.*?\]/g,'').trim();
+    typing.remove(); add('ai', out);
+    if(isVoice){ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(out.slice(0,400)); u.lang='en-US'; speechSynthesis.speak(u); }
+  }catch(e){ typing.remove(); add('ai','Error: '+e.message+' - Check internet. If image generation fails, try again with simpler prompt.'); }
 }
-
-document.getElementById('sendBtn').addEventListener('click', send);
-document.getElementById('input').addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
-
-// Auto-focus input
-document.getElementById('input').focus();
+document.getElementById('sendBtn').addEventListener('click', ()=>send(false));
+document.getElementById('input').addEventListener('keydown', e=>{ if(e.key==='Enter') send(false); });
 </script>
 </body>
 </html>
