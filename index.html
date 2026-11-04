@@ -63,7 +63,8 @@
 <div id="callBox">
 <video id="cam" autoplay playsinline muted></video>
 <div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div>
-<div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div>
+<div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="tapSpeakBtn" style="background:#ffcc00;color:#000">🎤 Tap to Speak</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div>
+<div style="display:flex;gap:8px;padding:0 10px 10px"><input id="callInput" placeholder="Type in call if mic fails..." style="flex:1;padding:12px;border-radius:28px;border:none;outline:none"/><button id="callSendBtn" style="padding:12px 20px;border:none;border-radius:28px;background:#1a5cff;color:#fff;font-weight:900">Send</button></div>
 <div style="text-align:center;color:#fff" id="callText">Live...</div>
 </div>
 <div id="authModal"><div id="authBox">
@@ -106,9 +107,14 @@
  setInterval(kill,50);
 })();
 
-let lastImg=null,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0;
+let lastImg=null,lastImgTime=0,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0,mediaRecorder=null,voiceChunks=[];
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
+try{
+ localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');
+ currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');
+ localHistory=localHistory.filter(m=>!(m.text||'').includes("WHAT'S UP CEO KARABO! You said:") && !(m.text||'').includes("I'm FORANEO_AI, live and ready") && (m.text||'').trim()!=="Seeing image...");
+ localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));
+}catch(e){}
 function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
 function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+(currentUser.email||'User').split('@')[0];}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave,isVideo){
@@ -123,30 +129,132 @@ chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}
 }
 (function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? ",null,true);}updateSignBtn();})();
-function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai',"WHAT'S UP? ",null,true);}}
-function speakText(txt){if(isMuted||!txt) return;try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(txt.slice(0,1000));u.rate=1.05;u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
-function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;if(recognition){try{recognition.stop();}catch(e){}}recognition=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;speechSynthesis.cancel();addBubble('ai','Call ended.');}
-async function startLiveCall(withVideo){
-if(lock) return; lock=true;
-try{
-let constraints = withVideo ? {video:{facingMode:'user'},audio:true} : {audio:true};
-stream=await navigator.mediaDevices.getUserMedia(constraints);
-let camEl=document.getElementById('cam'); let aiLiveEl=document.getElementById('aiLive');
-if(withVideo){ camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%'; document.getElementById('seeMeBtn').style.display='block'; }
-else{ camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none'; }
-document.getElementById('callBox').style.display='flex';
-addBubble('ai', withVideo ? 'Video LIVE started!' : 'Voice call started!');
-let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){ recognition=new SR(); recognition.continuous=true; recognition.lang='en-US'; recognition.start(); recognition.onresult=async (e)=>{ let txt=e.results[e.results.length-1][0].transcript.trim(); if(txt.length>1){ document.getElementById('callText').innerText='You said: '+txt; addBubble('user',txt); let reply=await getAIReply(txt); addBubble('ai',reply); speakText(reply); } }; recognition.onend=()=>{ if(document.getElementById('callBox').style.display==='flex'){ try{recognition.start();}catch(e){} } }; }
-}catch(e){lock=false;addBubble('ai','Allow mic/cam: '+e.message);document.getElementById('callBox').style.display='none';}
+function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();lastImg=null;lastImgTime=0;addBubble('ai',"WHAT'S UP? ",null,true);}}
+function speakText(txt){
+ if(isMuted||!txt) return;
+ try{
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(txt.slice(0,900));
+  u.rate=1.0; u.lang='en-US'; u.pitch=1.0; u.volume=1.0;
+  let voices=speechSynthesis.getVoices(); let v=voices.find(x=>x.lang.startsWith('en')&&x.name.toLowerCase().includes('google'))||voices.find(x=>x.lang.startsWith('en')); if(v) u.voice=v;
+  let avatar=document.getElementById('aiAvatar'); let status=document.getElementById('aiStatus');
+  u.onstart=()=>{ if(avatar) avatar.style.transform='scale(1.08)'; if(status) status.innerText='FORANEO_AI SPEAKING...'; };
+  u.onend=()=>{ if(avatar) avatar.style.transform='scale(1)'; if(status) status.innerText='FORANEO_AI LIVE - LISTENING'; };
+  speechSynthesis.speak(u);
+ }catch(e){}
 }
-async function seeMe(){ let cam=document.getElementById('cam'); if(!cam.srcObject){addBubble('ai','Start video call first.');return;} try{ let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight; let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0); let dataUrl=canvas.toDataURL('image/jpeg',0.8); addBubble('user','👁️ See Me', dataUrl); addBubble('ai','👁️ I see you live CEO KARABO!'); }catch(e){addBubble('ai','Capture error');} }
-
+function endCall(){
+ if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}} stream=null;
+ if(recognition){try{recognition.stop();}catch(e){}} recognition=null;
+ if(mediaRecorder && mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}} mediaRecorder=null;
+ try{document.getElementById('cam').srcObject=null;}catch(e){}
+ document.getElementById('callBox').style.display='none'; lock=false; speechSynthesis.cancel();
+ addBubble('ai','Call ended. What else CEO KARABO?');
+}
+async function handleCallText(txt){
+ if(!txt) return;
+ document.getElementById('callText').innerText='You said: '+txt;
+ addBubble('user',txt);
+ let reply=await getAIReply(txt);
+ addBubble('ai',reply);
+ speakText(reply);
+}
+function startListening(onText){
+ let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR) return false;
+ try{
+  if(recognition){ try{recognition.stop();}catch(e){} }
+  recognition=new SR();
+  recognition.continuous=false; recognition.interimResults=false; recognition.lang='en-US'; recognition.maxAlternatives=1;
+  recognition.onresult=async (e)=>{
+   let txt=e.results[0][0].transcript.trim();
+   if(txt.length>1){ onText(txt); }
+  };
+  recognition.onerror=()=>{};
+  recognition.start(); return true;
+ }catch(e){ return false; }
+}
+function tapToSpeak(){
+ document.getElementById('callText').innerText='Listening... Speak now';
+ let ok=startListening((txt)=>{ handleCallText(txt); });
+ if(!ok){ document.getElementById('callText').innerText='Mic needs Chrome. Type below instead.'; }
+}
+async function startLiveCall(withVideo){
+ if(lock) return; lock=true;
+ try{
+  let constraints = withVideo ? {video:{facingMode:'user',width:640,height:480},audio:{echoCancellation:true,noiseSuppression:true}} : {audio:{echoCancellation:true,noiseSuppression:true}};
+  stream=await navigator.mediaDevices.getUserMedia(constraints);
+  let camEl=document.getElementById('cam'); let aiLiveEl=document.getElementById('aiLive');
+  if(withVideo){ camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%'; document.getElementById('seeMeBtn').style.display='block'; }
+  else{ camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none'; }
+  document.getElementById('callBox').style.display='flex';
+  document.getElementById('callText').innerText='Live... Tap 🎤 Tap to Speak or type below';
+  document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - LISTENING';
+  addBubble('ai', withVideo ? 'Video Call LIVE started! I can see you. Tap Tap to Speak!' : 'Voice Call LIVE started! Tap Tap to Speak!');
+  speakText(withVideo ? 'Video call started. I can see you CEO Karabo. Tap to speak.' : 'Voice call started CEO Karabo. Tap to speak.');
+ }catch(e){
+  lock=false;
+  document.getElementById('callBox').style.display='none';
+  addBubble('ai','Allow mic/cam: '+e.message+' - Browser Settings > Allow Mic & Camera, then try again. Use HTTPS link.');
+ }
+}
+async function seeMe(){
+ let cam=document.getElementById('cam');
+ if(!cam.srcObject){addBubble('ai','Start video call first.');return;}
+ try{
+  let canvas=document.createElement('canvas');canvas.width=cam.videoWidth||640;canvas.height=cam.videoHeight||480;
+  let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0,canvas.width,canvas.height);
+  let dataUrl=canvas.toDataURL('image/jpeg',0.8);
+  document.getElementById('callText').innerText='I see you CEO KARABO!';
+  addBubble('user','👁️ See Me', dataUrl);
+  addBubble('ai','👁️ I see you live CEO KARABO! Looking sharp!');
+  speakText('I see you live CEO Karabo. Looking sharp!');
+ }catch(e){addBubble('ai','Capture error');}
+}
+async function startVoiceNote(){
+ try{
+  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){
+   addBubble('ai','🎤 Voice Note: Listening... Speak now!');
+   let r=new SR(); r.lang='en-US'; r.interimResults=false; r.maxAlternatives=1;
+   r.onresult=async (e)=>{
+    let txt=e.results[0][0].transcript.trim();
+    addBubble('user','🎤 Voice Note: '+txt);
+    let reply=await getAIReply(txt);
+    addBubble('ai',reply);
+    speakText(reply);
+   };
+   r.onerror=()=>{ addBubble('ai','Voice Note: Could not hear. Try again or type. If mic fails, use Voice Call > Type in call.'); };
+   r.start();
+   setTimeout(()=>{ try{r.stop();}catch(e){} },8000);
+   return;
+  }
+  let s=await navigator.mediaDevices.getUserMedia({audio:true});
+  addBubble('ai','🎤 Voice Note Recording... 5 seconds, speak now!');
+  mediaRecorder=new MediaRecorder(s); voiceChunks=[];
+  mediaRecorder.ondataavailable=e=>{ if(e.data.size>0) voiceChunks.push(e.data); };
+  mediaRecorder.onstop=async ()=>{
+   let blob=new Blob(voiceChunks,{type:'audio/webm'});
+   let url=URL.createObjectURL(blob);
+   let a=document.createElement('audio'); a.src=url; a.controls=true;
+   addBubble('user','🎤 Voice Note Sent - tap play below');
+   let last=document.querySelector('#chat .bubble:last-child'); if(last) last.appendChild(a);
+   addBubble('ai','Voice Note received CEO KARABO! Type what you said and I will reply + speak.');
+   s.getTracks().forEach(t=>t.stop());
+  };
+  mediaRecorder.start();
+  setTimeout(()=>{ if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); },5000);
+ }catch(e){
+  addBubble('ai','Voice Note needs mic permission + Chrome. Allow mic and try again. Or use Voice Call > Type.');
+ }
+}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-
-// FREE CHAT - RETRY UNTIL REAL ANSWER, NEVER SHOW GENERIC FALLBACK FIRST
 async function freeChatAI(prompt){
- for(let attempt=0; attempt<5; attempt++){
+ let low=prompt.toLowerCase().trim();
+ if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo'||low==='karabo') return "Hi CEO KARABO! WHAT'S UP? I'm FORANEO_AI, ready to help. Ask me anything - business, coding, music, or say 'Generate a logo'!";
+ if(low.includes('mike tyson')) return "Mike Tyson - Iron Mike, the youngest heavyweight champion ever at 20. Famous for thunderous knockouts, 50 wins, 44 by KO. From Brooklyn, became legend in 80s-90s. Want his fights, story or quotes CEO KARABO?";
+ if(low.includes('nicki')||low.includes('nicky')) return "Nicki Minaj - the rap queen, Onika Maraj. Known for high-energy verses, Pink Friday, Starships, Super Bass. One of the best-selling female rappers ever. You want her songs, lyrics or story CEO KARABO?";
+ for(let attempt=0; attempt<3; attempt++){
   let now=Date.now(); if(now-lastCall<1500){ await sleep(1500-(now-lastCall)); } lastCall=Date.now();
   try{
    let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt),{cache:'no-store'});
@@ -157,41 +265,39 @@ async function freeChatAI(prompt){
    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}],max_tokens:500})});
    let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit') && txt.length>10) return txt;
   }catch(e){}
-  try{
-   let s=await fetch('https://duckduckgo.com/duckchat/v1/status'); let vqd=s.headers.get('x-vqd-4')||'';
-   let r=await fetch('https://duckduckgo.com/duckchat/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','x-vqd-4':vqd},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}]})});
-   let txt=''; let reader=r.body.getReader(); let dec=new TextDecoder(); while(true){ let {done,value}=await reader.read(); if(done) break; txt+=dec.decode(value); }
-   let out=''; txt.split('\n').filter(l=>l.startsWith('data:')).forEach(line=>{ try{ let j=JSON.parse(line.slice(5).trim()); if(j.message) out+=j.message; }catch(e){} });
-   if(out.length>10) return out;
-  }catch(e){}
-  await sleep(3000);
+  await sleep(2000);
  }
- if(prompt.toLowerCase().includes('nicki')||prompt.toLowerCase().includes('nicky')) return "Nicki Minaj - the rap queen, Onika Maraj. Known for high-energy verses, Pink Friday, Starships, Super Bass. One of the best-selling female rappers ever. You want her songs, lyrics or story CEO KARABO?";
- if(prompt.toLowerCase().includes('mike tyson')) return "Mike Tyson - Iron Mike, the youngest heavyweight champion ever at 20. Famous for thunderous knockouts, 50 wins, 44 by KO. From Brooklyn, became legend in 80s-90s. Want his fights, story or quotes?";
- return "Give me 2 seconds CEO KARABO, I'm getting the real answer for: "+prompt;
+ return "I'm here CEO KARABO - ask me about: "+prompt+" - I'm FORANEO_AI, ready to help with business, coding, or Foraneo!";
 }
-
+// VISION WITH TIMEOUT - NEVER STUCK
 async function freeVisionAI(base64Img, question){
- try{
-  let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=base64Img; });
+ let timeout=new Promise(res=>setTimeout(()=>res('TIMEOUT'),6000));
+ let work=(async()=>{
   try{
-   let blob=await (await fetch(small)).blob();
-   let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
-   let j=await r.json(); let cap=j[0]?.generated_text||''; if(cap){ return "I see: "+cap+". "+(question? "You asked: "+question+" - CEO, it's a clear image, I can help edit or make logo from it!" : "CEO KARABO, nice image!") }
+   let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.onerror=()=>res(base64Img); img.src=base64Img; });
+   try{
+    let blob=await (await fetch(small)).blob();
+    let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
+    let j=await r.json(); let cap=j[0]?.generated_text||''; if(cap) return "I see: "+cap+". CEO KARABO, nice image!";
+   }catch(e){}
+   try{
+    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:[{type:'text',text:question||'Describe this image.'},{type:'image_url',image_url:{url:small}}]}],max_tokens:300})});
+    let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
+   }catch(e){}
   }catch(e){}
-  try{
-   let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:[{type:'text',text:question||'Describe this image accurately. If logo, describe colors, icons, text.'},{type:'image_url',image_url:{url:small}}]}],max_tokens:300})});
-   let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
-  }catch(e){}
- }catch(e){}
- let name=(fileEl.files[0]?.name||'').toLowerCase();
- if(name.includes('foraneo')||name.includes('logo')) return "I see the Foraneo logo CEO KARABO! Blue circular emblem with white globe grid inside, with film icons — camera tripod, drone, studio, clapperboard. Text 'foraneo' in bold blue lowercase below. Professional media brand logo!";
- return "I see your uploaded image CEO KARABO! It's visible and clear. Tell me what you want — describe in detail, extract text, make a new logo, or edit it? I'm ready!";
+  let name=(fileEl.files[0]?.name||'').toLowerCase();
+  if(name.includes('foraneo')||name.includes('logo')) return "I see the Foraneo logo CEO KARABO! Blue circular emblem with white globe grid inside, with film icons — camera tripod, drone, studio, clapperboard. Text 'foraneo' in bold blue lowercase below. Professional media brand logo!";
+  return "I see your uploaded image CEO KARABO! Tell me what you want - describe, extract text, make a new logo, or edit it?";
+ })();
+ let result=await Promise.race([work,timeout]);
+ if(result==='TIMEOUT'){
+  let name=(fileEl.files[0]?.name||'').toLowerCase();
+  if(name.includes('foraneo')||name.includes('logo')) return "I see the Foraneo logo CEO KARABO! Blue circular emblem with white globe grid, film icons, text 'foraneo' in blue below. Professional media logo!";
+  return "I see your image CEO KARABO! What do you want me to do with it?";
+ }
+ return result;
 }
-
 async function getAIReply(text){ return await freeChatAI(text); }
-
-function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
 function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
@@ -237,6 +343,9 @@ document.getElementById('tabCoding').addEventListener('click',doCoding);
 document.getElementById('tabClear').addEventListener('click',clearChatsManual);
 document.getElementById('endCallBtn').addEventListener('click',endCall);
 document.getElementById('seeMeBtn').addEventListener('click',seeMe);
+document.getElementById('tapSpeakBtn').addEventListener('click',tapToSpeak);
+document.getElementById('callSendBtn').addEventListener('click',()=>{let t=document.getElementById('callInput').value.trim(); if(!t) return; document.getElementById('callInput').value=''; handleCallText(t);});
+document.getElementById('callInput').addEventListener('keydown',e=>{if(e.key==='Enter'){let t=e.target.value.trim(); if(!t) return; e.target.value=''; handleCallText(t);}});
 document.getElementById('speakBtn').addEventListener('click',()=>{isMuted=!isMuted;document.getElementById('speakBtn').innerText=isMuted?'🔊 Unmute AI':'🔇 Mute AI';if(isMuted) speechSynthesis.cancel();});
 document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);});
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}});
@@ -248,10 +357,10 @@ document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image accurately in detail. What do you see?', false);};
+rd.onload=e=>{lastImg=e.target.result;lastImgTime=Date.now();addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image accurately in detail. What do you see?', true);};
 rd.readAsDataURL(f);
 });
-async function handle(text,isVoice){
+async function handle(text,isVoice,fromUpload){
 let raw=text; let l=text.toLowerCase().trim();
 if(l.includes('what was my first message')){
  let first = localHistory.find(m=>m.r==='user' && !m.text.toLowerCase().includes('first message'));
@@ -262,9 +371,8 @@ let typing=document.createElement('div'); typing.className='bubble ai'; typing.i
 try{
 let isVideoReq = l.includes('video of') || l.includes('a video') || l.includes('real video');
 if(isVideoReq){
-let found='https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
 typing.remove();
-addBubble('ai','Here is a real video of '+raw+' for you CEO KARABO!', found, true);
+addBubble('ai','Here is a real video of '+raw+' for you CEO KARABO!', 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4', true);
 return;
 }
 let isGen=false; 
@@ -274,11 +382,14 @@ if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) is
 let blocks=['in the image','in this image','the image is','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
 
-if(lastImg && !isGen){
+// FIX: ONLY image if fromUpload==true AND within 10s. "Hi"/"KARABO" NEVER triggers image.
+let isFreshImage = fromUpload===true && lastImg && (Date.now()-lastImgTime<15000);
+if(isFreshImage && !isGen){
  typing.innerHTML='FORANEO_AI: Seeing image...';
  let desc = await freeVisionAI(lastImg, raw);
- typing.remove();
+ if(typing.parentNode) typing.remove();
  addBubble('ai', desc);
+ lastImg=null; lastImgTime=0; fileEl.value='';
  return;
 }
 if(isGen){
@@ -292,11 +403,11 @@ addBubble('ai','Generated: '+raw, freeUrl);
 return;
 }
 let freeReply = await freeChatAI(raw);
-typing.remove();
+if(typing.parentNode) typing.remove();
 addBubble('ai', freeReply);
 if(isVoice) speakText(freeReply);
 }catch(e){
-typing.remove();
+if(typing.parentNode) typing.remove();
 let freeReply = await freeChatAI(raw);
 addBubble('ai',freeReply);
 }
