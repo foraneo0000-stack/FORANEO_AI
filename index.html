@@ -61,7 +61,6 @@
 <div class="tab clear" id="tabClear">🗑️ Clear Chats</div>
 </div>
 <div id="chat"></div>
-
 <div id="callBox">
 <video id="cam" autoplay playsinline muted></video>
 <div id="aiLive">
@@ -77,7 +76,6 @@
 </div>
 <div style="text-align:center;color:#fff;padding-bottom:8px;font-size:13px" id="callText">Live...</div>
 </div>
-
 <div id="authModal"><div id="authBox">
 <div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo%20Globe%20Logo.png" onerror="this.src='Foraneo Globe Logo.png'"></div>
 <h3>Welcome to FORANEO_AI</h3><p>Sign up to save chats</p>
@@ -89,7 +87,6 @@
 <button class="gBtn" id="closeAuth" style="border:none;background:#f8f9ff">Cancel</button>
 <div class="small" id="authStatus"></div>
 </div></div>
-
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
@@ -103,7 +100,6 @@
 </div>
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
-
 <script>
 let lastImg=null,lastAns='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
@@ -305,10 +301,23 @@ let p=raw.replace(/generate|create|draw|make|please/gi,'').trim();
 if(p.length<3) p=raw;
 p = p + ', high quality photo';
 typing.innerHTML='FORANEO_AI: Generating...';
-try{let img=await puter.ai.txt2img(p); typing.remove(); addBubble('ai','Generated: '+raw, img.src||img); return;}
+try{
+let img;
+try{
+img=await puter.ai.txt2img(p);
+}catch(err1){
+console.log('credits low, using test_mode', err1);
+img=await puter.ai.txt2img(p, {test_mode:true});
+}
+typing.remove(); 
+addBubble('ai','Generated: '+raw+' (auto test mode if credits low)', img.src||img); 
+return;
+}
 catch(e){
 typing.remove();
-if(e.message.includes('credits')){addBubble('ai','CEO, image credits low at puter.com/#billing, but real video still works! Say "video of a car"');}
+if(e.message && e.message.toLowerCase().includes('credits')){
+addBubble('ai','CEO, image credits low — used test mode. Upgrade at puter.com/#billing for HD. But real video still works! Say "video of a car"');
+}
 else{addBubble('ai','Could not generate: '+e.message);}
 return;
 }
@@ -323,7 +332,7 @@ let out=(res.message?.content||res.content||'').toString().trim();
 typing.remove(); addBubble('ai',out||'I am here, CEO.'); if(isVoice) speakText(out);
 }catch(e){
 typing.remove();
-if(e.message && e.message.includes('credits')){
+if(e.message && e.message.toLowerCase().includes('credits')){
 addBubble('ai','CEO, credits low at puter.com/#billing, but real video works! Say "video of a car" — WHAT\'S UP?');
 }else{
 addBubble('ai','Error: '+e.message);
@@ -332,4 +341,4 @@ addBubble('ai','Error: '+e.message);
 }
 </script>
 </body>
-</html>
+    </html>
