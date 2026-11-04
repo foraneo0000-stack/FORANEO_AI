@@ -299,20 +299,12 @@ for(let b of blocks){if(l.includes(b)) isGen=false;}
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
-p = p + ', high quality photo';
+p = p + ', high quality photo, 4k';
 typing.innerHTML='FORANEO_AI: Generating FREE...';
-try{
-  let img = await puter.ai.txt2img(p, {test_mode:true});
-  typing.remove();
-  addBubble('ai','Generated: '+raw+' (FREE)', img.src||img);
-  return;
-}catch(e){
-  console.log('Puter failed, using Pollinations FREE', e);
-  let freeUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=1024&height=1024&nologo=true&seed=' + Date.now();
-  typing.remove();
-  addBubble('ai','Generated: '+raw+' (FREE Backup - 0 credits)', freeUrl);
-  return;
-}
+let freeUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=1024&height=1024&nologo=true&seed=' + Date.now();
+typing.remove();
+addBubble('ai','Generated: '+raw+' (FREE - Unlimited, No Credits Needed)', freeUrl);
+return;
 }
 let fullHistory = chatHistory.slice(-6).map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
 let msgs=[
