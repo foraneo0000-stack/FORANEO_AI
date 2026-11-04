@@ -181,7 +181,7 @@ document.getElementById('callText').innerText='Described! Talk to me!';
 function getLocalReply(t){let l=t.toLowerCase();if(l.includes('what are you doing')) return "WHAT'S UP CEO? I'm live!";if(l.includes('see me')) return "Yes CEO, I see you live moving!";return "I hear you live! You said: "+t;}
 async function getAIReply(text){
 try{
-let fullHistory = chatHistory.map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
+let fullHistory = chatHistory.slice(-6).map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
 let msgs=[{role:'system',content:`You are FORANEO_AI live. CEO KARABO. History:${fullHistory}`},{role:'user',content:text}];
 let res=await puter.ai.chat(msgs,{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
@@ -301,30 +301,26 @@ let p=raw.replace(/generate|create|draw|make|please/gi,'').trim();
 if(p.length<3) p=raw;
 p = p + ', high quality photo';
 typing.innerHTML='FORANEO_AI: Generating...';
+let img = null;
 try{
-let img;
-try{
-img=await puter.ai.txt2img(p);
-}catch(err1){
-console.log('credits low, using test_mode', err1);
-img=await puter.ai.txt2img(p, {test_mode:true});
-}
-typing.remove(); 
-addBubble('ai','Generated: '+raw+' (auto test mode if credits low)', img.src||img); 
-return;
-}
-catch(e){
-typing.remove();
-if(e.message && e.message.toLowerCase().includes('credits')){
-addBubble('ai','CEO, image credits low — used test mode. Upgrade at puter.com/#billing for HD. But real video still works! Say "video of a car"');
-}
-else{addBubble('ai','Could not generate: '+e.message);}
-return;
+  try{
+    img = await puter.ai.txt2img(p);
+  }catch(err1){
+    console.warn('AUTO SWITCH to free mode', err1);
+    img = await puter.ai.txt2img(p, {test_mode:true});
+  }
+  typing.remove();
+  addBubble('ai','Generated: '+raw+' (auto FREE)', img.src||img);
+  return;
+}catch(e){
+  typing.remove();
+  addBubble('ai','Image failed even in free mode: '+e.message);
+  return;
 }
 }
-let fullHistory = chatHistory.map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
+let fullHistory = chatHistory.slice(-6).map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
 let msgs=[
-{role:'system',content:`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego. Remember entire conversation. Full history:\n${fullHistory}\nUser says: ${raw}\nReply as FORANEO_AI.`}
+{role:'system',content:`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego. Remember entire conversation. Last history:\n${fullHistory}\nUser says: ${raw}\nReply as FORANEO_AI.`}
 ];
 if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 let res=await puter.ai.chat(msgs,{model:'gpt-4o-mini'});
@@ -332,13 +328,9 @@ let out=(res.message?.content||res.content||'').toString().trim();
 typing.remove(); addBubble('ai',out||'I am here, CEO.'); if(isVoice) speakText(out);
 }catch(e){
 typing.remove();
-if(e.message && e.message.toLowerCase().includes('credits')){
-addBubble('ai','CEO, credits low at puter.com/#billing, but real video works! Say "video of a car" — WHAT\'S UP?');
-}else{
 addBubble('ai','Error: '+e.message);
-}
 }
 }
 </script>
 </body>
-    </html>
+</html>
