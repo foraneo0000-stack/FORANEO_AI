@@ -7,13 +7,13 @@
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
-.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center;display:none !important}
+.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
 .headerTop{width:100%;display:flex;justify-content:space-between;align-items:center;max-width:940px}
 .logoBox{display:flex;align-items:center;gap:12px}.logo{width:50px;height:50px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
 .logoTxt{text-align:left;line-height:1.1}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;opacity:.9}
 .header h1{margin:10px 0 0;font-size:30px;font-weight:900}.header p{margin:6px 0 0;font-size:11.5px;opacity:.92}
 .signBtn{background:#fff;color:#1a5cff;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
-.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:0 !important;z-index:900}.tabs::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
 .tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}.tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
 #chat{padding:18px 14px;padding-bottom:360px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
 .bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent}
@@ -101,7 +101,6 @@
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
-// HIDE LOW BALANCE POPUP FOREVER
 setInterval(()=>{
  document.querySelectorAll('div').forEach(d=>{
   let t=(d.innerText||'');
@@ -184,7 +183,6 @@ addBubble('ai','👁️ I see you live CEO KARABO! You look great on cam!');
 document.getElementById('callText').innerText='Described!';
 }catch(e){addBubble('ai','Capture error');}
 }
-function getLocalReply(t){return "WHAT'S UP CEO? You said: "+t;}
 async function freeChatAI(prompt){
 try{
 let cleanPrompt = prompt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
@@ -192,21 +190,18 @@ cleanPrompt = cleanPrompt.replace(/You are FORANEO_AI[\s\S]*?Be helpful\./gi,'')
 if(cleanPrompt.length<2) cleanPrompt = prompt;
 let resp = await fetch('https://text.pollinations.ai/' + encodeURIComponent(cleanPrompt));
 let txt = await resp.text();
-// CLEAN ANY LEAKED SYSTEM PROMPT FROM RESPONSE
 txt = txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
-txt = txt.replace(/FORANEO \(PTY\) LTD, CEO KARABO[\s\S]*?forego\./gi,'').trim();
 txt = txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
 txt = txt.replace(/^You are FORANEO_AI.*/gi,'').trim();
 if(!txt) throw new Error('empty');
 return txt;
 }catch(e){
-return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI FREE, ready!";
+return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI, ready!";
 }
 }
 async function getAIReply(text){
 try{
-let msgs=[{role:'user',content:text}];
-let res=await puter.ai.chat(msgs,{model:'gpt-4o-mini'});
+let res=await puter.ai.chat([{role:'user',content:text}],{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
 if(!out) throw new Error('empty');
 return out;
@@ -309,10 +304,10 @@ if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
 p = p + ', high quality photo, 4k';
-typing.innerHTML='FORANEO_AI: Generating FREE...';
+typing.innerHTML='FORANEO_AI: Generating...';
 let freeUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=1024&height=1024&nologo=true&seed=' + Date.now();
 typing.remove();
-addBubble('ai','Generated: '+raw+' (FREE - Unlimited)', freeUrl);
+addBubble('ai','Generated: '+raw, freeUrl);
 return;
 }
 try{
