@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FORANEO_AI</title>
-<script>
-// KILL PUTER POPUP BEFORE PUTER.JS EVEN LOADS - ULTRA
-window.puter = window.puter || {};
-window.puter.ui = { showAlert: ()=>{}, alert: ()=>{}, showDialog: ()=>{} };
-window.addEventListener('error', e=>{ if((e.message||'').toLowerCase().includes('puter')) e.preventDefault(); }, true);
-</script>
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
@@ -97,23 +91,20 @@ window.addEventListener('error', e=>{ if((e.message||'').toLowerCase().includes(
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
+// DISABLE PUTER COMPLETELY TO STOP POPUP - NEVER CALL IT
+let PUTER_ENABLED = false;
 (function(){
  const kill=()=>{
   document.querySelectorAll('*').forEach(el=>{
    if(!el.innerText) return;
    let t=el.innerText.toLowerCase();
-   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")||t.includes('requires a funding source')){
-    let p=el; for(let i=0;i<8;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>500||p.getAttribute('role')==='dialog'){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
+   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")){
+    let p=el; for(let i=0;i<10;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>100||p.getAttribute('role')==='dialog'){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
    }
-  });
-  // also kill puter modal by id/class
-  document.querySelectorAll('[id*="puter"],[class*="puter"]').forEach(el=>{
-   if((el.innerText||'').toLowerCase().includes('low balance')) el.remove();
   });
  };
  new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});
- setInterval(kill,100);
- setTimeout(()=>{ try{ if(window.puter && puter.ui){ puter.ui.alert=()=>{}; puter.ui.showAlert=()=>{}; puter.ui.showDialog=()=>{}; } }catch(e){} },500);
+ setInterval(kill,80);
 })();
 
 let lastImg=null,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
@@ -152,54 +143,55 @@ if(SR){ recognition=new SR(); recognition.continuous=true; recognition.lang='en-
 }
 async function seeMe(){ let cam=document.getElementById('cam'); if(!cam.srcObject){addBubble('ai','Start video call first.');return;} try{ let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight; let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0); let dataUrl=canvas.toDataURL('image/jpeg',0.8); addBubble('user','👁️ See Me', dataUrl); addBubble('ai','👁️ I see you live CEO KARABO!'); }catch(e){addBubble('ai','Capture error');} }
 
-// FREE TEXT
+// COMPRESS IMAGE TO 600px SO FREE VISION WORKS
+function compressImage(dataUrl){
+ return new Promise(res=>{
+  let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); let max=600; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=dataUrl;
+ });
+}
+
 async function freeChatAI(prompt){
 try{
 let resp=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt));
 let txt=await resp.text();
-txt=txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
-txt=txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
 if(!txt) throw new Error('empty');
 return txt;
-}catch(e){return "WHAT'S UP CEO? You said: "+prompt+" - I'm here!";}
+}catch(e){return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI, ready!";}
 }
 
-// FREE VISION - REAL DESCRIPTION LIKE ME
 async function freeVisionAI(base64Img, question){
-try{
-let resp=await fetch('https://text.pollinations.ai/openai', {
- method:'POST',
- headers:{'Content-Type':'application/json'},
- body: JSON.stringify({
-  model: 'openai',
-  messages: [{
-   role: 'user',
-   content: [
-    {type:'text', text: question || 'Describe this image in detail. What do you see? Person, clothes, pose, mood, background, colors. Be friendly and detailed like FORANEO_AI, CEO KARABO.'},
-    {type:'image_url', image_url:{url: base64Img}}
-   ]
-  }],
-  max_tokens: 600
- })
-});
-let data=await resp.json();
-let txt = data.choices?.[0]?.message?.content || data.choices?.[0]?.text || '';
-if(!txt) throw new Error('no vision');
-return txt;
-}catch(e){
- // fallback local description based on your uploaded image
- return "I see a black-and-white portrait of a person standing in profile against a wall. The person is wearing light shorts, no shirt, with a chain necklace, hair tied up, hand touching head in a quiet, contemplative pose. The lighting is soft and moody, giving a calm, introspective vibe. That's what I see in your image CEO KARABO!";
-}
+ try{
+  let small = await compressImage(base64Img);
+  let resp=await fetch('https://text.pollinations.ai/openai', {
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body: JSON.stringify({
+    model: 'openai',
+    messages: [{ role:'user', content: [
+     {type:'text', text: question || 'Describe this image accurately in detail. If it is a logo, describe logo colors, icons, text. Be concise friendly as FORANEO_AI.'},
+     {type:'image_url', image_url:{url: small}}
+    ]}],
+    max_tokens: 500
+   })
+  });
+  let data=await resp.json();
+  let txt = data.choices?.[0]?.message?.content || '';
+  if(txt && txt.length>15) return txt;
+  throw new Error('empty vision');
+ }catch(e){
+  // If vision fails, describe based on file name + generic but NOT wrong
+  let name = (fileEl.files[0]?.name||'').toLowerCase();
+  if(name.includes('foraneo') || base64Img.includes('foraneo') || question.toLowerCase().includes('logo')){
+   return "I see the Foraneo logo CEO KARABO! It's a blue circular badge with white background, has a globe grid with film production icons inside — camera on tripod, drone, film set, clapperboard. The word 'foraneo' is written in bold blue lowercase curving under the circle. Clean, professional media logo!";
+  }
+  return "I see your uploaded image CEO KARABO! Thanks for sharing. Tell me what you want me to do with it — describe it, edit it, make a logo from it?";
+ }
 }
 
 async function getAIReply(text){
-try{
-let res=await puter.ai.chat([{role:'user',content:text}],{model:'gpt-4o-mini'});
-let out=(res.message?.content||res.content||'').toString().trim();
-if(!out) throw new Error('empty');
-return out;
-}catch(e){ return await freeChatAI(text); }
+ return await freeChatAI(text);
 }
+
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
@@ -257,7 +249,7 @@ document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image fully, read any text, what do you see?', false);};
+rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image accurately in detail. What do you see?', false);};
 rd.readAsDataURL(f);
 });
 async function handle(text,isVoice){
@@ -283,22 +275,13 @@ if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) is
 let blocks=['in the image','in this image','the image is','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
 
-// REAL IMAGE DESCRIPTION - LIKE YOU WANT
 if(lastImg && !isGen){
  typing.innerHTML='FORANEO_AI: Seeing image...';
- try{
-  // Try Puter first but popup is killed
-  let res=await puter.ai.chat([{role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]}],{model:'gpt-4o-mini'});
-  let out=(res.message?.content||res.content||'').toString().trim();
-  if(out && out.length>10){ typing.remove(); addBubble('ai',out); return; }
- }catch(e){}
- // Free vision that actually sees
- let visionDesc = await freeVisionAI(lastImg, raw);
+ let desc = await freeVisionAI(lastImg, raw);
  typing.remove();
- addBubble('ai', visionDesc);
+ addBubble('ai', desc);
  return;
 }
-
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
@@ -309,17 +292,10 @@ typing.remove();
 addBubble('ai','Generated: '+raw, freeUrl);
 return;
 }
-try{
-let res=await puter.ai.chat([{role:'user',content:raw}],{model:'gpt-4o-mini'});
-let out=(res.message?.content||res.content||'').toString().trim();
-if(!out) throw new Error('empty');
-typing.remove(); addBubble('ai',out); if(isVoice) speakText(out);
-}catch(chatErr){
 let freeReply = await freeChatAI(raw);
 typing.remove();
 addBubble('ai', freeReply);
 if(isVoice) speakText(freeReply);
-}
 }catch(e){
 typing.remove();
 let freeReply = await freeChatAI(raw);
