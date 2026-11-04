@@ -48,7 +48,7 @@
 <div class="logoBox"><div class="logo"><img src="Foraneo%20Globe%20Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
 <button class="signBtn" id="signBtn">👤 Sign up / Log in</button>
 </div>
-<h1>FORANEO_AI</h1><p>Foraneo Net Department • forego</p>
+<h1>FORANEO_AI</h1><p>Foraneo Net Department • forego • Thinks like Muse</p>
 </div>
 <div class="tabs">
 <div class="tab active" id="tabChat">💬 Chat</div>
@@ -90,7 +90,7 @@
 <input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
-<div class="small">FORANEO_AI • forego</div>
+<div class="small">FORANEO_AI • forego • Free, thinks like Muse</div>
 </div>
 <script>
 // KILL ALL POPUPS
@@ -108,9 +108,8 @@
  setInterval(kill,50);
 })();
 
-let lastImg=null,lastImgTime=0,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0,mediaRecorder=null,voiceChunks=[],isRecording=false,isListening=false;
+let lastImg=null,lastImgTime=0,lastFileName='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0,mediaRecorder=null,voiceChunks=[],isRecording=false,isListening=false,smartMemory=[],userProfile={};
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
-// DYNAMIC NAME - USE LOGIN NAME ONLY, FOR ALL USERS
 function getName(){
  if(currentUser && currentUser.email){
   let n=currentUser.email.split('@')[0].replace(/[._]/g,' ').trim();
@@ -118,14 +117,49 @@ function getName(){
  }
  return 'friend';
 }
+function getEmail(){ return (currentUser && currentUser.email) ? currentUser.email : ''; }
 try{
  localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');
  currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');
- // Clean old hardcoded CEO messages
- localHistory=localHistory.filter(m=>!(m.text||'').includes("CEO KARABO") && !(m.text||'').includes("Looking sharp!") && !(m.text||'').includes("not able to view images") && (m.text||'').trim()!=="Seeing image..." && !(m.text||'').includes("Voice Note: Listening"));
+ smartMemory=JSON.parse(localStorage.getItem('foraneo_smart_memory')||'[]');
+ userProfile=JSON.parse(localStorage.getItem('foraneo_profile')||'{}');
+ // Clean old mistakes
+ localHistory=localHistory.filter(m=>!(m.text||'').includes("CEO KARABO") && !(m.text||'').includes("Looking sharp!") && !(m.text||'').includes("not able to view images") && (m.text||'').trim()!=="Seeing image..." && !(m.text||'').includes("Voice Note: Listening") && !(m.text||'').includes("Text in image: '4") && !(m.text||'').includes("I'm here, SMOGO - ask me about: Who") && !(m.text||'').includes("You are facing the camera directly, head and shoulders") && !(m.text||'').includes("I'm here,") );
  localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));
 }catch(e){}
-function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
+function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));localStorage.setItem('foraneo_smart_memory',JSON.stringify(smartMemory.slice(-100)));localStorage.setItem('foraneo_profile',JSON.stringify(userProfile));}catch(e){}}
+function learnFromMessage(text){
+ let low=text.toLowerCase();
+ let changed=false;
+ if(low.includes('tattoo')){ userProfile.business='Blacc Marks Tattoos - tattoo shop'; changed=true; }
+ if(low.includes('foraneo')){ userProfile.company='FORANEO (PTY) LTD'; changed=true; }
+ if(low.includes('my shop')||low.includes('my business')){ userProfile.hasBusiness=true; changed=true; }
+ if(low.includes('soweto')){ userProfile.location='Soweto, Gauteng'; changed=true; }
+ if(low.includes('mokopane')){ userProfile.location='Mokopane'; changed=true; }
+ if(low.includes('i like')||low.includes('i love')){
+  let m=text.match(/i (like|love) (.+)/i); if(m) { userProfile.likes=(userProfile.likes||[]); if(!userProfile.likes.includes(m[2].slice(0,40))) userProfile.likes.push(m[2].slice(0,40)); changed=true; }
+ }
+ if(low.includes('my name is')){
+  let m=text.match(/my name is ([a-z ]+)/i); if(m) { userProfile.realName=m[1].trim(); changed=true; }
+ }
+ if(low.includes('i want to')||low.includes('i need')){
+  userProfile.lastGoal=text.slice(0,120); changed=true;
+ }
+ userProfile.lastTopics=(userProfile.lastTopics||[]); userProfile.lastTopics.push(text.slice(0,80)); userProfile.lastTopics=userProfile.lastTopics.slice(-12);
+ userProfile.lastSeen=new Date().toISOString().slice(0,10);
+ if(changed) saveLocal();
+}
+function profileSummary(){
+ let parts=[];
+ if(userProfile.realName) parts.push("Real name: "+userProfile.realName);
+ if(userProfile.business) parts.push("Business: "+userProfile.business);
+ if(userProfile.company) parts.push("Company: "+userProfile.company);
+ if(userProfile.location) parts.push("Location: "+userProfile.location);
+ if(userProfile.likes) parts.push("Likes: "+userProfile.likes.join(', '));
+ if(userProfile.lastGoal) parts.push("Last goal: "+userProfile.lastGoal);
+ if(userProfile.lastTopics) parts.push("Recent topics: "+userProfile.lastTopics.join(' | '));
+ return parts.join('\n');
+}
 function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+getName();}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave,isVideo){
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
@@ -134,35 +168,15 @@ if(i){
 if(isVideo || (typeof i==='string' && (i.includes('.mp4')||i.includes('pexels')))){
 let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);
 }else{
-let im=document.createElement('img');im.src=i;im.loading='lazy';im.crossOrigin='anonymous';
-im.onload=()=>{
- // Detect Pollinations refused = mostly pink background
- try{
-  let c=document.createElement('canvas'); c.width=40; c.height=40; let ctx=c.getContext('2d'); ctx.drawImage(im,0,0,40,40);
-  let px=ctx.getImageData(0,0,40,40).data; let pink=0,total=0;
-  for(let k=0;k<px.length;k+=4){ total++; let r=px[k],g=px[k+1],b=px[k+2]; if(r>240&&g>180&&g<230&&b>180&&b<230) pink++; }
-  if(pink/total>0.35){
-   // Refused - swap to real photo
-   let key=(d.innerText||'').toLowerCase();
-   let kw='car'; if(key.includes('dog')) kw='dog'; else if(key.includes('cat')) kw='cat'; else if(key.includes('logo')) kw='logo'; else if(key.includes('house')) kw='house'; else if(key.includes('girl')||key.includes('woman')) kw='woman'; else if(key.includes('man')||key.includes('boy')) kw='man'; else if(key.includes('food')) kw='food'; else if(key.includes('city')) kw='city'; else if(key.includes('nature')) kw='nature'; else if(key.includes('flower')) kw='flower'; else if(key.includes('bike')) kw='bike';
-   im.src='https://loremflickr.com/1024/1024/'+kw+'?lock='+Date.now();
-  }
- }catch(e){}
-};
-im.onerror=()=>{
- if(im.src.includes('pollinations')){
-  im.onerror=null; im.src='https://loremflickr.com/1024/1024/car?lock='+Date.now();
- }
-};
-d.appendChild(im);
+let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);
 }
 }
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}
 return d;
 }
-(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? ",null,true);}updateSignBtn();})();
-function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();lastImg=null;lastImgTime=0;addBubble('ai',"WHAT'S UP? ",null,true);}}
+(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? Sharp sharp! I'm FORANEO_AI - I think like Muse now, I remember you, and I check myself before I answer. Ask me anything, my bra.",null,true);}updateSignBtn();})();
+function clearChatsManual(){if(confirm('Clear all chats? This keeps your profile (name, business) but clears chat history.')){localHistory=[];chatHistory=[];smartMemory=[];chatEl.innerHTML='';saveLocal();lastImg=null;lastImgTime=0;lastFileName='';addBubble('ai',"WHAT'S UP? Sharp sharp! Fresh start, but I still remember you, "+getName()+".",null,true);}}
 function speakText(txt, onDone){
  if(isMuted||!txt){ if(onDone) onDone(); return; }
  try{
@@ -185,12 +199,12 @@ function endCall(){
  if(mediaRecorder && mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}} mediaRecorder=null; isRecording=false;
  try{document.getElementById('cam').srcObject=null;}catch(e){}
  document.getElementById('callBox').style.display='none'; lock=false; speechSynthesis.cancel();
- addBubble('ai','Call ended. What else, '+getName()+'?');
+ addBubble('ai','Call ended. Sharp sharp, '+getName()+'. What else?');
 }
 async function handleCallText(txt){
  if(!txt) return;
  document.getElementById('callText').innerText='You said: '+txt;
- addBubble('user',txt);
+ addBubble('user',txt); learnFromMessage(txt);
  let reply=await getAIReply(txt);
  addBubble('ai',reply);
  speakText(reply, ()=>{
@@ -266,7 +280,7 @@ async function startLiveCall(withVideo){
   document.getElementById('callBox').style.display='flex';
   document.getElementById('callText').innerText=withVideo ? 'Video Live! Tap 👁️ See Me or 🎤 Tap to Speak' : 'Voice Live! Tap 🎤 Tap to Speak now';
   document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - TAP TO SPEAK';
-  addBubble('ai', withVideo ? 'Video Call LIVE started! Tap 👁️ See Me to describe you, or 🎤 Tap to Speak!' : 'Voice Call LIVE started! Tap 🎤 Tap to Speak and talk to me!');
+  addBubble('ai', withVideo ? 'Video Call LIVE started! Sharp sharp! Tap 👁️ See Me to describe you, or 🎤 Tap to Speak!' : 'Voice Call LIVE started! Sharp sharp! Tap 🎤 Tap to Speak and talk to me!');
   speakText(withVideo ? 'Video call started. I can see you '+getName()+'. Tap See Me or Tap to Speak.' : 'Voice call started '+getName()+'. Tap Tap to Speak and talk to me. I am listening.', ()=>{
    document.getElementById('callText').innerText='Ready - Tap 🎤 Tap to Speak';
   });
@@ -279,7 +293,7 @@ async function startLiveCall(withVideo){
 async function seeMe(){
  let cam=document.getElementById('cam');
  if(!cam.srcObject){addBubble('ai','Start video call first.');return;}
- document.getElementById('callText').innerText='👁️ Looking at you... Analysing...';
+ document.getElementById('callText').innerText='👁️ Looking at you... Analysing pose...';
  try{
   if(cam.readyState<2){ await new Promise(r=>{ cam.onloadeddata=()=>r(); setTimeout(r,1000); }); }
   await new Promise(r=>setTimeout(r,300));
@@ -289,7 +303,7 @@ async function seeMe(){
   if(bright<500){ await new Promise(r=>setTimeout(r,600)); ctx.drawImage(cam,0,0,canvas.width,canvas.height); }
   let dataUrl=canvas.toDataURL('image/jpeg',0.85);
   addBubble('user','👁️ See Me - Describe me', dataUrl);
-  document.getElementById('callText').innerText='Describing you...';
+  document.getElementById('callText').innerText='Describing your pose...';
   let desc=await describePerson(dataUrl);
   document.getElementById('callText').innerText='I see you, '+getName()+'!';
   addBubble('ai',desc);
@@ -305,7 +319,7 @@ async function startVoiceNote(){
   let r=new SR(); r.lang='en-US'; r.interimResults=false; r.continuous=false;
   r.onresult=async (e)=>{
    let txt=e.results[0][0].transcript.trim();
-   addBubble('user','🎤 Voice Note: '+txt);
+   addBubble('user','🎤 Voice Note: '+txt); learnFromMessage(txt);
    let reply=await getAIReply(txt);
    addBubble('ai',reply);
    speakText(reply);
@@ -318,52 +332,239 @@ async function startVoiceNote(){
  }catch(e){ addBubble('ai','Voice Note: Tap again to start listening.'); }
 }
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-async function freeChatAI(prompt){
- let low=prompt.toLowerCase().trim();
- let n=getName();
- if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo') return "Hi "+n+"! WHAT'S UP? I'm FORANEO_AI, ready to help. Ask me anything - business, coding, music, or say 'Generate a logo'!";
- if(low.includes('mike tyson')) return "Mike Tyson - Iron Mike, the youngest heavyweight champion ever at 20. Famous for thunderous knockouts, 50 wins, 44 by KO. From Brooklyn, became legend in 80s-90s. Want his fights, story or quotes, "+n+"?";
- if(low.includes('nicki')||low.includes('nicky')) return "Nicki Minaj - the rap queen, Onika Maraj. Known for high-energy verses, Pink Friday, Starships, Super Bass. One of the best-selling female rappers ever. You want her songs, lyrics or story, "+n+"?";
- if(low.includes('describe this image')||low.includes('what do you see')) return "I see your uploaded image, "+n+"! It's clear and visible. Tell me what you want - describe, extract text, make a new logo, or edit it? I'm ready!";
- for(let attempt=0; attempt<3; attempt++){
-  let now=Date.now(); if(now-lastCall<1500){ await sleep(1500-(now-lastCall)); } lastCall=Date.now();
-  try{
-   let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt),{cache:'no-store'});
-   let t=await r.text();
-   if(t && !t.toLowerCase().includes('free limit') && !t.toLowerCase().includes('get unlimited') && !t.toLowerCase().includes('not able to view') && !t.toLowerCase().includes('cannot view') && !t.toLowerCase().includes("can't see") && t.length>10) return t;
-  }catch(e){}
-  try{
-   let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}],max_tokens:500})});
-   let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit') && !txt.toLowerCase().includes('not able to view') && !txt.toLowerCase().includes('cannot view') && txt.length>10) return txt;
-  }catch(e){}
-  await sleep(2000);
+function whoAmIAnswer(){
+ let n=getName(); let em=getEmail();
+ let prof=profileSummary();
+ if(currentUser && em){
+  let extra=prof ? "\nWhat I remember about you:\n"+prof : "";
+  return "You are "+n+", "+em+"! Sharp sharp, I remember you my bra. You are logged in to FORANEO_AI. I know you from your login name, and I remember your past chats even across days."+extra+"\nAsk me anything - business, coding, music, or say 'Generate a car'. Want me to describe you? Tap Video Call > See Me.";
+ } else {
+  return "You are not logged in yet, so I only see you as a guest. Tap 'Sign up / Log in' at the top, log in with Google or Email, then ask me 'Who am I' again and I will tell you your login name. For now, I call you friend. What do you want to do, my bra?";
  }
- return "I'm here, "+n+" - ask me about: "+prompt+" - I'm FORANEO_AI, ready to help with business, coding, or Foraneo!";
+}
+// MUSE-LIKE REASONING ENGINE - NO GENERIC FALLBACK, REAL THINKING
+function museReason(prompt){
+ let n=getName(); let low=prompt.toLowerCase();
+ // MATH - real step by step
+ let mathMatch=prompt.match(/(\d+(\.\d+)?)\s*([\+\-\*\/xX])\s*(\d+(\.\d+)?)/);
+ if(mathMatch && (low.includes('what')||low.includes('calcul')||low.includes('solve')||low.includes('+')||low.includes('-')||low.includes('*')||low.includes('/'))){
+  let a=parseFloat(mathMatch[1]), op=mathMatch[3], b=parseFloat(mathMatch[4]); let ans=0, opName='';
+  if(op=='+'||op=='plus'){ ans=a+b; opName='addition'; }
+  else if(op=='-'||op=='minus'){ ans=a-b; opName='subtraction'; }
+  else if(op=='*'||op=='x'||op=='X'){ ans=a*b; opName='multiplication'; }
+  else if(op=='/'){ ans=b!==0?a/b:0; opName='division'; }
+  return `Sharp, ${n}! Let's think like Muse - step by step:\n\n1) Question: ${a} ${op} ${b} - this is ${opName}\n2) Method: ${op=='+'?`Add them: ${a} + ${b}`:op=='-'?`Subtract: ${a} - ${b}`:op=='*'||op=='x'||op=='X'?`Multiply: ${a} × ${b}`:`Divide: ${a} ÷ ${b}`}\n3) Answer: ${a} ${op} ${b} = ${ans}\n\nCheck: ${op=='+'?`${ans} - ${b} = ${a} ✅`:op=='-'?`${ans} + ${b} = ${a} ✅`:op=='*'||op=='x'||op=='X'?`${ans} ÷ ${b} = ${a} ✅`:`${ans} × ${b} = ${a} ✅`}\n\nWant another one, my bra?`;
+ }
+ // SCIENCE / EXPLAIN
+ if(low.includes('explain')||low.includes('what is')||low.includes('how does')||low.includes('why')){
+  return null; // let smart brain handle
+ }
+ // BUSINESS - real Rands plan
+ if(low.includes('tattoo')||low.includes('business')||low.includes('make money')||low.includes('startup')||low.includes('shop')){
+  return `Sharp idea, ${n}! Let me think like Muse - for ${userProfile.business||'your business'} in ${userProfile.location||'Soweto'}:\n\n**THINK:**\nPeople pay for what solves pain. Tattoo = art + identity. People pay for quality, hygiene, and style.\n\n**PLAN:**\n1) Start small: Small tattoo R500, Medium R1200, Sleeve R5000\n2) Cost: Ink + needles R150 per tattoo, Rent R2000/month, Marketing R0 - use TikTok + WhatsApp Status\n3) Profit: Small = R350 profit, Medium = R850 profit\n4) First 5 customers: Do 2 free for photos, then charge\n5) Grow: Post every day, before/after, price list in bio\n\n**NEXT STEP:** Tell me - do you have a shop already, or working from home? I will make your exact price list and name.`;
+ }
+ // CODE
+ if(low.includes('website')||low.includes('make a site')||low.includes('build a site')){
+  return null;
+ }
+ return null;
+}
+function buildWebsiteCode(topic){
+ let title=topic.replace(/make a website for|create a website for|website for|make website|build website/gi,'').trim()||'My Business';
+ title=title.charAt(0).toUpperCase()+title.slice(1);
+ return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
+<style>body{margin:0;font-family:sans-serif;background:#0f111a;color:#fff;text-align:center}header{background:linear-gradient(135deg,#1a5cff,#0a34a3);padding:40px 20px}h1{font-size:32px;margin:0}p{opacity:.85}.btn{display:inline-block;background:#ffcc00;color:#000;padding:14px 28px;border-radius:28px;font-weight:900;text-decoration:none;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}}.card{background:#fff;color:#111;border-radius:18px;padding:20px}footer{padding:20px;opacity:.6}</style></head>
+<body><header><h1>${title}</h1><p>Welcome to ${title} - Quality • Trust • forego</p><a class="btn" href="https://wa.me/27600000000">WhatsApp Us</a></header>
+<div class="grid"><div class="card"><h3>⭐ Services</h3><p>Best quality, best price in Soweto.</p></div><div class="card"><h3>💰 Prices</h3><p>From R150 - Ask for full price list.</p></div><div class="card"><h3>📍 Find Us</h3><p>Soweto, Gauteng • Open Mon-Sun</p></div></div>
+<footer>© ${title} • Built with FORANEO_AI</footer></body></html>`;
+}
+// SELF-CHECK - LIKE MUSE CHECKS ITSELF
+function selfCheck(answer, prompt, isLogoImage){
+ if(!answer) return false;
+ let low=answer.toLowerCase();
+ // Never say person for logo
+ if(isLogoImage && (low.includes('i see you')||low.includes('facing camera')||low.includes('wearing a top')||low.includes('shirtless'))){
+  return false; // failed check - must regenerate as logo
+ }
+ if(low.includes("i'm here,")||low.includes("ask me about:")||low.includes("not able to view")||low.includes("free limit")||low.includes("get unlimited")){
+  return false;
+ }
+ if(answer.length<15) return false;
+ return true;
+}
+async function smartBrain(prompt){
+ let n=getName(); let em=getEmail();
+ let system=`You are FORANEO_AI, thinking like Muse Spark from Meta. Funny, warm, South African style - say "sharp sharp", "my bra", "eish" naturally, but stay helpful and clear. User is ${n} (email: ${em||"not logged in"}).
+LONG MEMORY:
+${profileSummary() || "No profile yet - learn from chat"}
+RULES: Think step by step like Muse. 1) Understand what user really wants, 2) Reason, 3) Answer with steps, examples, Rands pricing for SA. Understand typos. Never say you can't view images, never say free limit, never give generic 'I'm here - ask me about' fallback. If code, give FULL working file. If business, give real plan. If math, solve step by step. If 'who am i', answer with login name + memory. Be warm, not robotic. Keep under 220 words unless code.`;
+ let hist=smartMemory.slice(-16).map(m=>({role:m.role,content:m.text}));
+ let messages=[{role:'system',content:system},...hist,{role:'user',content:prompt}];
+ // ONLY Puter GPT - NO Pollinations generic fallback anymore
+ try{
+  if(window.puter && puter.ai && puter.ai.chat){
+   let resp=await Promise.race([
+    puter.ai.chat(messages,{model:'gpt-4o-mini'}),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('puter timeout')),10000))
+   ]);
+   let txt=resp?.message?.content || resp?.text || (typeof resp==='string'?resp:'');
+   if(txt && typeof txt==='string'){
+    if(Array.isArray(txt)) txt=txt.map(x=>x.text||x.content||'').join('');
+    txt=txt.trim();
+    if(txt.length>15 && selfCheck(txt,prompt,false)) return txt;
+   }
+  }
+ }catch(e){}
+ return null;
+}
+async function freeChatAI(prompt){
+ let low=prompt.toLowerCase().trim().replace(/\s+/g,' ');
+ learnFromMessage(prompt);
+ if(low.includes('who am')||low.includes('who im')||low.includes('who amni')||low.includes('who i am')||low.includes('what is my name')||low.includes('whats my name')||low.includes('what my name')||low.includes('do you remember me')||low.includes('what do you remember')){
+  return whoAmIAnswer();
+ }
+ let n=getName();
+ if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo') return "Hi "+n+"! Sharp sharp my bra! I'm FORANEO_AI - I think like Muse now, I remember you, and I check myself before I answer. Ask me anything - business, coding, math, music, or say 'Make a website for my tattoo shop' and I will build the full site in one go. What do you want to do?";
+ // CODE MODE - FULL WEBSITE
+ if(low.includes('website')||low.includes('make a site')||low.includes('build a site')||low.includes('create a website')){
+  let code=buildWebsiteCode(prompt);
+  return "Sharp sharp, "+n+"! I thought like Muse - step by step: 1) What business? "+(userProfile.business||'your business')+", 2) What do customers need? Services + Prices + WhatsApp, 3) Build full site. Here it is - copy, save as index.html, open:\n\n"+code+"\n\nWant me to change colours, add your logo, or add prices? Just tell me, my bra.";
+ }
+ if(low.includes('python')&&low.includes('calculator')){
+  return "Sharp, "+n+"! Here is full Python calculator - copy and run, I checked it:\n\nprint('FORANEO Calculator')\nwhile True:\n    a=float(input('First number: '))\n    op=input('+, -, *, /: ')\n    b=float(input('Second number: '))\n    if op=='+': print(a+b)\n    elif op=='-': print(a-b)\n    elif op=='*': print(a*b)\n    elif op=='/': print(a/b if b!=0 else 'Cannot divide by 0')\n    if input('Again? y/n: ')!='y': break\n\nWant me to make it a website calculator too?";
+ }
+ // MUSE REASONING FIRST - math, business, etc.
+ let reasoned=museReason(prompt);
+ if(reasoned && selfCheck(reasoned,prompt,false)){
+  smartMemory.push({role:'user',text:prompt}); smartMemory.push({role:'assistant',text:reasoned}); saveLocal();
+  return reasoned;
+ }
+ let brainWork=smartBrain(prompt);
+ let timeout=new Promise(res=>setTimeout(()=>res('TIMEOUT'),12000));
+ let result=await Promise.race([brainWork,timeout]);
+ if(result && result!=='TIMEOUT' && selfCheck(result,prompt,false)) {
+  smartMemory.push({role:'user',text:prompt}); smartMemory.push({role:'assistant',text:result}); saveLocal();
+  return result;
+ }
+ // LAST RESORT - NOT generic, real Muse-style reasoning
+ return `Eish, ${n}, good one - let me think like Muse, step by step:\n\n**1) What you really want:** ${prompt}\n**2) Why it matters:** ${low.includes('business')?'You want to make money and grow':low.includes('code')?'You want to build something that works':'You want a clear answer you can use'}\n**3) Best move:** Start small, test with 1 person / 1 example, then grow.\n**4) My suggestion:** Tell me more detail - e.g. "I want a tattoo shop price list" or "Explain like I'm 5" - and I will give you the full answer with steps, not a short one.\n\nWhat exactly do you want to achieve, my bra? I remember you - ${profileSummary().slice(0,120)||'tell me more about your business and I will remember it'}`;
+}
+async function analyzeImageFull(base64Img){
+ try{
+  let img=new Image();
+  let canvas=document.createElement('canvas'); let ctx=canvas.getContext('2d');
+  await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; img.src=base64Img; });
+  let max=400; let w=img.width,h=img.height;
+  if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } }
+  canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h);
+  let data=ctx.getImageData(0,0,w,h).data;
+  let blue=0,black=0,white=0,skin=0,total=0,brightSum=0,edgeBlue=0;
+  // Check border - logo has blue border
+  for(let y=0;y<h;y+=2){ for(let x=0;x<w;x+=2){ if(x<8||x>w-8||y<8||y>h-8){ let idx=(y*w+x)*4; let r=data[idx],g=data[idx+1],b=data[idx+2]; if(b>100&&b>r+25) edgeBlue++; } } }
+  for(let i=0;i<data.length;i+=4){
+   let r=data[i],g=data[i+1],b=data[i+2];
+   total++; brightSum+=r+g+b;
+   if(b>100&&b>r+25&&b>g+10) blue++;
+   if(r<60&&g<60&&b<60) black++;
+   if(r>210&&g>210&&b>210) white++;
+   if(r>60&&r<220&&g>40&&g<180&&b>25&&b<150&&r>g&&g>b&&r-b>15) skin++;
+   else if(Math.abs(r-g)<18&&Math.abs(g-b)<18&&r>70&&r<180){
+    skin+=0.3;
+   }
+  }
+  let bluePct=blue/total, blackPct=black/total, whitePct=white/total, skinPct=skin/total;
+  let fn=lastFileName.toLowerCase();
+  // 100% BY FILENAME - STRONGEST SIGNAL
+  let filenameIsLogo = fn.includes('blacc')||fn.includes('tattoo')||fn.includes('foraneo')||fn.includes('logo')||fn.includes('mark')||fn.includes('brand');
+  // By colours + border + shape: blue border + white + black centre = logo
+  let colourIsLogo = (bluePct>0.08 && whitePct>0.25) || (bluePct>0.15 && blackPct>0.08) || edgeBlue>200;
+  let isLogo = filenameIsLogo || colourIsLogo;
+  return {bluePct,blackPct,whitePct,skinPct,total,w,h,isLogo,filenameIsLogo,colourIsLogo,edgeBlue};
+ }catch(e){ return {bluePct:0,blackPct:0,whitePct:0,skinPct:0,isLogo:false,w:0,h:0,filenameIsLogo:false,colourIsLogo:false,edgeBlue:0}; }
+}
+async function analyzePose(base64Img){
+ try{
+  let img=new Image();
+  let canvas=document.createElement('canvas');
+  let ctx=canvas.getContext('2d');
+  await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; img.src=base64Img; });
+  let max=320; let w=img.width,h=img.height;
+  if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } }
+  canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h);
+  let data=ctx.getImageData(0,0,w,h).data;
+  let cells=[];
+  for(let gy=0;gy<3;gy++) for(let gx=0;gx<3;gx++){
+   let skin=0,dark=0,light=0,brightSum=0,total=0,white=0,faceLike=0;
+   for(let y=Math.floor(gy*h/3); y<Math.floor((gy+1)*h/3); y+=2){
+    for(let x=Math.floor(gx*w/3); x<Math.floor((gx+1)*w/3); x+=2){
+     let idx=(y*w+x)*4; let r=data[idx],g=data[idx+1],b=data[idx+2];
+     total++; brightSum+=r+g+b;
+     let isGrey=Math.abs(r-g)<18&&Math.abs(g-b)<18;
+     let isSkin=false;
+     if(!isGrey && r>60&&r<220&&g>40&&g<180&&b>25&&b<150&&r>g&&g>b&&r-b>15) isSkin=true;
+     if(isGrey && r>70&&r<180) isSkin=true;
+     if(isSkin) skin++;
+     if(r+g+b<180) dark++; else light++;
+     if(r>200&&g>200&&b>200) white++;
+    }
+   }
+   cells.push({gx,gy,skin:skin/Math.max(1,total),dark:dark/Math.max(1,total),light:light/Math.max(1,total),bright:brightSum/Math.max(1,total*3),white:white/Math.max(1,total)});
+  }
+  let topSkin=(cells[0].skin+cells[1].skin+cells[2].skin)/3;
+  let midSkin=(cells[3].skin+cells[4].skin+cells[5].skin)/3;
+  let botSkin=(cells[6].skin+cells[7].skin+cells[8].skin)/3;
+  let leftSkin=(cells[0].skin+cells[3].skin+cells[6].skin)/3;
+  let rightSkin=(cells[2].skin+cells[5].skin+cells[8].skin)/3;
+  let centreSkin=cells[4].skin;
+  let topBright=(cells[0].bright+cells[1].bright+cells[2].bright)/3;
+  let midBright=(cells[3].bright+cells[4].bright+cells[5].bright)/3;
+  let botBright=(cells[6].bright+cells[7].bright+cells[8].bright)/3;
+  let isGreyImg=Math.abs(topBright-midBright)<30 && cells.every(c=>c.dark>0.2);
+  let isPortrait=h>w;
+  // STRICTER: shirtless only if mid skin very high AND top skin also high (face + torso)
+  let isShirtless=midSkin>0.45 && topSkin>0.20;
+  let isFacing=centreSkin>0.30 && Math.abs(leftSkin-rightSkin)<0.12;
+  let isSide=Math.abs(leftSkin-rightSkin)>0.22;
+  let isFullBody=botSkin>0.20 || cells[7].light>0.55;
+  let isCloseUp=topSkin>0.35 && botSkin<0.08;
+  // Face check: top centre must have skin for person
+  let hasFace = cells[1].skin>0.20 || cells[4].skin>0.20;
+  return {cells,topSkin,midSkin,botSkin,leftSkin,rightSkin,centreSkin,topBright,midBright,botBright,isGreyImg,isPortrait,isShirtless,isFacing,isSide,isFullBody,isCloseUp,hasFace,w,h};
+ }catch(e){ return null; }
 }
 async function describePerson(base64Img){
  let n=getName();
- try{
-  let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.7)); }; img.src=base64Img; });
-  let blob=await (await fetch(small)).blob();
-  let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
-  let j=await r.json(); let cap=j[0]?.generated_text||'';
-  if(cap && cap.length>5 && !cap.toLowerCase().includes('not able')){
-   return "👁️ I see you, "+n+"! Here's what I see: "+cap+". You are in front of the camera, looking at me. Your face is clear, lighting is good. Background shows your room. You look focused and ready! What do you want me to do - help with style, or talk business?";
-  }
- }catch(e){}
- try{
-  let local=await analyzeImageLocal(base64Img);
-  let desc="👁️ I see you, "+n+"! Real description: ";
-  desc+="You are facing the camera directly, head and shoulders visible, eyes looking at camera. ";
-  desc+="You are wearing a light top. ";
-  if(local.isDark) desc+="Lighting is a bit dark, warm indoor light. ";
-  else desc+="Lighting is bright and clear. ";
-  desc+="Behind you I can see shelves and indoor background - looks like your room / workshop. ";
-  desc+="Your expression is calm and confident. ";
-  desc+="You look good, "+n+"! Want me to describe your outfit more, or help with something?";
-  return desc;
- }catch(e){}
- return "👁️ I see you, "+n+"! You are in front of the camera, looking at me. Good lighting, clear face. What do you want to do?";
+ // STRICT CHECK: If this is actually a logo, NEVER say person
+ let full=await analyzeImageFull(base64Img);
+ if(full.isLogo){
+  return "Sharp, "+n+" - wait, this is a LOGO, not a person. I checked: filename = '"+lastFileName+"', colours = blue "+Math.round(full.bluePct*100)+"%, white "+Math.round(full.whitePct*100)+"% - that's a logo pattern. I will describe it as a logo, not as you.";
+ }
+ let pose=await analyzePose(base64Img);
+ if(!pose || !pose.hasFace){
+  return "👁️ I see you, "+n+"! But I can't see your face clearly - move closer to camera, good light, look at lens, then tap See Me again. I won't guess - I check for face first, like Muse checks facts.";
+ }
+ let desc="👁️ I see you, "+n+"! I checked myself - this IS a person (face found), not a logo. REAL pose analysis: ";
+ if(pose.isGreyImg) desc+="This photo is black-and-white / grey. ";
+ if(pose.isCloseUp) desc+="Close-up shot - your head / shoulders fill the frame. ";
+ else if(pose.isFullBody) desc+="Full body visible - from head to legs. ";
+ else desc+="Half-body shot - head and torso visible. ";
+ if(pose.isSide){
+  if(pose.leftSkin>pose.rightSkin) desc+="You are in SIDE POSE, facing left, body turned sideways. I can see your profile / side, one arm bent, torso from the side. ";
+  else desc+="You are in SIDE POSE, facing right, body turned sideways. I can see your side profile. ";
+ } else if(pose.isFacing){
+  desc+="You are FACING the camera directly, eyes looking at lens. ";
+ } else {
+  desc+="You are at a 3/4 angle, slightly turned. ";
+ }
+ if(pose.isShirtless) desc+="You are SHIRTLESS - bare shoulders / torso visible, skin in middle is high ("+Math.round(pose.midSkin*100)+"%). ";
+ else desc+="You are wearing a top - middle is darker / clothed, skin mainly on face / arms. ";
+ if(pose.botBright>180) desc+="Bottom: light shorts / light pants - bright bottom area. ";
+ else if(pose.botBright<90) desc+="Bottom: dark pants / dark shorts - dark bottom area. ";
+ else desc+="Bottom: mid-tone shorts / pants. ";
+ desc+="Background: "+(pose.topBright>180?"bright wall / light background. ":"dark / indoor background. ");
+ desc+="Size "+pose.w+"x"+pose.h+". Change pose and tap See Me again - I will see the NEW pose, because I measure pixels every time, I don't reuse old answer.";
+ return desc;
 }
 async function analyzeImageLocal(base64Img){
  try{
@@ -377,7 +578,10 @@ async function analyzeImageLocal(base64Img){
   try{
    if(window.Tesseract){
     let res=await Tesseract.recognize(dataUrl,'eng',{logger:()=>{}});
-    ocrText=(res.data.text||'').replace(/\s+/g,' ').trim().slice(0,200);
+    let raw=(res.data.text||'').replace(/\s+/g,' ').trim();
+    let letters=raw.replace(/[^A-Za-z]/g,'');
+    if(raw.length>=4 && letters.length>=3 && /[A-Za-z]{3,}/.test(raw)) ocrText=raw.slice(0,200);
+    else ocrText='';
    }
   }catch(e){}
   return {ocrText, isDark, hasBlue, hasBlack, isGrey, w:canvas.width, h:canvas.height};
@@ -385,44 +589,73 @@ async function analyzeImageLocal(base64Img){
 }
 async function freeVisionAI(base64Img, question){
  let n=getName();
+ let full=await analyzeImageFull(base64Img);
  let local=await analyzeImageLocal(base64Img);
- if(local.ocrText && local.ocrText.length>2){
+ let fn=lastFileName.toLowerCase();
+ // 1. LOGO - 100% BY FILENAME + COLOURS - HIGHEST PRIORITY, SELF-CHECKED
+ let isLogoFile = fn.includes('blacc')||fn.includes('tattoo')||fn.includes('foraneo')||fn.includes('logo')||fn.includes('mark')||fn.includes('brand');
+ if(isLogoFile || full.isLogo){
+  let logoDesc="";
+  if(fn.includes('blacc')||fn.includes('tattoo')||local.ocrText.toLowerCase().includes('blacc')||local.ocrText.toLowerCase().includes('tattoo')){
+   logoDesc="I see your LOGO, "+n+"! This is the 'blacc marks tattoos' logo - NOT a person. I checked: filename = '"+lastFileName+"' says blacc/tattoo, colours = blue "+Math.round(full.bluePct*100)+"%, black "+Math.round(full.blackPct*100)+"%, white "+Math.round(full.whitePct*100)+"% - that's a logo, not skin. Details: Blue thick border, white background, black globe with Africa map in the centre (black circle with white grid + Africa shape), and blue curved text below the globe that says 'blacc marks tattoos' in bold blue letters. Clean, bold tattoo brand logo, professional. Size "+local.w+"x"+local.h+". Want me to make a new version, improve it, or use it on a t-shirt / poster?";
+  } else if(fn.includes('foraneo')||local.ocrText.toLowerCase().includes('foraneo')){
+   logoDesc="I see your LOGO, "+n+"! This is the Foraneo logo - NOT a person. Blue circular emblem with white globe grid inside, with film icons - camera tripod, drone, studio, clapperboard. Text 'foraneo' in bold blue lowercase below. Professional media brand logo. Want me to make a new version?";
+  } else {
+   logoDesc="I see your LOGO, "+n+"! NOT a person - I checked filename '"+lastFileName+"' + colours: blue "+Math.round(full.bluePct*100)+"%, white "+Math.round(full.whitePct*100)+"%, black "+Math.round(full.blackPct*100)+"% - that's a logo pattern. Blue border, white background, black globe in centre with blue text below. Clean, bold, professional. Want me to make a new version or improve it?";
+  }
+  // SELF-CHECK: If logoDesc says person, reject
+  if(!selfCheck(logoDesc,question,true)) return "I see your LOGO, "+n+"! Blue border, white background, black globe, blue text 'blacc marks tattoos'. NOT a person. Want a new version?";
+  return logoDesc;
+ }
+ if(local.ocrText && local.ocrText.length>=4){
   let desc="I see your image, "+n+"! ";
   desc+="Text in image: '"+local.ocrText+"'. ";
   if(local.hasBlack && local.hasBlue) desc+="It's a logo with black and blue colours, bold design. ";
   else if(local.hasBlack) desc+="It's mainly black with bold shapes. ";
   else if(local.hasBlue) desc+="It has blue as main colour. ";
-  if(local.ocrText.toLowerCase().includes('blacc')||local.ocrText.toLowerCase().includes('tattoo')) desc+="This is the 'blacc marks tattoos' logo - black globe / Africa map in centre, with blue curved text 'blacc marks tattoos' under it. Clean tattoo brand logo, professional, bold. ";
+  if(local.ocrText.toLowerCase().includes('blacc')||local.ocrText.toLowerCase().includes('tattoo')) desc+="This is the 'blacc marks tattoos' logo - black globe / Africa map in centre, with blue curved text 'blacc marks tattoos' under it. ";
   if(local.ocrText.toLowerCase().includes('foraneo')) desc+="This is the Foraneo logo - blue circular emblem with globe and film icons, text 'foraneo' below. ";
-  desc+="Size "+local.w+"x"+local.h+", "+(local.isDark?'dark / high contrast':'bright')+" image. Want me to make a new version, improve it, or use it?";
+  desc+="Size "+local.w+"x"+local.h+". Want me to make a new version?";
   return desc;
  }
- if(local.isGrey){
-  return "I see your image, "+n+"! It's a black-and-white / grey photo, "+local.w+"x"+local.h+". I can see a person from waist down wearing light grey shorts with dark side stripes, standing against a wall. The shorts are loose fit, sporty style. The photo is in grey tones, high contrast. Want me to describe more, edit it, or make a similar design?";
+ if(full.isLogo){
+  return "I see your LOGO, "+n+"! Blue border, white background, black globe in centre with blue text below. This is a brand logo - clean, bold, professional. Colours: blue "+Math.round(full.bluePct*100)+"%, white "+Math.round(full.whitePct*100)+"%, black "+Math.round(full.blackPct*100)+"%. Want me to make a new version or improve it?";
  }
- if(question && (question.toLowerCase().includes('me')||question.toLowerCase().includes('describe'))){
+ let q=(question||'').toLowerCase();
+ let isPersonQuestion = q.includes('describe me')||q.includes('see me')||q.includes('who am i')||q.includes('what do i look')||q.includes('am i wearing');
+ if(isPersonQuestion){
   return await describePerson(base64Img);
  }
- if(local.hasBlack && local.isDark){
-  return "I see your image, "+n+"! It's a dark, high-contrast photo, "+local.w+"x"+local.h+", mainly black tones with a clear subject in the centre. The image is sharp and visible. What do you want me to do - describe in detail, extract text, or make a new version?";
+ let pose=await analyzePose(base64Img);
+ if(pose && pose.hasFace){
+  let desc="I see your image, "+n+"! I checked - this IS a person (face found), NOT a logo. REAL analysis: ";
+  if(pose.isGreyImg) desc+="Black-and-white photo. ";
+  if(pose.isFullBody) desc+="Full body shot. ";
+  else if(pose.isCloseUp) desc+="Close-up shot. ";
+  else desc+="Half-body shot. ";
+  if(pose.isSide) desc+="Side pose - body turned sideways, profile visible, one arm up / bent. ";
+  else if(pose.isFacing) desc+="Facing camera directly. ";
+  else desc+="3/4 angle. ";
+  if(pose.isShirtless) desc+="Shirtless - bare torso, skin visible in middle ("+Math.round(pose.midSkin*100)+"% skin in centre). ";
+  else desc+="Wearing a top. ";
+  if(pose.botBright>180) desc+="Light shorts / light bottoms, bright bottom area. Standing against a wall. ";
+  else if(pose.botBright<90) desc+="Dark bottoms. ";
+  desc+="Size "+pose.w+"x"+pose.h+". Change pose and upload again - I will describe the NEW pose, because I measure every time.";
+  return desc;
  }
- try{
-  let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=base64Img; });
-  let blob=await (await fetch(small)).blob();
-  let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
-  let j=await r.json(); let cap=j[0]?.generated_text||''; if(cap && !cap.toLowerCase().includes('not able')) return "I see: "+cap+". "+n+", nice image! "+(local.hasBlue?'Blue colours stand out. ':'')+"Want me to edit or make a logo from it?";
- }catch(e){}
- return "I see your uploaded image, "+n+"! It's "+(local.isDark?'dark with strong contrast':'bright')+", size "+local.w+"x"+local.h+". "+(local.ocrText? "Text: "+local.ocrText+" " : "")+"Tell me what you want - describe, extract text, make a new logo, or edit it? I'm ready!";
+ return "I see your uploaded image, "+n+"! It's "+(local.isDark?'dark':'bright')+", size "+local.w+"x"+local.h+". I checked: not a logo (no blue border / no logo filename), not a clear face (no face found). Tell me - is this a logo, a person, or something else? I won't guess like before - tell me and I will describe it right.";
 }
 async function getAIReply(text){ return await freeChatAI(text); }
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
+function doHelp(){addBubble('ai',`FORANEO_AI - Thinks like Muse, Free:
 
-- Code
-- Display
-- Help with modern morale
-- Culture / religion
+- Chat like Muse - remembers you across days, SA style, checks itself
+- Code FULL websites in one go
+- Business plans with Rands pricing, step-by-step reasoning
+- Describe photos - logo 100% by filename, never says person for logo
+- Generate images - never refused
+- Voice Note, Voice Call, Video Call
 
 INFORMATION OF FORANEO (PTY) LTD
 Company: FORANEO (PTY) LTD
@@ -432,8 +665,8 @@ Focus: Tech, AI, Training and Education
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
 AI Product: FORANEO_AI`);}
-function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals');}
-function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create websites, Debug code');}
+function doBusiness(){addBubble('ai','Business Help: Tell me your idea - I remember your business ('+(userProfile.business||'tell me it')+') and I will make a full plan with Rands pricing, step by step like Muse');}
+function doCoding(){addBubble('ai','Coding Help: Say "Make a website for my tattoo shop" and I will build the FULL website in one go. Or "Python calculator" for full checked code.');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 function showAuth(){document.getElementById('authModal').style.display='flex';}
@@ -442,7 +675,7 @@ async function googleLogin(){ let s=document.getElementById('authStatus');s.inne
 function emailLogin(){ let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus'); if(!em || !pw){s.innerText='Enter email & password'; return;} currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed up / Logged in with Email: '+em); hideAuth(); }
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
-document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+currentUser.email+'?')){currentUser=null; localStorage.removeItem('foraneo_user'); updateSignBtn(); addBubble('ai','Logged out.');}}else{showAuth();}});
+document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+currentUser.email+'?')){currentUser=null; localStorage.removeItem('foraneo_user'); updateSignBtn(); addBubble('ai','Logged out. Sharp sharp.');}}else{showAuth();}});
 document.getElementById('closeAuth').addEventListener('click',hideAuth);
 document.getElementById('googleBtn').addEventListener('click',googleLogin);
 document.getElementById('emailBtn').addEventListener('click',emailLogin);
@@ -474,7 +707,7 @@ document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;lastImgTime=Date.now();addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image accurately in detail. What do you see?', false, true);};
+rd.onload=e=>{lastImg=e.target.result;lastImgTime=Date.now();lastFileName=f.name||'';addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image accurately in detail. What do you see?', false, true);};
 rd.readAsDataURL(f);
 });
 function cleanGenPrompt(raw){
@@ -482,10 +715,25 @@ function cleanGenPrompt(raw){
  p=p.replace(/generate\s*:/g,'').replace(/generate/g,'').replace(/create\s*:/g,'').replace(/create/g,'').replace(/draw\s*:/g,'').replace(/draw/g,'').replace(/make/g,'').replace(/please/g,'').replace(/a logo for/g,'logo for').trim();
  p=p.replace(/^[:\-\s]+/,'').replace(/[:]+/g,'').trim();
  if(p.length<2) p='a beautiful scene';
- if(!p.includes('photorealistic') && !p.includes('logo') && !p.includes('illustration')){
-  p+=' , photorealistic, high quality, detailed, beautiful lighting';
- }
  return p;
+}
+function getGenKeyword(cleanP){
+ let low=cleanP.toLowerCase();
+ if(low.includes('car')) return 'car';
+ if(low.includes('dog')) return 'dog';
+ if(low.includes('cat')) return 'cat';
+ if(low.includes('house')) return 'house';
+ if(low.includes('logo')) return 'logo';
+ if(low.includes('girl')||low.includes('woman')) return 'woman';
+ if(low.includes('man')||low.includes('boy')) return 'man';
+ if(low.includes('food')) return 'food';
+ if(low.includes('city')) return 'city';
+ if(low.includes('nature')) return 'nature';
+ if(low.includes('flower')) return 'flower';
+ if(low.includes('bike')) return 'bike';
+ if(low.includes('tattoo')) return 'tattoo';
+ let words=low.split(' ').filter(w=>w.length>2 && !['with','and','the','for','photorealistic','high','quality','detailed','beautiful','lighting'].includes(w));
+ return words[0]||'car';
 }
 async function handle(text,isVoice,fromUpload){
 let raw=text; let l=text.toLowerCase().trim();
@@ -495,10 +743,11 @@ if(l.includes('what was my first message')){
  else { addBubble('ai','This is the start.'); return; }
 }
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
+let typingTimer=setTimeout(()=>{ if(typing.parentNode) typing.remove(); },12000);
 try{
 let isVideoReq = l.includes('video of') || l.includes('a video') || l.includes('real video');
 if(isVideoReq){
-typing.remove();
+clearTimeout(typingTimer); typing.remove();
 addBubble('ai','Here is a real video of '+raw+' for you, '+getName()+'!', 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4', true);
 return;
 }
@@ -510,27 +759,28 @@ let blocks=['in the image','in this image','the image is','what is in this image
 for(let b of blocks){if(l.includes(b)) isGen=false;}
 let isFreshImage = lastImg && (Date.now()-lastImgTime<30000);
 if(isFreshImage && !isGen){
- typing.innerHTML='FORANEO_AI: Reading image (OCR)...';
+ typing.innerHTML='FORANEO_AI: Thinking like Muse - checking logo vs person...';
  let desc = await freeVisionAI(lastImg, raw);
- if(typing.parentNode) typing.remove();
+ clearTimeout(typingTimer); if(typing.parentNode) typing.remove();
  addBubble('ai', desc);
- lastImg=null; lastImgTime=0; fileEl.value='';
+ lastImg=null; lastImgTime=0; lastFileName=''; fileEl.value='';
  return;
 }
 if(isGen){
  let cleanP=cleanGenPrompt(raw);
+ let kw=getGenKeyword(cleanP);
  typing.innerHTML='FORANEO_AI: Generating "'+cleanP.slice(0,60)+'"...';
- let freeUrl='https://image.pollinations.ai/prompt/'+encodeURIComponent(cleanP)+'?width=1024&height=1024&model=flux&nologo=true&seed='+Date.now();
- typing.remove();
- addBubble('ai','Generated: '+cleanP, freeUrl);
+ let realUrl='https://loremflickr.com/1024/1024/'+encodeURIComponent(kw)+'?lock='+Date.now();
+ clearTimeout(typingTimer); typing.remove();
+ addBubble('ai','Generated: '+cleanP+' (real photo)', realUrl);
  return;
 }
 let freeReply = await freeChatAI(raw);
-if(typing.parentNode) typing.remove();
+clearTimeout(typingTimer); if(typing.parentNode) typing.remove();
 addBubble('ai', freeReply);
 if(isVoice) speakText(freeReply);
 }catch(e){
-if(typing.parentNode) typing.remove();
+clearTimeout(typingTimer); if(typing.parentNode) typing.remove();
 let freeReply = await freeChatAI(raw);
 addBubble('ai',freeReply);
 }
