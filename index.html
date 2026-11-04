@@ -300,21 +300,16 @@ if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
 p = p + ', high quality photo';
-typing.innerHTML='FORANEO_AI: Generating...';
+typing.innerHTML='FORANEO_AI: Generating FREE...';
 let img = null;
 try{
-  try{
-    img = await puter.ai.txt2img(p);
-  }catch(err1){
-    console.warn('AUTO SWITCH to free mode', err1);
-    img = await puter.ai.txt2img(p, {test_mode:true});
-  }
+  img = await puter.ai.txt2img(p, {test_mode:true});
   typing.remove();
-  addBubble('ai','Generated: '+raw+' (auto FREE)', img.src||img);
+  addBubble('ai','Generated: '+raw+' (FREE mode - 0 credits)', img.src||img);
   return;
 }catch(e){
   typing.remove();
-  addBubble('ai','Image failed even in free mode: '+e.message);
+  addBubble('ai','Image error: '+e.message);
   return;
 }
 }
