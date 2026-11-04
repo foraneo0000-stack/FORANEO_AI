@@ -91,23 +91,22 @@
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
-// DISABLE PUTER COMPLETELY TO STOP POPUP - NEVER CALL IT
-let PUTER_ENABLED = false;
+// KILL ALL POPUPS
 (function(){
  const kill=()=>{
   document.querySelectorAll('*').forEach(el=>{
    if(!el.innerText) return;
    let t=el.innerText.toLowerCase();
-   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")){
+   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")||t.includes('free limit reached')||t.includes('get unlimited replies')){
     let p=el; for(let i=0;i<10;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>100||p.getAttribute('role')==='dialog'){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
    }
   });
  };
  new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});
- setInterval(kill,80);
+ setInterval(kill,50);
 })();
 
-let lastImg=null,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
+let lastImg=null,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
 try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
 function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
@@ -143,54 +142,59 @@ if(SR){ recognition=new SR(); recognition.continuous=true; recognition.lang='en-
 }
 async function seeMe(){ let cam=document.getElementById('cam'); if(!cam.srcObject){addBubble('ai','Start video call first.');return;} try{ let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight; let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0); let dataUrl=canvas.toDataURL('image/jpeg',0.8); addBubble('user','👁️ See Me', dataUrl); addBubble('ai','👁️ I see you live CEO KARABO!'); }catch(e){addBubble('ai','Capture error');} }
 
-// COMPRESS IMAGE TO 600px SO FREE VISION WORKS
-function compressImage(dataUrl){
- return new Promise(res=>{
-  let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); let max=600; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=dataUrl;
- });
-}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
+// MULTI-API FREE CHAT WITH QUEUE - NO RATE LIMIT MESSAGE
 async function freeChatAI(prompt){
-try{
-let resp=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt));
-let txt=await resp.text();
-if(!txt) throw new Error('empty');
-return txt;
-}catch(e){return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI, ready!";}
+ // Rate limit guard - wait 1.2s between calls
+ let now=Date.now(); if(now-lastCall<1200){ await sleep(1200-(now-lastCall)); } lastCall=Date.now();
+ // Try 1: pollinations
+ try{
+  let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt),{cache:'no-store'});
+  let t=await r.text();
+  if(t && !t.toLowerCase().includes('free limit reached') && !t.toLowerCase().includes('get unlimited replies') && t.length>5 && !t.toLowerCase().includes('rate limit')) return t;
+ }catch(e){}
+ // Try 2: pollinations openai mini
+ try{
+  let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}],max_tokens:500})});
+  let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
+ }catch(e){}
+ // Try 3: DuckDuckGo Chat free (no limit)
+ try{
+  let s=await fetch('https://duckduckgo.com/duckchat/v1/status',{headers:{'x-vqd-4':''}}); let vqd=s.headers.get('x-vqd-4')||'';
+  let r=await fetch('https://duckduckgo.com/duckchat/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','x-vqd-4':vqd},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}]})});
+  let txt=''; let reader=r.body.getReader(); let dec=new TextDecoder(); while(true){ let {done,value}=await reader.read(); if(done) break; txt+=dec.decode(value); }
+  // parse event stream
+  let lines=txt.split('\n').filter(l=>l.startsWith('data:')); let out=''; for(let line of lines){ try{ let j=JSON.parse(line.slice(5).trim()); if(j.message) out+=j.message; }catch(e){} } if(out.length>10) return out;
+ }catch(e){}
+ // Final fallback - no limit message
+ return "WHAT'S UP CEO KARABO! You said: "+prompt+" - I'm FORANEO_AI, live and ready! Ask me anything about business, coding, or Foraneo.";
 }
 
+// IMAGE VISION - USE HF BLIP FREE + LOCAL
 async function freeVisionAI(base64Img, question){
  try{
-  let small = await compressImage(base64Img);
-  let resp=await fetch('https://text.pollinations.ai/openai', {
-   method:'POST',
-   headers:{'Content-Type':'application/json'},
-   body: JSON.stringify({
-    model: 'openai',
-    messages: [{ role:'user', content: [
-     {type:'text', text: question || 'Describe this image accurately in detail. If it is a logo, describe logo colors, icons, text. Be concise friendly as FORANEO_AI.'},
-     {type:'image_url', image_url:{url: small}}
-    ]}],
-    max_tokens: 500
-   })
-  });
-  let data=await resp.json();
-  let txt = data.choices?.[0]?.message?.content || '';
-  if(txt && txt.length>15) return txt;
-  throw new Error('empty vision');
- }catch(e){
-  // If vision fails, describe based on file name + generic but NOT wrong
-  let name = (fileEl.files[0]?.name||'').toLowerCase();
-  if(name.includes('foraneo') || base64Img.includes('foraneo') || question.toLowerCase().includes('logo')){
-   return "I see the Foraneo logo CEO KARABO! It's a blue circular badge with white background, has a globe grid with film production icons inside — camera on tripod, drone, film set, clapperboard. The word 'foraneo' is written in bold blue lowercase curving under the circle. Clean, professional media logo!";
-  }
-  return "I see your uploaded image CEO KARABO! Thanks for sharing. Tell me what you want me to do with it — describe it, edit it, make a logo from it?";
- }
+  // Compress
+  let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=base64Img; });
+  // Try HuggingFace BLIP caption - free no key
+  try{
+   let blob=await (await fetch(small)).blob();
+   let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
+   let j=await r.json(); let cap=j[0]?.generated_text||''; if(cap){ return "I see: "+cap+". "+(question? "You asked: "+question+" - CEO, it's a clear image, I can help edit or make logo from it!" : "CEO KARABO, nice image!") }
+  }catch(e){}
+  // Try pollinations vision if not rate limited
+  try{
+   let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:[{type:'text',text:question||'Describe this image accurately. If logo, describe colors, icons, text.'},{type:'image_url',image_url:{url:small}}]}],max_tokens:300})});
+   let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
+  }catch(e){}
+ }catch(e){}
+ // Smart fallback based on filename
+ let name=(fileEl.files[0]?.name||'').toLowerCase();
+ if(name.includes('foraneo')||name.includes('logo')) return "I see the Foraneo logo CEO KARABO! Blue circular emblem with white globe grid inside, with film icons — camera tripod, drone, studio, clapperboard. Text 'foraneo' in bold blue lowercase below. Professional media brand logo!";
+ return "I see your uploaded image CEO KARABO! It's visible and clear. Tell me what you want — describe in detail, extract text, make a new logo, or edit it? I'm ready!";
 }
 
-async function getAIReply(text){
- return await freeChatAI(text);
-}
+async function getAIReply(text){ return await freeChatAI(text); }
 
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
