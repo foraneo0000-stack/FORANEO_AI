@@ -16,7 +16,7 @@
 .signBtn{background:#FFFFFF;color:#1A5CFF;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
 .tabs{display:flex;gap:9px;padding:12px;background:#FFFFFF;border-bottom:1.5px solid #1A5CFF;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
 .tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:#1A5CFF;color:#FFFFFF}.tab.clear{border-color:#1A5CFF;color:#1A5CFF;background:#FFFFFF}
-#chat{padding:18px 14px;padding-bottom:360px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto;background:#FFFFFF}
+#chat{padding:18px 14px;padding-bottom:380px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto;background:#FFFFFF}
 .bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;border:1.5px solid #1A5CFF}
 .user{align-self:flex-end;background:#1A5CFF;color:#FFFFFF;border-bottom-right-radius:8px}
 .ai{align-self:flex-start;background:#FFFFFF;color:#1A5CFF;border-bottom-left-radius:8px}
@@ -24,7 +24,8 @@
 .ai video,.user video{max-width:92% !important;max-height:380px !important;border-radius:18px;margin-top:14px;display:block;background:#1A5CFF;border:3px solid #1A5CFF}
 .bar{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;padding:14px;border-top:1.8px solid #1A5CFF;z-index:800;max-width:940px;margin:0 auto}
 .upload{padding:13px 18px;border:2px dashed #1A5CFF;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1A5CFF;background:#FFFFFF;cursor:pointer;font-weight:900;text-align:center}
-.pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
+.pills{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap}.pill{border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
+.pills2{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}.pillWide{border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer;width:100%;text-align:center}
 .row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #1A5CFF;outline:none;color:#1A5CFF;background:#FFFFFF}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
 .btnEmoji{background:#FFFFFF;border:1.8px solid #1A5CFF !important;font-size:22px;color:#1A5CFF}.btnSmall{background:#1A5CFF;border:1.7px solid #1A5CFF !important;color:#FFFFFF;font-size:16px}.btnSend{background:#1A5CFF;color:#FFFFFF;padding:15px 28px !important}
 #emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#FFFFFF;border:1.5px solid #1A5CFF;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px;background:#FFFFFF}
@@ -83,8 +84,8 @@
 </div></div>
 <div class="bar">
 <div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
-<input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
-<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div>
+<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div></div>
+<div class="pills2"><div class="pillWide" id="pillWhatCan">📚 What FORANEO can do?</div></div>
 <div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span></div>
 <div class="row">
 <button class="btnEmoji" id="btnEmoji">🗣️</button>
@@ -121,7 +122,7 @@ try{
  currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');
  smartMemory=JSON.parse(localStorage.getItem('foraneo_smart_memory')||'[]');
  userProfile=JSON.parse(localStorage.getItem('foraneo_profile')||'{}');
- let badWords=['CEO KARABO','Looking sharp','not able to view','Free limit','free limit','language-model','built by OpenAI','called GPT-4',"I'm here,",'Seeing image','Voice Note: Listening',"Text in image: '4",'Thinks like Muse','Sharp sharp','my bra','Recent topics','What exactly do you want to achieve','Start small, test with 1 person','SHIRTLESS','SIDE POSE','Full body visible','I checked myself','REAL pose analysis','face found'];
+ let badWords=['CEO KARABO','Looking sharp','not able to view','Free limit','free limit','language-model','built by OpenAI','called GPT-4',"I'm here,",'Seeing image','Voice Note: Listening',"Text in image: '4",'Thinks like Muse','Sharp sharp','my bra','Recent topics','What exactly do you want to achieve','Start small, test with 1 person','SHIRTLESS','SIDE POSE','Full body visible','I checked myself','REAL pose analysis','face found','About I mean you','About I loke you','Tell me one more detail'];
  localHistory=localHistory.filter(m=>{
   let t=m.text||'';
   for(let b of badWords){ if(t.includes(b)) return false; }
@@ -298,12 +299,23 @@ function whoAreYouAnswer(){
 function selfCheck(answer){
  if(!answer) return false;
  let low=answer.toLowerCase();
- if(low.includes('built by openai')||low.includes('called gpt-4')||low.includes('language-model')||low.includes('free limit')||low.includes('get unlimited')||low.includes("i'm here,")||low.includes('my bra')||low.includes('sharp sharp')||low.includes('**')||low.includes('shirtless')||low.includes('side pose')||low.includes('full body')) return false;
+ if(low.includes('built by openai')||low.includes('called gpt-4')||low.includes('language-model')||low.includes('free limit')||low.includes('get unlimited')||low.includes("i'm here,")||low.includes('my bra')||low.includes('sharp sharp')||low.includes('**')||low.includes('shirtless')||low.includes('side pose')||low.includes('full body')||low.includes('tell me one more detail')) return false;
  if(answer.length<15) return false;
  return true;
 }
 function museReason(prompt){
  let n=getName(); let low=prompt.toLowerCase().trim();
+ // I MEAN YOU / YOU
+ if(low==='i mean you'||low==='i mean u'||low==='you'||low==='u'||low==='what about you'||low==='and you'||low==='how about you'||low==='what about u'||low.includes('i mean you')||low==='you, what do you want'||low.includes('what do you want')){
+  return "Oh, you mean me? I am FORANEO_AI, built by FORANEO (PTY) LTD. I want to help you, "+n+". I can chat, code a website for you, help with business, describe photos, or generate a video. What do you want me to do for you today? Tell me one thing - coding, business, or video?";
+ }
+ if(low.includes('who are you')||low.includes('who are u')||low.includes('tell me about yourself')||low.includes('about yourself')||low.includes('what are you')){
+  return whoAreYouAnswer();
+ }
+ // I LOKE YOU / I LIKE YOU / I LOVE YOU - TYPO FIX
+ if(low.includes('loke you')||low.includes('like you')||low.includes('love you')||low.includes('luv you')||low==='i loke you'||low==='i like you'||low==='i love you'){
+  return "Thank you, "+n+"! I like you too. You are my favourite person to chat to. I am here for you anytime - for coding, business, music, or just to talk. What do you want us to do together today?";
+ }
  if(low==='to code'||low==='coding'||low==='code'||low==='i want to code'||low==='of coding'||low==='help me code'){
   return "Great, "+n+". Let us start coding. Here is a real first project - a calculator in Python. Copy and run it:\n\n- Open Python\n- Type this:\nprint('Hello')\nx = 5\ny = 3\nprint(x + y)\n\nThis prints Hello, then 8.\n\n- Next, try this full calculator:\nprint('Calculator')\na = float(input('First number: '))\nb = float(input('Second number: '))\nprint('Answer:', a + b)\n\nTell me which one you want next:\n- Website in HTML\n- Game in Python\n- Calculator with minus, times, divide\n\nWhich one do you want?";
  }
@@ -315,7 +327,6 @@ function museReason(prompt){
   if(topic==='coding') return "I can help you with coding, "+n+". Tell me what you want to build:\n- Website for your shop\n- Calculator in Python\n- Game\n\nSay for example: Make a website for my tattoo shop, and I will give you the full code.";
   return "I can help you, "+n+". Tell me what you need help with - coding, business, or something else? Give me one detail and I will give you steps.";
  }
- if(low.includes('who are you')) return whoAreYouAnswer();
  let mathMatch=prompt.match(/(\d+(\.\d+)?)\s*([\+\-\*\/xX])\s*(\d+(\.\d+)?)/);
  if(mathMatch && (low.includes('what')||low.includes('calcul')||low.includes('solve')||low.includes('+')||low.includes('-')||low.includes('*')||low.includes('/'))){
   let a=parseFloat(mathMatch[1]), op=mathMatch[3], b=parseFloat(mathMatch[4]); let ans=0;
@@ -347,7 +358,7 @@ function getPhotoFor(keyword){
 }
 async function smartBrain(prompt){
  let n=getName(); let em=getEmail();
- let system="You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4. User is "+n+" (email: "+(em||"not logged in")+"). Memory: "+profileSummary()+". Conversation: "+smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")+". Rules: Use plain text, no stars, no slang, no shirtless, no side pose, no full body guesses. Think step by step. If user says short reply like To code, use last topic. Never say you are GPT or OpenAI. Never say free limit. If code, give full file. If business, give Rands plan. Keep under 220 words unless code.";
+ let system="You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4. User is "+n+" (email: "+(em||"not logged in")+"). Memory: "+profileSummary()+". Conversation: "+smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")+". Rules: If user says I mean you, you, what about you - they mean YOU, the AI. If user says I loke you / I like you / I love you - they mean they like you, answer warmly. Fix typos: loke = like. Use plain text, no stars, no slang, no shirtless, no side pose, no full body guesses. Think step by step. Never say you are GPT or OpenAI. Never say free limit. Never say Tell me one more detail - for example, if it is coding. If code, give full file. If business, give Rands plan. Keep under 220 words unless code.";
  let hist=smartMemory.slice(-16).map(m=>({role:m.role,content:m.text}));
  let messages=[{role:'system',content:system},...hist,{role:'user',content:prompt}];
  try{
@@ -368,7 +379,8 @@ async function freeChatAI(prompt){
  let low=prompt.toLowerCase().trim().replace(/\s+/g,' ');
  learnFromMessage(prompt);
  if(low.includes('who am')||low.includes('who im')||low.includes('who amni')||low.includes('who i am')||low.includes('what is my name')||low.includes('whats my name')||low.includes('what my name')||low.includes('do you remember me')||low.includes('what do you remember')){ return whoAmIAnswer(); }
- if(low.includes('who are you')||low.includes('who are u')) return whoAreYouAnswer();
+ if(low.includes('who are you')||low.includes('who are u')||low.includes('i mean you')||low==='you'||low==='u'||low.includes('what about you')||low.includes('and you')) return whoAreYouAnswer()+" I want to help you. What do you want me to do - coding, business, or video?";
+ if(low.includes('loke you')||low.includes('like you')||low.includes('love you')||low.includes('luv you')) return "Thank you, "+getName()+"! I like you too. You are my favourite person to chat to. What do you want us to do together today?";
  let n=getName();
  if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo') return "Hello "+n+". I am FORANEO_AI. How can I help you today? You can ask about coding, business, music, or say Generate a video of a car.";
  if(low.includes('website')||low.includes('make a site')||low.includes('build a site')||low.includes('create a website')){
@@ -386,7 +398,7 @@ async function freeChatAI(prompt){
  if(result && result!=='TIMEOUT' && selfCheck(result)){
   smartMemory.push({role:'user',text:prompt}); smartMemory.push({role:'assistant',text:result}); saveLocal(); return result;
  }
- return "Good question, "+n+". About "+prompt+": Tell me one more detail - for example, if it is coding, tell me Python or HTML. If it is business, tell me your idea. Then I will give you full steps and code, not a short answer. What exactly do you want to do?";
+ return "I hear you, "+n+". About "+prompt+": Can you tell me in one line what you want me to do? For example - Make a website, or Tell me about yourself, or Generate a video. I will do it right away.";
 }
 async function describePersonFixed(base64Img){
  let n=getName();
@@ -569,4 +581,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
-</html>
+ </html>
