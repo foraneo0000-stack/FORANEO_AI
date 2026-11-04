@@ -26,12 +26,12 @@
 .upload{padding:13px 18px;border:2px dashed #1a5cff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#eef2ff;cursor:pointer;font-weight:900;text-align:center}
 .pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #1a5cff;background:#fff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
 .row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #1a5cff;outline:none;color:#1a5cff}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
-.btnEmoji{background:#fff;border:1.8px solid #1a5cff !important;font-size:13px;color:#1a5cff;font-weight:800}.btnSmall{background:#1a5cff;border:1.7px solid #1a5cff !important;color:#fff;font-size:13px}.btnSend{background:#1a5cff;color:#fff;padding:15px 28px !important}
-#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#eef2ff;border:1.5px solid #dbe2ff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:13px;cursor:pointer;padding:6px;border-radius:10px;background:#fff;color:#1a5cff;font-weight:800}
+.btnEmoji{background:#fff;border:1.8px solid #1a5cff !important;font-size:22px;color:#1a5cff}.btnSmall{background:#1a5cff;border:1.7px solid #1a5cff !important;color:#fff;font-size:16px}.btnSend{background:#1a5cff;color:#fff;padding:15px 28px !important}
+#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#eef2ff;border:1.5px solid #dbe2ff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px;background:#fff}
 #callBox{display:none;position:fixed;inset:0;background:#fff;z-index:3000;flex-direction:column;padding:10px}
 #cam{width:100%;height:48%;object-fit:cover;border-radius:22px;background:#1a5cff;display:none}
 #aiLive{width:100%;height:48%;border-radius:22px;background:#1a5cff;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;position:relative;overflow:hidden}
-#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;color:#1a5cff;font-weight:900}
+#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;color:#1a5cff}
 .live-badge{position:absolute;top:12px;left:12px;background:#fff;color:#1a5cff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:900}
 .wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}
 .callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px;background:#1a5cff;color:#fff}
@@ -48,25 +48,25 @@
 <div class="header">
 <div class="headerTop">
 <div class="logoBox"><div class="logo"><img src="Foraneo%20Globe%20Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
-<button class="signBtn" id="signBtn">Sign up / Log in</button>
+<button class="signBtn" id="signBtn">👤 Sign up / Log in</button>
 </div>
-<h1>FORANEO_AI</h1><p>Foraneo Net Department - forego</p>
+<h1>FORANEO_AI</h1><p>Foraneo Net Department • forego</p>
 </div>
 <div class="tabs">
-<div class="tab active" id="tabChat">Chat</div>
-<div class="tab" id="tabImage">Image / Logo</div>
-<div class="tab" id="tabCalc">Calculator</div>
-<div class="tab" id="tabGames">Games</div>
-<div class="tab" id="tabHelp">Help</div>
-<div class="tab" id="tabBusiness">Business</div>
-<div class="tab" id="tabCoding">Coding</div>
-<div class="tab clear" id="tabClear">Clear Chats</div>
+<div class="tab active" id="tabChat">💬 Chat</div>
+<div class="tab" id="tabImage">🎨 Image / Logo</div>
+<div class="tab" id="tabCalc">🧮 Calculator</div>
+<div class="tab" id="tabGames">🎮 Games</div>
+<div class="tab" id="tabHelp">📚 Help</div>
+<div class="tab" id="tabBusiness">💼 Business</div>
+<div class="tab" id="tabCoding">💻 Coding</div>
+<div class="tab clear" id="tabClear">🗑️ Clear Chats</div>
 </div>
 <div id="chat"></div>
 <div id="callBox">
 <video id="cam" autoplay playsinline muted></video>
-<div id="aiLive"><div class="live-badge">LIVE</div><div id="aiAvatar">AI</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div>
-<div class="callControls"><button id="seeMeBtn" class="whiteBtn" style="display:none">See Me</button><button id="tapSpeakBtn">Tap to Speak</button><button id="endCallBtn" class="whiteBtn">End Call</button><button id="speakBtn">Mute AI</button></div>
+<div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div>
+<div class="callControls"><button id="seeMeBtn" class="whiteBtn" style="display:none">👁️ See Me</button><button id="tapSpeakBtn">🎤 Tap to Speak</button><button id="endCallBtn" class="whiteBtn">End Call</button><button id="speakBtn">🔇 Mute AI</button></div>
 <div style="display:flex;gap:8px;padding:0 10px 10px"><input id="callInput" placeholder="Type in call if mic fails..." style="flex:1;padding:12px;border-radius:28px;border:2px solid #1a5cff;outline:none;color:#1a5cff"/><button id="callSendBtn" style="padding:12px 20px;border:none;border-radius:28px;background:#1a5cff;color:#fff;font-weight:900">Send</button></div>
 <div style="text-align:center;color:#1a5cff;font-weight:800" id="callText">Live...</div>
 </div>
@@ -82,17 +82,17 @@
 <div class="small" id="authStatus"></div>
 </div></div>
 <div class="bar">
-<div class="upload" id="uploadBtn">Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
+<div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
-<div class="pills"><div class="pill" id="pillVoiceNote">Voice Note</div><div class="pill" id="pillVoiceCall">Voice Call</div><div class="pill" id="pillVideoCall">Video Call</div><div class="pill" id="pillWhatCan">What FORANEO can do?</div></div>
-<div id="emojiPanel"><span>Smile</span><span>Love</span><span>Fire</span><span>Like</span><span>Star</span></div>
+<div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div>
+<div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span></div>
 <div class="row">
-<button class="btnEmoji" id="btnEmoji">Words</button>
-<button class="btnSmall" id="btnGenerate">Video</button>
+<button class="btnEmoji" id="btnEmoji">🗣️</button>
+<button class="btnSmall" id="btnGenerate">🎬</button>
 <input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
-<div class="small">FORANEO_AI - forego</div>
+<div class="small">FORANEO_AI • forego</div>
 </div>
 <script>
 (function(){
@@ -154,7 +154,7 @@ function profileSummary(){
  if(userProfile.lastTopic) p.push("Last topic: "+userProfile.lastTopic);
  return p.join(', ');
 }
-function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='Signed in: '+getName();}else{b.innerText='Sign up / Log in';}}
+function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+getName();}else{b.innerText='👤 Sign up / Log in';}}
 function addBubble(r,t,i,skipSave,isVideo){
  t=cleanText(t);
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
@@ -218,9 +218,9 @@ function tapToSpeak(){
  let ok=startVoiceEngine();
  if(!ok){ document.getElementById('callText').innerText='Voice needs Chrome. Type below.'; return; }
  document.getElementById('callText').innerText='Listening. Speak now, '+getName()+'!';
- document.getElementById('tapSpeakBtn').innerText='Listening...';
- try{ recognition.start(); }catch(e){ document.getElementById('callText').innerText='Tap again to start listening'; document.getElementById('tapSpeakBtn').innerText='Tap to Speak'; return; }
- setTimeout(()=>{ document.getElementById('tapSpeakBtn').innerText='Tap to Speak'; if(isListening){ try{recognition.stop();}catch(e){} } }, 8000);
+ document.getElementById('tapSpeakBtn').innerText='🔴 Listening...';
+ try{ recognition.start(); }catch(e){ document.getElementById('callText').innerText='Tap again to start listening'; document.getElementById('tapSpeakBtn').innerText='🎤 Tap to Speak'; return; }
+ setTimeout(()=>{ document.getElementById('tapSpeakBtn').innerText='🎤 Tap to Speak'; if(isListening){ try{recognition.stop();}catch(e){} } }, 8000);
 }
 async function startLiveCall(withVideo){
  if(lock) return; lock=true;
@@ -259,7 +259,7 @@ async function seeMe(){
   let canvas=document.createElement('canvas'); canvas.width=cam.videoWidth||640; canvas.height=cam.videoHeight||480;
   let ctx=canvas.getContext('2d'); ctx.drawImage(cam,0,0,canvas.width,canvas.height);
   let dataUrl=canvas.toDataURL('image/jpeg',0.85);
-  addBubble('user','See Me - Describe me', dataUrl);
+  addBubble('user','👁️ See Me - Describe me', dataUrl);
   document.getElementById('callText').innerText='Describing you.';
   let desc=await describePersonFixed(dataUrl);
   document.getElementById('callText').innerText='I see you, '+getName()+'!';
@@ -276,7 +276,7 @@ async function startVoiceNote(){
   let r=new SR(); r.lang='en-US'; r.interimResults=false; r.continuous=false;
   r.onresult=async (e)=>{
    let txt=e.results[0][0].transcript.trim();
-   addBubble('user','Voice Note: '+txt); learnFromMessage(txt);
+   addBubble('user','🎤 Voice Note: '+txt); learnFromMessage(txt);
    let reply=await getAIReply(txt);
    addBubble('ai',reply); speakText(reply);
   };
@@ -347,7 +347,7 @@ function getPhotoFor(keyword){
 }
 async function smartBrain(prompt){
  let n=getName(); let em=getEmail();
- let system="You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4. User is "+n+" (email: "+(em||"not logged in")+"). Memory: "+profileSummary()+". Conversation: "+smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")+". Rules: Use plain text, no stars, no emojis, no slang, no shirtless, no side pose, no full body guesses. Think step by step. If user says short reply like To code, use last topic. Never say you are GPT or OpenAI. Never say free limit. If code, give full file. If business, give Rands plan. Keep under 220 words unless code.";
+ let system="You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4. User is "+n+" (email: "+(em||"not logged in")+"). Memory: "+profileSummary()+". Conversation: "+smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")+". Rules: Use plain text, no stars, no slang, no shirtless, no side pose, no full body guesses. Think step by step. If user says short reply like To code, use last topic. Never say you are GPT or OpenAI. Never say free limit. If code, give full file. If business, give Rands plan. Keep under 220 words unless code.";
  let hist=smartMemory.slice(-16).map(m=>({role:m.role,content:m.text}));
  let messages=[{role:'system',content:system},...hist,{role:'user',content:prompt}];
  try{
@@ -388,14 +388,12 @@ async function freeChatAI(prompt){
  }
  return "Good question, "+n+". About "+prompt+": Tell me one more detail - for example, if it is coding, tell me Python or HTML. If it is business, tell me your idea. Then I will give you full steps and code, not a short answer. What exactly do you want to do?";
 }
-// FIXED POSE - NO GUESSING SHIRTLESS / SIDE / FULL BODY
 async function describePersonFixed(base64Img){
  let n=getName();
  let fn=lastFileName.toLowerCase();
  if(fn.includes('blacc')||fn.includes('logo')||fn.includes('foraneo')||fn.includes('tattoo')){
   return "This is a logo, "+n+", not a person. I checked filename "+lastFileName+". It is the blacc marks tattoos logo - blue border, white background, black globe. Want me to describe the logo?";
  }
- // Try Puter vision with strict prompt - if it says shirtless/side, we still override with safe description
  try{
   if(window.puter && puter.ai && puter.ai.chat){
    let resp=await Promise.race([
@@ -405,7 +403,6 @@ async function describePersonFixed(base64Img){
    let txt=resp?.message?.content || resp?.text || '';
    if(txt && typeof txt==='string' && txt.length>20 && !txt.toLowerCase().includes('not able') && !txt.toLowerCase().includes('logo')){
     let cleaned=cleanText(txt);
-    // Remove any wrong guesses even if AI says them
     if(cleaned.toLowerCase().includes('shirtless')||cleaned.toLowerCase().includes('side pose')||cleaned.toLowerCase().includes('full body')){
      return "I see you, "+n+". You are facing the camera, head and shoulders visible, indoor background, wearing a top.";
     }
@@ -414,7 +411,6 @@ async function describePersonFixed(base64Img){
    if(txt.toLowerCase().includes('logo')) return "This is a logo, "+n+", not a person.";
   }
  }catch(e){}
- // SAFE FALLBACK - NEVER GUESSES, ALWAYS TRUE FOR SELFIE
  return "I see you, "+n+". You are facing the camera, head and shoulders visible, indoor background, wearing a top. If you move, tap See Me again and I will describe the new position.";
 }
 async function analyzeImageFull(base64Img){
@@ -460,7 +456,6 @@ async function freeVisionAI(base64Img, question){
  if(ocrText){
   return "I see your image, "+n+". Text in image: "+ocrText+". Want me to make a new version or extract all text?";
  }
- // For person uploads - use fixed safe description, never guess shirtless/side/full
  return await describePersonFixed(base64Img);
 }
 async function getAIReply(text){ return await freeChatAI(text); }
@@ -498,7 +493,7 @@ document.getElementById('seeMeBtn').addEventListener('click',seeMe);
 document.getElementById('tapSpeakBtn').addEventListener('click',tapToSpeak);
 document.getElementById('callSendBtn').addEventListener('click',()=>{let t=document.getElementById('callInput').value.trim(); if(!t) return; document.getElementById('callInput').value=''; handleCallText(t);});
 document.getElementById('callInput').addEventListener('keydown',e=>{if(e.key==='Enter'){let t=e.target.value.trim(); if(!t) return; e.target.value=''; handleCallText(t);}});
-document.getElementById('speakBtn').addEventListener('click',()=>{isMuted=!isMuted;document.getElementById('speakBtn').innerText=isMuted?'Unmute AI':'Mute AI';if(isMuted) speechSynthesis.cancel();});
+document.getElementById('speakBtn').addEventListener('click',()=>{isMuted=!isMuted;document.getElementById('speakBtn').innerText=isMuted?'🔊 Unmute AI':'🔇 Mute AI';if(isMuted) speechSynthesis.cancel();});
 document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);});
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}});
 document.getElementById('btnEmoji').addEventListener('click',()=>{let p=document.getElementById('emojiPanel'); p.style.display=p.style.display==='flex'?'none':'flex';});
@@ -574,4 +569,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
-</html>
+ </html>
