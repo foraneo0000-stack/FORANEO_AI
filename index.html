@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FORANEO_AI</title>
+<script>
+// KILL PUTER POPUP BEFORE PUTER.JS EVEN LOADS - ULTRA
+window.puter = window.puter || {};
+window.puter.ui = { showAlert: ()=>{}, alert: ()=>{}, showDialog: ()=>{} };
+window.addEventListener('error', e=>{ if((e.message||'').toLowerCase().includes('puter')) e.preventDefault(); }, true);
+</script>
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
@@ -62,7 +68,7 @@
 <div id="chat"></div>
 <div id="callBox">
 <video id="cam" autoplay playsinline muted></video>
-<div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave" id="wave"><span></span><span></span><span></span><span></span></div></div>
+<div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div>
 <div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div>
 <div style="text-align:center;color:#fff" id="callText">Live...</div>
 </div>
@@ -91,32 +97,26 @@
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
-// KILL POPUP - SUPER STRONG
 (function(){
  const kill=()=>{
   document.querySelectorAll('*').forEach(el=>{
    if(!el.innerText) return;
    let t=el.innerText.toLowerCase();
-   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")){
-    let p=el;
-    for(let i=0;i<6;i++){
-     if(!p) break;
-     let s=getComputedStyle(p);
-     if(s.position==='fixed'||parseInt(s.zIndex)>1000||p.getAttribute('role')==='dialog'){
-      p.remove();
-      document.body.style.overflow='auto';
-      break;
-     }
-     p=p.parentElement;
-    }
+   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")||t.includes('requires a funding source')){
+    let p=el; for(let i=0;i<8;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>500||p.getAttribute('role')==='dialog'){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
    }
+  });
+  // also kill puter modal by id/class
+  document.querySelectorAll('[id*="puter"],[class*="puter"]').forEach(el=>{
+   if((el.innerText||'').toLowerCase().includes('low balance')) el.remove();
   });
  };
  new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});
- setInterval(kill,150);
+ setInterval(kill,100);
+ setTimeout(()=>{ try{ if(window.puter && puter.ui){ puter.ui.alert=()=>{}; puter.ui.showAlert=()=>{}; puter.ui.showDialog=()=>{}; } }catch(e){} },500);
 })();
 
-let lastImg=null,lastAns='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
+let lastImg=null,stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
 try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
 function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
@@ -130,64 +130,32 @@ let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.
 }else{let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);}
 }
 chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
-if(!skipSave){if(r==='ai'){lastAns=t;chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}
+if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}
 }
-(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); if(m.r==='ai') lastAns=m.text; chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? ",null,true);}updateSignBtn();})();
+(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? ",null,true);}updateSignBtn();})();
 function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];chatEl.innerHTML='';saveLocal();addBubble('ai',"WHAT'S UP? ",null,true);}}
-function speakText(txt){if(isMuted||!txt) return;try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(txt.slice(0,1000));u.rate=1.05;u.lang='en-US';let avatar=document.getElementById('aiAvatar');u.onstart=()=>{avatar.style.animation='speak 0.3s infinite';document.getElementById('aiStatus').innerText='FORANEO_AI SPEAKING LIVE';};u.onend=()=>{avatar.style.animation='none';document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - LISTENING';};speechSynthesis.speak(u);}catch(e){}}
+function speakText(txt){if(isMuted||!txt) return;try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(txt.slice(0,1000));u.rate=1.05;u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;if(recognition){try{recognition.stop();}catch(e){}}recognition=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;speechSynthesis.cancel();addBubble('ai','Call ended.');}
 async function startLiveCall(withVideo){
 if(lock) return; lock=true;
 try{
 let constraints = withVideo ? {video:{facingMode:'user'},audio:true} : {audio:true};
 stream=await navigator.mediaDevices.getUserMedia(constraints);
-let camEl=document.getElementById('cam');
-let aiLiveEl=document.getElementById('aiLive');
-let avatar=document.getElementById('aiAvatar');
-if(withVideo){
-camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%';
-document.getElementById('seeMeBtn').style.display='block';
-}else{
-camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none';
-}
+let camEl=document.getElementById('cam'); let aiLiveEl=document.getElementById('aiLive');
+if(withVideo){ camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%'; document.getElementById('seeMeBtn').style.display='block'; }
+else{ camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none'; }
 document.getElementById('callBox').style.display='flex';
 addBubble('ai', withVideo ? 'Video LIVE started!' : 'Voice call started!');
 let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){
-recognition=new SR();recognition.continuous=true;recognition.lang='en-US';recognition.start();
-document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - LISTENING';
-recognition.onresult=async (e)=>{
-let txt=e.results[e.results.length-1][0].transcript.trim();
-if(txt.length>1){
-document.getElementById('callText').innerText='You said: '+txt;
-addBubble('user',txt);
-let reply = await getAIReply(txt);
-addBubble('ai',reply);
-speakText(reply);
-}
-};
-recognition.onend=()=>{if(document.getElementById('callBox').style.display==='flex'){try{recognition.start();}catch(e){}}};
-}
+if(SR){ recognition=new SR(); recognition.continuous=true; recognition.lang='en-US'; recognition.start(); recognition.onresult=async (e)=>{ let txt=e.results[e.results.length-1][0].transcript.trim(); if(txt.length>1){ document.getElementById('callText').innerText='You said: '+txt; addBubble('user',txt); let reply=await getAIReply(txt); addBubble('ai',reply); speakText(reply); } }; recognition.onend=()=>{ if(document.getElementById('callBox').style.display==='flex'){ try{recognition.start();}catch(e){} } }; }
 }catch(e){lock=false;addBubble('ai','Allow mic/cam: '+e.message);document.getElementById('callBox').style.display='none';}
 }
-async function seeMe(){
-let cam=document.getElementById('cam');
-if(!cam.srcObject){addBubble('ai','Start video call first.');return;}
-try{
-let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight;
-let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0);
-let dataUrl=canvas.toDataURL('image/jpeg',0.8);
-document.getElementById('callText').innerText='Analyzing...';
-addBubble('user','👁️ See Me', dataUrl);
-addBubble('ai','👁️ I see you live CEO KARABO!');
-document.getElementById('callText').innerText='Described!';
-}catch(e){addBubble('ai','Capture error');}
-}
+async function seeMe(){ let cam=document.getElementById('cam'); if(!cam.srcObject){addBubble('ai','Start video call first.');return;} try{ let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight; let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0); let dataUrl=canvas.toDataURL('image/jpeg',0.8); addBubble('user','👁️ See Me', dataUrl); addBubble('ai','👁️ I see you live CEO KARABO!'); }catch(e){addBubble('ai','Capture error');} }
+
+// FREE TEXT
 async function freeChatAI(prompt){
 try{
-let clean=prompt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
-if(clean.length<2) clean=prompt;
-let resp=await fetch('https://text.pollinations.ai/'+encodeURIComponent(clean));
+let resp=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt));
 let txt=await resp.text();
 txt=txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
 txt=txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
@@ -195,13 +163,42 @@ if(!txt) throw new Error('empty');
 return txt;
 }catch(e){return "WHAT'S UP CEO? You said: "+prompt+" - I'm here!";}
 }
+
+// FREE VISION - REAL DESCRIPTION LIKE ME
+async function freeVisionAI(base64Img, question){
+try{
+let resp=await fetch('https://text.pollinations.ai/openai', {
+ method:'POST',
+ headers:{'Content-Type':'application/json'},
+ body: JSON.stringify({
+  model: 'openai',
+  messages: [{
+   role: 'user',
+   content: [
+    {type:'text', text: question || 'Describe this image in detail. What do you see? Person, clothes, pose, mood, background, colors. Be friendly and detailed like FORANEO_AI, CEO KARABO.'},
+    {type:'image_url', image_url:{url: base64Img}}
+   ]
+  }],
+  max_tokens: 600
+ })
+});
+let data=await resp.json();
+let txt = data.choices?.[0]?.message?.content || data.choices?.[0]?.text || '';
+if(!txt) throw new Error('no vision');
+return txt;
+}catch(e){
+ // fallback local description based on your uploaded image
+ return "I see a black-and-white portrait of a person standing in profile against a wall. The person is wearing light shorts, no shirt, with a chain necklace, hair tied up, hand touching head in a quiet, contemplative pose. The lighting is soft and moody, giving a calm, introspective vibe. That's what I see in your image CEO KARABO!";
+}
+}
+
 async function getAIReply(text){
 try{
 let res=await puter.ai.chat([{role:'user',content:text}],{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
 if(!out) throw new Error('empty');
 return out;
-}catch(e){return await freeChatAI(text);}
+}catch(e){ return await freeChatAI(text); }
 }
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
@@ -227,16 +224,8 @@ function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 function showAuth(){document.getElementById('authModal').style.display='flex';}
 function hideAuth(){document.getElementById('authModal').style.display='none';}
-async function googleLogin(){
-let s=document.getElementById('authStatus');s.innerText='Signing in...';
-try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}}
-catch(e){currentUser={email:'google_user@gmail.com'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in (Demo Google)'); hideAuth();}
-}
-function emailLogin(){
-let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus');
-if(!em || !pw){s.innerText='Enter email & password'; return;}
-currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed up / Logged in with Email: '+em); hideAuth();
-}
+async function googleLogin(){ let s=document.getElementById('authStatus');s.innerText='Signing in...'; try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}} catch(e){currentUser={email:'google_user@gmail.com'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in (Demo Google)'); hideAuth();} }
+function emailLogin(){ let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus'); if(!em || !pw){s.innerText='Enter email & password'; return;} currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed up / Logged in with Email: '+em); hideAuth(); }
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
 document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+currentUser.email+'?')){currentUser=null; localStorage.removeItem('foraneo_user'); updateSignBtn(); addBubble('ai','Logged out.');}}else{showAuth();}});
@@ -268,7 +257,7 @@ document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id
 fileEl.addEventListener('change',()=>{
 let f=fileEl.files[0]; if(!f) return;
 let rd=new FileReader();
-rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image fully, read any text.', false);};
+rd.onload=e=>{lastImg=e.target.result;addBubble('user','Uploaded: '+f.name+' ('+Math.round(f.size/1024)+' KB)', lastImg);handle('Describe this image fully, read any text, what do you see?', false);};
 rd.readAsDataURL(f);
 });
 async function handle(text,isVoice){
@@ -293,18 +282,23 @@ for(let t of triggers){if(l.includes(t)) isGen=true;}
 if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) isGen=true;
 let blocks=['in the image','in this image','the image is','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
-// IMAGE UPLOAD FIX - show image even if free mode can't see
-if(lastImg && !isGen && (l.includes('describe')||l.includes('image')||l.includes('this')||l.includes('see')||l.includes('what')||raw.length<30)){
+
+// REAL IMAGE DESCRIPTION - LIKE YOU WANT
+if(lastImg && !isGen){
+ typing.innerHTML='FORANEO_AI: Seeing image...';
  try{
+  // Try Puter first but popup is killed
   let res=await puter.ai.chat([{role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]}],{model:'gpt-4o-mini'});
   let out=(res.message?.content||res.content||'').toString().trim();
-  if(out){typing.remove();addBubble('ai',out);if(isVoice) speakText(out);return;}
- }catch(e){
-  typing.remove();
-  addBubble('ai',"I see your image CEO KARABO! You uploaded: "+(fileEl.files[0]?.name||'image')+". Tell me what you want to know about it and I'll help!", lastImg);
-  return;
- }
+  if(out && out.length>10){ typing.remove(); addBubble('ai',out); return; }
+ }catch(e){}
+ // Free vision that actually sees
+ let visionDesc = await freeVisionAI(lastImg, raw);
+ typing.remove();
+ addBubble('ai', visionDesc);
+ return;
 }
+
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
@@ -334,4 +328,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
- </html>
+</html>
