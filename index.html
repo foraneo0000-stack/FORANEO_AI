@@ -7,40 +7,40 @@
 <script src="https://js.puter.com/v2/"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a5cff}
-.header{background:#1a5cff;color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
+*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#FFFFFF;color:#1A5CFF}
+.header{background:#1A5CFF;color:#FFFFFF;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
 .headerTop{width:100%;display:flex;justify-content:space-between;align-items:center;max-width:940px}
-.logoBox{display:flex;align-items:center;gap:12px}.logo{width:50px;height:50px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
-.logoTxt{text-align:left;line-height:1.1;color:#fff}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;opacity:.9}
-.header h1{margin:10px 0 0;font-size:30px;font-weight:900;color:#fff}.header p{margin:6px 0 0;font-size:11.5px;color:#fff}
-.signBtn{background:#fff;color:#1a5cff;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
-.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #dbe2ff;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
-.tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #1a5cff;background:#fff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:#1a5cff;color:#fff}.tab.clear{border-color:#1a5cff;color:#1a5cff;background:#fff}
-#chat{padding:18px 14px;padding-bottom:360px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
-.bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(26,92,255,.15);border:1.5px solid #dbe2ff}
-.user{align-self:flex-end;background:#1a5cff;color:#fff;border-bottom-right-radius:8px}
-.ai{align-self:flex-start;background:#fff;color:#1a5cff;border-bottom-left-radius:8px}
-.ai img,.user img{max-width:92% !important;max-height:320px !important;object-fit:contain;border-radius:18px;margin-top:14px;display:block;background:#fff;border:3px solid #1a5cff;padding:6px}
-.ai video,.user video{max-width:92% !important;max-height:380px !important;border-radius:18px;margin-top:14px;display:block;background:#1a5cff;border:3px solid #1a5cff}
-.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px;border-top:1.8px solid #dbe2ff;z-index:800;max-width:940px;margin:0 auto}
-.upload{padding:13px 18px;border:2px dashed #1a5cff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#eef2ff;cursor:pointer;font-weight:900;text-align:center}
-.pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #1a5cff;background:#fff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
-.row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #1a5cff;outline:none;color:#1a5cff}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
-.btnEmoji{background:#fff;border:1.8px solid #1a5cff !important;font-size:22px;color:#1a5cff}.btnSmall{background:#1a5cff;border:1.7px solid #1a5cff !important;color:#fff;font-size:16px}.btnSend{background:#1a5cff;color:#fff;padding:15px 28px !important}
-#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#eef2ff;border:1.5px solid #dbe2ff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px;background:#fff}
-#callBox{display:none;position:fixed;inset:0;background:#fff;z-index:3000;flex-direction:column;padding:10px}
-#cam{width:100%;height:48%;object-fit:cover;border-radius:22px;background:#1a5cff;display:none}
-#aiLive{width:100%;height:48%;border-radius:22px;background:#1a5cff;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;position:relative;overflow:hidden}
-#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;color:#1a5cff}
-.live-badge{position:absolute;top:12px;left:12px;background:#fff;color:#1a5cff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:900}
-.wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}
-.callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px;background:#1a5cff;color:#fff}
-.callControls button.whiteBtn{background:#fff;color:#1a5cff;border:2px solid #1a5cff}
-#authModal{display:none;position:fixed;inset:0;background:rgba(26,92,255,.25);z-index:5000;align-items:center;justify-content:center;padding:18px}
-#authBox{background:#fff;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center;border:2px solid #1a5cff}
-.gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #1a5cff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px;color:#1a5cff}
-#emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #1a5cff;margin-bottom:10px;outline:none;color:#1a5cff}
-.small{font-size:11px;margin-top:8px;text-align:center;color:#1a5cff}
+.logoBox{display:flex;align-items:center;gap:12px}.logo{width:50px;height:50px;background:#FFFFFF;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
+.logoTxt{text-align:left;line-height:1.1;color:#FFFFFF}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;color:#FFFFFF}
+.header h1{margin:10px 0 0;font-size:30px;font-weight:900;color:#FFFFFF}.header p{margin:6px 0 0;font-size:11.5px;color:#FFFFFF}
+.signBtn{background:#FFFFFF;color:#1A5CFF;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+.tabs{display:flex;gap:9px;padding:12px;background:#FFFFFF;border-bottom:1.5px solid #1A5CFF;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:#1A5CFF;color:#FFFFFF}.tab.clear{border-color:#1A5CFF;color:#1A5CFF;background:#FFFFFF}
+#chat{padding:18px 14px;padding-bottom:360px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto;background:#FFFFFF}
+.bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;border:1.5px solid #1A5CFF}
+.user{align-self:flex-end;background:#1A5CFF;color:#FFFFFF;border-bottom-right-radius:8px}
+.ai{align-self:flex-start;background:#FFFFFF;color:#1A5CFF;border-bottom-left-radius:8px}
+.ai img,.user img{max-width:92% !important;max-height:320px !important;object-fit:contain;border-radius:18px;margin-top:14px;display:block;background:#FFFFFF;border:3px solid #1A5CFF;padding:6px}
+.ai video,.user video{max-width:92% !important;max-height:380px !important;border-radius:18px;margin-top:14px;display:block;background:#1A5CFF;border:3px solid #1A5CFF}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;padding:14px;border-top:1.8px solid #1A5CFF;z-index:800;max-width:940px;margin:0 auto}
+.upload{padding:13px 18px;border:2px dashed #1A5CFF;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1A5CFF;background:#FFFFFF;cursor:pointer;font-weight:900;text-align:center}
+.pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #1A5CFF;background:#FFFFFF;color:#1A5CFF;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
+.row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #1A5CFF;outline:none;color:#1A5CFF;background:#FFFFFF}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
+.btnEmoji{background:#FFFFFF;border:1.8px solid #1A5CFF !important;font-size:22px;color:#1A5CFF}.btnSmall{background:#1A5CFF;border:1.7px solid #1A5CFF !important;color:#FFFFFF;font-size:16px}.btnSend{background:#1A5CFF;color:#FFFFFF;padding:15px 28px !important}
+#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#FFFFFF;border:1.5px solid #1A5CFF;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px;background:#FFFFFF}
+#callBox{display:none;position:fixed;inset:0;background:#FFFFFF;z-index:3000;flex-direction:column;padding:10px}
+#cam{width:100%;height:48%;object-fit:cover;border-radius:22px;background:#1A5CFF;display:none}
+#aiLive{width:100%;height:48%;border-radius:22px;background:#1A5CFF;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#FFFFFF;font-weight:900;position:relative;overflow:hidden}
+#aiAvatar{width:120px;height:120px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:60px;color:#1A5CFF}
+.live-badge{position:absolute;top:12px;left:12px;background:#FFFFFF;color:#1A5CFF;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:900}
+.wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#FFFFFF;border-radius:10px;animation:wave 0.6s infinite}
+.callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px;background:#1A5CFF;color:#FFFFFF}
+.callControls button.whiteBtn{background:#FFFFFF;color:#1A5CFF;border:2px solid #1A5CFF}
+#authModal{display:none;position:fixed;inset:0;background:#FFFFFF;z-index:5000;align-items:center;justify-content:center;padding:18px}
+#authBox{background:#FFFFFF;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center;border:2px solid #1A5CFF}
+.gBtn{width:100%;padding:13px;background:#FFFFFF;border:1.8px solid #1A5CFF;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px;color:#1A5CFF}
+#emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #1A5CFF;margin-bottom:10px;outline:none;color:#1A5CFF;background:#FFFFFF}
+.small{font-size:11px;margin-top:8px;text-align:center;color:#1A5CFF}
 @keyframes wave{0%,100%{height:10px}50%{height:28px}}
 </style>
 </head>
@@ -67,18 +67,18 @@
 <video id="cam" autoplay playsinline muted></video>
 <div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div>
 <div class="callControls"><button id="seeMeBtn" class="whiteBtn" style="display:none">👁️ See Me</button><button id="tapSpeakBtn">🎤 Tap to Speak</button><button id="endCallBtn" class="whiteBtn">End Call</button><button id="speakBtn">🔇 Mute AI</button></div>
-<div style="display:flex;gap:8px;padding:0 10px 10px"><input id="callInput" placeholder="Type in call if mic fails..." style="flex:1;padding:12px;border-radius:28px;border:2px solid #1a5cff;outline:none;color:#1a5cff"/><button id="callSendBtn" style="padding:12px 20px;border:none;border-radius:28px;background:#1a5cff;color:#fff;font-weight:900">Send</button></div>
-<div style="text-align:center;color:#1a5cff;font-weight:800" id="callText">Live...</div>
+<div style="display:flex;gap:8px;padding:0 10px 10px"><input id="callInput" placeholder="Type in call if mic fails..." style="flex:1;padding:12px;border-radius:28px;border:2px solid #1A5CFF;outline:none;color:#1A5CFF;background:#FFFFFF"/><button id="callSendBtn" style="padding:12px 20px;border:none;border-radius:28px;background:#1A5CFF;color:#FFFFFF;font-weight:900">Send</button></div>
+<div style="text-align:center;color:#1A5CFF;font-weight:800" id="callText">Live...</div>
 </div>
 <div id="authModal"><div id="authBox">
 <div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo%20Globe%20Logo.png"></div>
-<h3 style="color:#1a5cff">Welcome to FORANEO_AI</h3><p style="color:#1a5cff">Sign up to save chats</p>
+<h3 style="color:#1A5CFF">Welcome to FORANEO_AI</h3><p style="color:#1A5CFF">Sign up to save chats</p>
 <button class="gBtn" id="googleBtn">Continue with Google</button>
-<div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;color:#1a5cff"><div style="flex:1;height:1px;background:#dbe2ff"></div>or<div style="flex:1;height:1px;background:#dbe2ff"></div></div>
+<div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;color:#1A5CFF"><div style="flex:1;height:1px;background:#1A5CFF"></div>or<div style="flex:1;height:1px;background:#1A5CFF"></div></div>
 <input id="emailInput" placeholder="Email address" type="email">
 <input id="passInput" placeholder="Password" type="password">
-<button class="gBtn" id="emailBtn" style="background:#1a5cff;color:#fff;border:none">Continue with Email</button>
-<button class="gBtn" id="closeAuth" style="border:none;background:#eef2ff">Cancel</button>
+<button class="gBtn" id="emailBtn" style="background:#1A5CFF;color:#FFFFFF;border:none">Continue with Email</button>
+<button class="gBtn" id="closeAuth" style="border:none;background:#FFFFFF">Cancel</button>
 <div class="small" id="authStatus"></div>
 </div></div>
 <div class="bar">
@@ -333,7 +333,7 @@ function museReason(prompt){
 function buildWebsiteCode(topic){
  let title=topic.replace(/make a website for|create a website for|website for|make website|build website/gi,'').trim()||'My Business';
  title=title.charAt(0).toUpperCase()+title.slice(1);
- return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>"+title+"</title><style>body{margin:0;font-family:sans-serif;background:#fff;color:#1a5cff;text-align:center}header{background:#1a5cff;color:#fff;padding:40px 20px}h1{font-size:32px;margin:0}.btn{display:inline-block;background:#fff;color:#1a5cff;padding:14px 28px;border-radius:28px;font-weight:900;text-decoration:none;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}}.card{background:#eef2ff;color:#1a5cff;border-radius:18px;padding:20px;border:2px solid #1a5cff}footer{padding:20px}</style></head><body><header><h1>"+title+"</h1><p>Welcome to "+title+" - Quality, Trust, forego</p><a class=\"btn\" href=\"https://wa.me/27600000000\">WhatsApp Us</a></header><div class=\"grid\"><div class=\"card\"><h3>Services</h3><p>Best quality, best price.</p></div><div class=\"card\"><h3>Prices</h3><p>From R150 - Ask for price list.</p></div><div class=\"card\"><h3>Find Us</h3><p>Soweto, Gauteng - Open Mon-Sun</p></div></div><footer>Built with FORANEO_AI</footer></body></html>";
+ return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>"+title+"</title><style>body{margin:0;font-family:sans-serif;background:#FFFFFF;color:#1A5CFF;text-align:center}header{background:#1A5CFF;color:#FFFFFF;padding:40px 20px}h1{font-size:32px;margin:0}.btn{display:inline-block;background:#FFFFFF;color:#1A5CFF;padding:14px 28px;border-radius:28px;font-weight:900;text-decoration:none;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}}.card{background:#FFFFFF;color:#1A5CFF;border-radius:18px;padding:20px;border:2px solid #1A5CFF}footer{padding:20px}</style></head><body><header><h1>"+title+"</h1><p>Welcome to "+title+" - Quality, Trust, forego</p><a class=\"btn\" href=\"https://wa.me/27600000000\">WhatsApp Us</a></header><div class=\"grid\"><div class=\"card\"><h3>Services</h3><p>Best quality, best price.</p></div><div class=\"card\"><h3>Prices</h3><p>From R150 - Ask for price list.</p></div><div class=\"card\"><h3>Find Us</h3><p>Soweto, Gauteng - Open Mon-Sun</p></div></div><footer>Built with FORANEO_AI</footer></body></html>";
 }
 function getVideoFor(keyword){
  let k=(keyword||'').toLowerCase();
@@ -569,4 +569,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
- </html>
+</html>
