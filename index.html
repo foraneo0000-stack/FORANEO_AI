@@ -32,8 +32,7 @@
 #aiLive{width:100%;height:48%;border-radius:22px;background:radial-gradient(circle at 50% 30%,#1a5cff,#0a34a3);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;position:relative;overflow:hidden}
 #aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 0 30px rgba(255,255,255,0.4)}
 .live-badge{position:absolute;top:12px;left:12px;background:#ff2a2a;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px}
-@keyframes speak{0%{transform:scale(1)}25%{transform:scale(1.2)}50%{transform:scale(0.95)}75%{transform:scale(1.1)}100%{transform:scale(1)}}
-.wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}.wave span:nth-child(2){animation-delay:0.1s}.wave span:nth-child(3){animation-delay:0.2s}.wave span:nth-child(4){animation-delay:0.3s}@keyframes wave{0%,100%{height:12px}50%{height:32px}}
+.wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}
 .callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px}
 #authModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;align-items:center;justify-content:center;padding:18px}
 #authBox{background:#fff;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
@@ -45,7 +44,7 @@
 <body>
 <div class="header">
 <div class="headerTop">
-<div class="logoBox"><div class="logo"><img src="Foraneo%20Globe%20Logo.png" onerror="this.src='Foraneo Globe Logo.png'"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
+<div class="logoBox"><div class="logo"><img src="Foraneo%20Globe%20Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
 <button class="signBtn" id="signBtn">👤 Sign up / Log in</button>
 </div>
 <h1>FORANEO_AI</h1><p>Foraneo Net Department • CEO: KARABO • forego</p>
@@ -63,21 +62,12 @@
 <div id="chat"></div>
 <div id="callBox">
 <video id="cam" autoplay playsinline muted></video>
-<div id="aiLive">
-<div class="live-badge">● LIVE</div>
-<div id="aiAvatar">🤖</div>
-<div id="aiStatus" style="margin-top:12px;font-size:15px">FORANEO_AI LIVE</div>
-<div class="wave" id="wave"><span></span><span></span><span></span><span></span></div>
-</div>
-<div class="callControls">
-<button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button>
-<button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button>
-<button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button>
-</div>
-<div style="text-align:center;color:#fff;padding-bottom:8px;font-size:13px" id="callText">Live...</div>
+<div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px">FORANEO_AI LIVE</div><div class="wave" id="wave"><span></span><span></span><span></span><span></span></div></div>
+<div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div>
+<div style="text-align:center;color:#fff" id="callText">Live...</div>
 </div>
 <div id="authModal"><div id="authBox">
-<div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo%20Globe%20Logo.png" onerror="this.src='Foraneo Globe Logo.png'"></div>
+<div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo%20Globe%20Logo.png"></div>
 <h3>Welcome to FORANEO_AI</h3><p>Sign up to save chats</p>
 <button class="gBtn" id="googleBtn">Continue with Google</button>
 <div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;opacity:.5"><div style="flex:1;height:1px;background:#e6ebff"></div>or<div style="flex:1;height:1px;background:#e6ebff"></div></div>
@@ -101,15 +91,30 @@
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
-setInterval(()=>{
- document.querySelectorAll('div').forEach(d=>{
-  let t=(d.innerText||'');
-  if((t.includes('Low Balance') || t.includes('puter.com requires a funding source')) && d.offsetHeight>200){
-   let s=window.getComputedStyle(d);
-   if(s.position==='fixed') d.style.display='none';
-  }
- });
-},600);
+// KILL POPUP - SUPER STRONG
+(function(){
+ const kill=()=>{
+  document.querySelectorAll('*').forEach(el=>{
+   if(!el.innerText) return;
+   let t=el.innerText.toLowerCase();
+   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")){
+    let p=el;
+    for(let i=0;i<6;i++){
+     if(!p) break;
+     let s=getComputedStyle(p);
+     if(s.position==='fixed'||parseInt(s.zIndex)>1000||p.getAttribute('role')==='dialog'){
+      p.remove();
+      document.body.style.overflow='auto';
+      break;
+     }
+     p=p.parentElement;
+    }
+   }
+  });
+ };
+ new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});
+ setInterval(kill,150);
+})();
 
 let lastImg=null,lastAns='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
@@ -142,13 +147,8 @@ let avatar=document.getElementById('aiAvatar');
 if(withVideo){
 camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%';
 document.getElementById('seeMeBtn').style.display='block';
-avatar.innerHTML='🤖'; avatar.style.fontSize='60px'; avatar.style.animation='speak 0.8s infinite alternate';
-document.getElementById('callText').innerText='Video LIVE: YOU top + AI bottom. Tap See Me + Talk!';
 }else{
-camEl.style.display='none'; aiLiveEl.style.height='85%';
-document.getElementById('seeMeBtn').style.display='none';
-avatar.innerHTML='🎤'; avatar.style.animation='none';
-document.getElementById('callText').innerText='Voice Call: No video, only listening + responding';
+camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none';
 }
 document.getElementById('callBox').style.display='flex';
 addBubble('ai', withVideo ? 'Video LIVE started!' : 'Voice call started!');
@@ -179,25 +179,21 @@ let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0);
 let dataUrl=canvas.toDataURL('image/jpeg',0.8);
 document.getElementById('callText').innerText='Analyzing...';
 addBubble('user','👁️ See Me', dataUrl);
-addBubble('ai','👁️ I see you live CEO KARABO! You look great on cam!');
+addBubble('ai','👁️ I see you live CEO KARABO!');
 document.getElementById('callText').innerText='Described!';
 }catch(e){addBubble('ai','Capture error');}
 }
 async function freeChatAI(prompt){
 try{
-let cleanPrompt = prompt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
-cleanPrompt = cleanPrompt.replace(/You are FORANEO_AI[\s\S]*?Be helpful\./gi,'').trim();
-if(cleanPrompt.length<2) cleanPrompt = prompt;
-let resp = await fetch('https://text.pollinations.ai/' + encodeURIComponent(cleanPrompt));
-let txt = await resp.text();
-txt = txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
-txt = txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
-txt = txt.replace(/^You are FORANEO_AI.*/gi,'').trim();
+let clean=prompt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
+if(clean.length<2) clean=prompt;
+let resp=await fetch('https://text.pollinations.ai/'+encodeURIComponent(clean));
+let txt=await resp.text();
+txt=txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
+txt=txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
 if(!txt) throw new Error('empty');
 return txt;
-}catch(e){
-return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI, ready!";
-}
+}catch(e){return "WHAT'S UP CEO? You said: "+prompt+" - I'm here!";}
 }
 async function getAIReply(text){
 try{
@@ -205,9 +201,7 @@ let res=await puter.ai.chat([{role:'user',content:text}],{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
 if(!out) throw new Error('empty');
 return out;
-}catch(e){
-return await freeChatAI(text);
-}
+}catch(e){return await freeChatAI(text);}
 }
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
@@ -226,8 +220,7 @@ Motto: forego
 Focus: Tech, AI, Training and Education
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI Product: FORANEO_AI
-Chats stay until you press Clear Chats manually.`);}
+AI Product: FORANEO_AI`);}
 function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals');}
 function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create websites, Debug code');}
 function focusInput(){inp.focus();}
@@ -300,6 +293,18 @@ for(let t of triggers){if(l.includes(t)) isGen=true;}
 if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw ')) isGen=true;
 let blocks=['in the image','in this image','the image is','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGen=false;}
+// IMAGE UPLOAD FIX - show image even if free mode can't see
+if(lastImg && !isGen && (l.includes('describe')||l.includes('image')||l.includes('this')||l.includes('see')||l.includes('what')||raw.length<30)){
+ try{
+  let res=await puter.ai.chat([{role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]}],{model:'gpt-4o-mini'});
+  let out=(res.message?.content||res.content||'').toString().trim();
+  if(out){typing.remove();addBubble('ai',out);if(isVoice) speakText(out);return;}
+ }catch(e){
+  typing.remove();
+  addBubble('ai',"I see your image CEO KARABO! You uploaded: "+(fileEl.files[0]?.name||'image')+". Tell me what you want to know about it and I'll help!", lastImg);
+  return;
+ }
+}
 if(isGen){
 let p=raw.replace(/generate|create|draw|make|please/gi,'').trim(); 
 if(p.length<3) p=raw;
@@ -329,4 +334,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
-</html>
+ </html>
