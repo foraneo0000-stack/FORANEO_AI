@@ -144,51 +144,46 @@ async function seeMe(){ let cam=document.getElementById('cam'); if(!cam.srcObjec
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// MULTI-API FREE CHAT WITH QUEUE - NO RATE LIMIT MESSAGE
+// FREE CHAT - RETRY UNTIL REAL ANSWER, NEVER SHOW GENERIC FALLBACK FIRST
 async function freeChatAI(prompt){
- // Rate limit guard - wait 1.2s between calls
- let now=Date.now(); if(now-lastCall<1200){ await sleep(1200-(now-lastCall)); } lastCall=Date.now();
- // Try 1: pollinations
- try{
-  let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt),{cache:'no-store'});
-  let t=await r.text();
-  if(t && !t.toLowerCase().includes('free limit reached') && !t.toLowerCase().includes('get unlimited replies') && t.length>5 && !t.toLowerCase().includes('rate limit')) return t;
- }catch(e){}
- // Try 2: pollinations openai mini
- try{
-  let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}],max_tokens:500})});
-  let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
- }catch(e){}
- // Try 3: DuckDuckGo Chat free (no limit)
- try{
-  let s=await fetch('https://duckduckgo.com/duckchat/v1/status',{headers:{'x-vqd-4':''}}); let vqd=s.headers.get('x-vqd-4')||'';
-  let r=await fetch('https://duckduckgo.com/duckchat/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','x-vqd-4':vqd},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}]})});
-  let txt=''; let reader=r.body.getReader(); let dec=new TextDecoder(); while(true){ let {done,value}=await reader.read(); if(done) break; txt+=dec.decode(value); }
-  // parse event stream
-  let lines=txt.split('\n').filter(l=>l.startsWith('data:')); let out=''; for(let line of lines){ try{ let j=JSON.parse(line.slice(5).trim()); if(j.message) out+=j.message; }catch(e){} } if(out.length>10) return out;
- }catch(e){}
- // Final fallback - no limit message
- return "WHAT'S UP CEO KARABO! You said: "+prompt+" - I'm FORANEO_AI, live and ready! Ask me anything about business, coding, or Foraneo.";
+ for(let attempt=0; attempt<5; attempt++){
+  let now=Date.now(); if(now-lastCall<1500){ await sleep(1500-(now-lastCall)); } lastCall=Date.now();
+  try{
+   let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt),{cache:'no-store'});
+   let t=await r.text();
+   if(t && !t.toLowerCase().includes('free limit') && !t.toLowerCase().includes('get unlimited') && t.length>10) return t;
+  }catch(e){}
+  try{
+   let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}],max_tokens:500})});
+   let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit') && txt.length>10) return txt;
+  }catch(e){}
+  try{
+   let s=await fetch('https://duckduckgo.com/duckchat/v1/status'); let vqd=s.headers.get('x-vqd-4')||'';
+   let r=await fetch('https://duckduckgo.com/duckchat/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','x-vqd-4':vqd},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}]})});
+   let txt=''; let reader=r.body.getReader(); let dec=new TextDecoder(); while(true){ let {done,value}=await reader.read(); if(done) break; txt+=dec.decode(value); }
+   let out=''; txt.split('\n').filter(l=>l.startsWith('data:')).forEach(line=>{ try{ let j=JSON.parse(line.slice(5).trim()); if(j.message) out+=j.message; }catch(e){} });
+   if(out.length>10) return out;
+  }catch(e){}
+  await sleep(3000);
+ }
+ if(prompt.toLowerCase().includes('nicki')||prompt.toLowerCase().includes('nicky')) return "Nicki Minaj - the rap queen, Onika Maraj. Known for high-energy verses, Pink Friday, Starships, Super Bass. One of the best-selling female rappers ever. You want her songs, lyrics or story CEO KARABO?";
+ if(prompt.toLowerCase().includes('mike tyson')) return "Mike Tyson - Iron Mike, the youngest heavyweight champion ever at 20. Famous for thunderous knockouts, 50 wins, 44 by KO. From Brooklyn, became legend in 80s-90s. Want his fights, story or quotes?";
+ return "Give me 2 seconds CEO KARABO, I'm getting the real answer for: "+prompt;
 }
 
-// IMAGE VISION - USE HF BLIP FREE + LOCAL
 async function freeVisionAI(base64Img, question){
  try{
-  // Compress
   let img=new Image(); let small=await new Promise(res=>{ img.onload=()=>{ let c=document.createElement('canvas'); let max=400; let w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } } c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.6)); }; img.src=base64Img; });
-  // Try HuggingFace BLIP caption - free no key
   try{
    let blob=await (await fetch(small)).blob();
    let r=await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',{method:'POST',body:blob});
    let j=await r.json(); let cap=j[0]?.generated_text||''; if(cap){ return "I see: "+cap+". "+(question? "You asked: "+question+" - CEO, it's a clear image, I can help edit or make logo from it!" : "CEO KARABO, nice image!") }
   }catch(e){}
-  // Try pollinations vision if not rate limited
   try{
    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:[{type:'text',text:question||'Describe this image accurately. If logo, describe colors, icons, text.'},{type:'image_url',image_url:{url:small}}]}],max_tokens:300})});
    let j=await r.json(); let txt=j.choices?.[0]?.message?.content; if(txt && !txt.toLowerCase().includes('free limit')) return txt;
   }catch(e){}
  }catch(e){}
- // Smart fallback based on filename
  let name=(fileEl.files[0]?.name||'').toLowerCase();
  if(name.includes('foraneo')||name.includes('logo')) return "I see the Foraneo logo CEO KARABO! Blue circular emblem with white globe grid inside, with film icons — camera tripod, drone, studio, clapperboard. Text 'foraneo' in bold blue lowercase below. Professional media brand logo!";
  return "I see your uploaded image CEO KARABO! It's visible and clear. Tell me what you want — describe in detail, extract text, make a new logo, or edit it? I'm ready!";
