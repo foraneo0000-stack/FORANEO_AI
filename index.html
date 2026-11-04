@@ -301,15 +301,16 @@ let p=raw.replace(/generate|create|draw|make|please/gi,'').trim();
 if(p.length<3) p=raw;
 p = p + ', high quality photo';
 typing.innerHTML='FORANEO_AI: Generating FREE...';
-let img = null;
 try{
-  img = await puter.ai.txt2img(p, {test_mode:true});
+  let img = await puter.ai.txt2img(p, {test_mode:true});
   typing.remove();
-  addBubble('ai','Generated: '+raw+' (FREE mode - 0 credits)', img.src||img);
+  addBubble('ai','Generated: '+raw+' (FREE)', img.src||img);
   return;
 }catch(e){
+  console.log('Puter failed, using Pollinations FREE', e);
+  let freeUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=1024&height=1024&nologo=true&seed=' + Date.now();
   typing.remove();
-  addBubble('ai','Image error: '+e.message);
+  addBubble('ai','Generated: '+raw+' (FREE Backup - 0 credits)', freeUrl);
   return;
 }
 }
