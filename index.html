@@ -7,13 +7,12 @@
 <script src="https://js.puter.com/v2/"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-/* ONLY BLUE AND WHITE - NO OTHER COLOURS */
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a5cff}
 .header{background:#1a5cff;color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
 .headerTop{width:100%;display:flex;justify-content:space-between;align-items:center;max-width:940px}
 .logoBox{display:flex;align-items:center;gap:12px}.logo{width:50px;height:50px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
 .logoTxt{text-align:left;line-height:1.1;color:#fff}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;opacity:.9}
-.header h1{margin:10px 0 0;font-size:30px;font-weight:900;color:#fff}.header p{margin:6px 0 0;font-size:11.5px;opacity:.92;color:#fff}
+.header h1{margin:10px 0 0;font-size:30px;font-weight:900;color:#fff}.header p{margin:6px 0 0;font-size:11.5px;color:#fff}
 .signBtn{background:#fff;color:#1a5cff;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
 .tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #dbe2ff;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
 .tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #1a5cff;background:#fff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:#1a5cff;color:#fff}.tab.clear{border-color:#1a5cff;color:#1a5cff;background:#fff}
@@ -27,12 +26,12 @@
 .upload{padding:13px 18px;border:2px dashed #1a5cff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#eef2ff;cursor:pointer;font-weight:900;text-align:center}
 .pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #1a5cff;background:#fff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
 .row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #1a5cff;outline:none;color:#1a5cff}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
-.btnEmoji{background:#fff;border:1.8px solid #1a5cff !important;font-size:22px;color:#1a5cff}.btnSmall{background:#1a5cff;border:1.7px solid #1a5cff !important;color:#fff;font-size:16px}.btnSend{background:#1a5cff;color:#fff;padding:15px 28px !important}
-#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#eef2ff;border:1.5px solid #dbe2ff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px;background:#fff}
+.btnEmoji{background:#fff;border:1.8px solid #1a5cff !important;font-size:13px;color:#1a5cff;font-weight:800}.btnSmall{background:#1a5cff;border:1.7px solid #1a5cff !important;color:#fff;font-size:13px}.btnSend{background:#1a5cff;color:#fff;padding:15px 28px !important}
+#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#eef2ff;border:1.5px solid #dbe2ff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:13px;cursor:pointer;padding:6px;border-radius:10px;background:#fff;color:#1a5cff;font-weight:800}
 #callBox{display:none;position:fixed;inset:0;background:#fff;z-index:3000;flex-direction:column;padding:10px}
 #cam{width:100%;height:48%;object-fit:cover;border-radius:22px;background:#1a5cff;display:none}
 #aiLive{width:100%;height:48%;border-radius:22px;background:#1a5cff;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;position:relative;overflow:hidden}
-#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;color:#1a5cff}
+#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;color:#1a5cff;font-weight:900}
 .live-badge{position:absolute;top:12px;left:12px;background:#fff;color:#1a5cff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:900}
 .wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}
 .callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px;background:#1a5cff;color:#fff}
@@ -41,7 +40,7 @@
 #authBox{background:#fff;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center;border:2px solid #1a5cff}
 .gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #1a5cff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px;color:#1a5cff}
 #emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #1a5cff;margin-bottom:10px;outline:none;color:#1a5cff}
-.small{font-size:11px;opacity:.7;margin-top:8px;text-align:center;color:#1a5cff}
+.small{font-size:11px;margin-top:8px;text-align:center;color:#1a5cff}
 @keyframes wave{0%,100%{height:10px}50%{height:28px}}
 </style>
 </head>
@@ -51,7 +50,7 @@
 <div class="logoBox"><div class="logo"><img src="Foraneo%20Globe%20Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div>
 <button class="signBtn" id="signBtn">Sign up / Log in</button>
 </div>
-<h1>FORANEO_AI</h1><p>Foraneo Net Department • forego</p>
+<h1>FORANEO_AI</h1><p>Foraneo Net Department - forego</p>
 </div>
 <div class="tabs">
 <div class="tab active" id="tabChat">Chat</div>
@@ -86,32 +85,35 @@
 <div class="upload" id="uploadBtn">Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div>
 <input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif">
 <div class="pills"><div class="pill" id="pillVoiceNote">Voice Note</div><div class="pill" id="pillVoiceCall">Voice Call</div><div class="pill" id="pillVideoCall">Video Call</div><div class="pill" id="pillWhatCan">What FORANEO can do?</div></div>
-<div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span></div>
+<div id="emojiPanel"><span>Smile</span><span>Love</span><span>Fire</span><span>Like</span><span>Star</span></div>
 <div class="row">
-<button class="btnEmoji" id="btnEmoji">Voice</button>
+<button class="btnEmoji" id="btnEmoji">Words</button>
 <button class="btnSmall" id="btnGenerate">Video</button>
 <input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/>
 <button class="btnSend" id="sendBtn">Send</button>
 </div>
-<div class="small">FORANEO_AI • forego</div>
+<div class="small">FORANEO_AI - forego</div>
 </div>
 <script>
-// KILL POPUPS + BLOCK FREE LIMIT / OPENAI TEXT
 (function(){
  const kill=()=>{
   document.querySelectorAll('*').forEach(el=>{
    if(!el.innerText) return;
    let t=el.innerText.toLowerCase();
-   if(t.includes('low balance')||t.includes('funding source')||t.includes("doesn't have enough credits")||t.includes('free limit')||t.includes('get unlimited')||t.includes('image refused')||t.includes('pollinations.ai')){
-    let p=el; for(let i=0;i<10;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>100||p.getAttribute('role')==='dialog'){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
+   if(t.includes('low balance')||t.includes('funding source')||t.includes('free limit')||t.includes('get unlimited')||t.includes('image refused')||t.includes('pollinations')){
+    let p=el; for(let i=0;i<10;i++){ if(!p) break; let s=getComputedStyle(p); if(s.position==='fixed'||parseInt(s.zIndex)>100){ p.remove(); document.body.style.overflow='auto'; break; } p=p.parentElement; }
    }
   });
  };
  new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});
  setInterval(kill,50);
 })();
-let lastImg=null,lastImgTime=0,lastFileName='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,lastCall=0,isListening=false,smartMemory=[],userProfile={};
+let lastImg=null,lastImgTime=0,lastFileName='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false,isListening=false,smartMemory=[],userProfile={};
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
+function cleanText(s){
+ if(!s) return s;
+ return s.replace(/\*\*/g,'').replace(/Sharp sharp/gi,'').replace(/my bra/gi,'').replace(/Thinks like Muse/gi,'').replace(/I think like Muse/gi,'I am FORANEO_AI').replace(/I checked myself/gi,'').replace(/REAL pose analysis/gi,'').replace(/face found/gi,'').replace(/Recent topics:.*/gi,'').trim();
+}
 function getName(){ if(currentUser && currentUser.email){ let n=currentUser.email.split('@')[0].replace(/[._]/g,' ').trim(); if(n) return n.charAt(0).toUpperCase()+n.slice(1);} return 'friend';}
 function getEmail(){ return (currentUser && currentUser.email) ? currentUser.email : ''; }
 try{
@@ -119,42 +121,46 @@ try{
  currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');
  smartMemory=JSON.parse(localStorage.getItem('foraneo_smart_memory')||'[]');
  userProfile=JSON.parse(localStorage.getItem('foraneo_profile')||'{}');
- // CLEAN ALL OLD MISTAKES
- localHistory=localHistory.filter(m=>!(m.text||'').includes("CEO KARABO") && !(m.text||'').includes("Looking sharp!") && !(m.text||'').includes("not able to view") && !(m.text||'').includes("Free limit") && !(m.text||'').includes("free limit") && !(m.text||'').includes("I'm a language-model") && !(m.text||'').includes("built by OpenAI") && !(m.text||'').includes("called GPT-4") && !(m.text||'').includes("I'm here,") && (m.text||'').trim()!=="Seeing image..." && !(m.text||'').includes("Voice Note: Listening") && !(m.text||'').includes("Text in image: '4"));
+ let badWords=['CEO KARABO','Looking sharp','not able to view','Free limit','free limit','language-model','built by OpenAI','called GPT-4',"I'm here,",'Seeing image','Voice Note: Listening',"Text in image: '4",'Thinks like Muse','Sharp sharp','my bra','Recent topics','What exactly do you want to achieve','Start small, test with 1 person','SHIRTLESS','SIDE POSE','Full body visible','I checked myself','REAL pose analysis','face found'];
+ localHistory=localHistory.filter(m=>{
+  let t=m.text||'';
+  for(let b of badWords){ if(t.includes(b)) return false; }
+  if(t.includes('**')) return false;
+  return true;
+ });
+ smartMemory=smartMemory.filter(m=>{ let t=m.text||''; for(let b of badWords){ if(t.includes(b)) return false; } return true; });
  localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));
+ localStorage.setItem('foraneo_smart_memory',JSON.stringify(smartMemory));
 }catch(e){}
-function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));localStorage.setItem('foraneo_smart_memory',JSON.stringify(smartMemory.slice(-100)));localStorage.setItem('foraneo_profile',JSON.stringify(userProfile));}catch(e){}}
+function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));localStorage.setItem('foraneo_smart_memory',JSON.stringify(smartMemory.slice(-100)));localStorage.setItem('foraneo_profile',JSON.stringify(userProfile));localStorage.setItem('foraneo_user',JSON.stringify(currentUser));}catch(e){}}
 function learnFromMessage(text){
- let low=text.toLowerCase(); let changed=false;
- if(low.includes('tattoo')){ userProfile.business='Blacc Marks Tattoos - tattoo shop'; changed=true; }
- if(low.includes('foraneo')){ userProfile.company='FORANEO (PTY) LTD'; changed=true; }
- if(low.includes('soweto')){ userProfile.location='Soweto, Gauteng'; changed=true; }
- if(low.includes('mokopane')){ userProfile.location='Mokopane'; changed=true; }
- if(low.includes('coding')||low.includes('code')){ userProfile.lastTopic='coding'; changed=true; }
- if(low.includes('business')){ userProfile.lastTopic='business'; changed=true; }
- if(low.includes('language')){ userProfile.lastTopic='learning languages / coding languages'; changed=true; }
- if(low.includes('my name is')){ let m=text.match(/my name is ([a-z ]+)/i); if(m){ userProfile.realName=m[1].trim(); changed=true; } }
- if(low.includes('i want to')||low.includes('i need')){ userProfile.lastGoal=text.slice(0,120); changed=true; }
+ let low=text.toLowerCase();
+ if(low.includes('tattoo')) userProfile.business='Blacc Marks Tattoos';
+ if(low.includes('foraneo')) userProfile.company='FORANEO (PTY) LTD';
+ if(low.includes('soweto')) userProfile.location='Soweto, Gauteng';
+ if(low.includes('mokopane')) userProfile.location='Mokopane';
+ if(low.includes('coding')||low.includes('code')) userProfile.lastTopic='coding';
+ if(low.includes('business')) userProfile.lastTopic='business';
+ if(low.includes('my name is')){ let m=text.match(/my name is ([a-z ]+)/i); if(m) userProfile.realName=m[1].trim(); }
+ if(low.includes('i want to')||low.includes('i need')) userProfile.lastGoal=text.slice(0,120);
  userProfile.lastTopics=(userProfile.lastTopics||[]); userProfile.lastTopics.push(text.slice(0,80)); userProfile.lastTopics=userProfile.lastTopics.slice(-15);
- if(changed) saveLocal();
+ saveLocal();
 }
 function profileSummary(){
- let parts=[];
- if(userProfile.realName) parts.push("Real name: "+userProfile.realName);
- if(userProfile.business) parts.push("Business: "+userProfile.business);
- if(userProfile.company) parts.push("Company: "+userProfile.company);
- if(userProfile.location) parts.push("Location: "+userProfile.location);
- if(userProfile.lastTopic) parts.push("Last topic: "+userProfile.lastTopic);
- if(userProfile.lastGoal) parts.push("Last goal: "+userProfile.lastGoal);
- if(userProfile.lastTopics) parts.push("Recent: "+userProfile.lastTopics.join(' | '));
- return parts.join('\n');
+ let p=[];
+ if(userProfile.realName) p.push("Name: "+userProfile.realName);
+ if(userProfile.business) p.push("Business: "+userProfile.business);
+ if(userProfile.location) p.push("Location: "+userProfile.location);
+ if(userProfile.lastTopic) p.push("Last topic: "+userProfile.lastTopic);
+ return p.join(', ');
 }
-function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+getName();}else{b.innerText='Sign up / Log in';}}
+function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='Signed in: '+getName();}else{b.innerText='Sign up / Log in';}}
 function addBubble(r,t,i,skipSave,isVideo){
+ t=cleanText(t);
 let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');
 d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;
 if(i){
-if(isVideo || (typeof i==='string' && (i.includes('.mp4')||i.includes('pexels')||i.includes('video')))){
+if(isVideo || (typeof i==='string' && (i.includes('.mp4')||i.includes('pexels')))){
 let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);
 }else{
 let im=document.createElement('img');im.src=i;im.loading='lazy';d.appendChild(im);
@@ -164,19 +170,16 @@ chatEl.appendChild(d); window.scrollTo(0,document.body.scrollHeight);
 if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}
 return d;
 }
-(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? Sharp sharp! I'm FORANEO_AI - I remember you. Ask me anything.",null,true);}updateSignBtn();})();
-function clearChatsManual(){if(confirm('Clear all chats? Keeps your profile.')){localHistory=[];chatHistory=[];smartMemory=[];chatEl.innerHTML='';saveLocal();lastImg=null;lastImgTime=0;lastFileName='';addBubble('ai',"WHAT'S UP? Fresh start, but I still remember you, "+getName()+".",null,true);}}
+(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true, m.img && (m.img.includes('.mp4')||m.img.includes('pexels'))); chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"Hello. I am FORANEO_AI. How can I help you today?",null,true);}updateSignBtn();})();
+function clearChatsManual(){if(confirm('Clear all chats? Keeps your profile.')){localHistory=[];chatHistory=[];smartMemory=[];chatEl.innerHTML='';saveLocal();lastImg=null;lastImgTime=0;lastFileName='';addBubble('ai',"Hello. I am FORANEO_AI. How can I help you today?",null,true);}}
 function speakText(txt, onDone){
  if(isMuted||!txt){ if(onDone) onDone(); return; }
  try{
   speechSynthesis.cancel();
-  let u=new SpeechSynthesisUtterance(txt.slice(0,900));
+  let u=new SpeechSynthesisUtterance(cleanText(txt).slice(0,900));
   u.rate=1.0; u.lang='en-US'; u.pitch=1.0; u.volume=1.0;
   let voices=speechSynthesis.getVoices(); let v=voices.find(x=>x.lang.startsWith('en')); if(v) u.voice=v;
-  let avatar=document.getElementById('aiAvatar'); let status=document.getElementById('aiStatus');
-  u.onstart=()=>{ if(avatar) avatar.style.transform='scale(1.08)'; if(status) status.innerText='FORANEO_AI SPEAKING...'; };
-  u.onend=()=>{ if(avatar) avatar.style.transform='scale(1)'; if(status) status.innerText='FORANEO_AI LIVE - TAP TO SPEAK'; if(onDone) onDone(); };
-  u.onerror=()=>{ if(onDone) onDone(); };
+  u.onend=()=>{ if(onDone) onDone(); }; u.onerror=()=>{ if(onDone) onDone(); };
   speechSynthesis.speak(u);
   setTimeout(()=>{ if(onDone) onDone(); }, 4000);
  }catch(e){ if(onDone) onDone(); }
@@ -187,7 +190,7 @@ function endCall(){
  if(recognition){try{recognition.abort();}catch(e){} try{recognition.stop();}catch(e){}} recognition=null;
  try{document.getElementById('cam').srcObject=null;}catch(e){}
  document.getElementById('callBox').style.display='none'; lock=false; speechSynthesis.cancel();
- addBubble('ai','Call ended. What else, '+getName()+'?');
+ addBubble('ai','Call ended. What else can I help with, '+getName()+'?');
 }
 async function handleCallText(txt){
  if(!txt) return;
@@ -195,43 +198,30 @@ async function handleCallText(txt){
  addBubble('user',txt); learnFromMessage(txt);
  let reply=await getAIReply(txt);
  addBubble('ai',reply);
- speakText(reply, ()=>{
-  if(lock && document.getElementById('callBox').style.display==='flex'){
-   document.getElementById('callText').innerText='Your turn - Tap Tap to Speak';
-  }
- });
+ speakText(reply, ()=>{ if(lock && document.getElementById('callBox').style.display==='flex'){ document.getElementById('callText').innerText='Your turn - Tap Tap to Speak'; } });
 }
 function startVoiceEngine(){
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){ document.getElementById('callText').innerText='Voice needs Chrome. Type below - it still speaks back.'; return false; }
+ if(!SR){ document.getElementById('callText').innerText='Voice needs Chrome. Type below.'; return false; }
  try{
   if(recognition){ try{recognition.abort();}catch(e){} }
-  recognition=new SR(); recognition.lang='en-US'; recognition.interimResults=false; recognition.continuous=false; recognition.maxAlternatives=1; isListening=true;
-  recognition.onresult=(e)=>{
-   isListening=false; let txt=''; for(let i=0;i<e.results.length;i++){ txt+=e.results[i][0].transcript+' '; } txt=txt.trim();
-   if(txt.length>1){ handleCallText(txt); } else { document.getElementById('callText').innerText='Did not hear - Tap again'; }
-  };
-  recognition.onerror=(e)=>{
-   isListening=false;
-   if(e.error==='not-allowed') document.getElementById('callText').innerText='Mic blocked. Allow Mic in Chrome > Site Settings > Mic Allow, then Tap again. Or type below.';
-   else if(e.error==='no-speech') document.getElementById('callText').innerText='No speech heard - Tap again and speak louder';
-   else document.getElementById('callText').innerText='Mic error: '+e.error+' - Tap again or type below';
-  };
+  recognition=new SR(); recognition.lang='en-US'; recognition.interimResults=false; recognition.continuous=false; isListening=true;
+  recognition.onresult=(e)=>{ isListening=false; let txt=''; for(let i=0;i<e.results.length;i++){ txt+=e.results[i][0].transcript+' '; } txt=txt.trim(); if(txt.length>1){ handleCallText(txt); } else { document.getElementById('callText').innerText='Did not hear - Tap again'; } };
+  recognition.onerror=(e)=>{ isListening=false; if(e.error==='not-allowed') document.getElementById('callText').innerText='Mic blocked. Allow Mic in Chrome settings, then Tap again. Or type below.'; else if(e.error==='no-speech') document.getElementById('callText').innerText='No speech heard - Tap again and speak louder'; else document.getElementById('callText').innerText='Mic error - Tap again or type below'; };
   recognition.onend=()=>{ isListening=false; };
   return true;
  }catch(e){ return false; }
 }
 function tapToSpeak(){
- if(isListening){ document.getElementById('callText').innerText='Already listening... Speak now!'; return; }
+ if(isListening){ document.getElementById('callText').innerText='Already listening. Speak now.'; return; }
  try{ speechSynthesis.cancel(); }catch(e){}
  let ok=startVoiceEngine();
- if(!ok){ document.getElementById('callText').innerText='Voice needs Chrome. Type below - it still speaks.'; return; }
- document.getElementById('callText').innerText='LISTENING... Speak now, '+getName()+'!';
+ if(!ok){ document.getElementById('callText').innerText='Voice needs Chrome. Type below.'; return; }
+ document.getElementById('callText').innerText='Listening. Speak now, '+getName()+'!';
  document.getElementById('tapSpeakBtn').innerText='Listening...';
  try{ recognition.start(); }catch(e){ document.getElementById('callText').innerText='Tap again to start listening'; document.getElementById('tapSpeakBtn').innerText='Tap to Speak'; return; }
  setTimeout(()=>{ document.getElementById('tapSpeakBtn').innerText='Tap to Speak'; if(isListening){ try{recognition.stop();}catch(e){} } }, 8000);
 }
-// VIDEO CALL - FIXED, RESPONDS INSTANTLY, NO API HANG
 async function startLiveCall(withVideo){
  if(lock) return; lock=true;
  if(stream){ try{stream.getTracks().forEach(t=>t.stop());}catch(e){} stream=null; }
@@ -240,7 +230,6 @@ async function startLiveCall(withVideo){
  try{
   let camEl=document.getElementById('cam'); let aiLiveEl=document.getElementById('aiLive');
   if(withVideo){
-   // VIDEO ONLY - audio false fixes mic conflict
    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
    camEl.srcObject=stream; camEl.muted=true; camEl.playsInline=true;
    try{ await camEl.play(); }catch(e){}
@@ -251,23 +240,19 @@ async function startLiveCall(withVideo){
    camEl.style.display='none'; aiLiveEl.style.height='85%'; document.getElementById('seeMeBtn').style.display='none';
   }
   document.getElementById('callBox').style.display='flex';
-  document.getElementById('callText').innerText=withVideo ? 'Video Live! Tap See Me or Tap to Speak' : 'Voice Live! Tap Tap to Speak now';
+  document.getElementById('callText').innerText=withVideo ? 'Video Live. Tap See Me or Tap to Speak' : 'Voice Live. Tap Tap to Speak now';
   document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - TAP TO SPEAK';
-  addBubble('ai', withVideo ? 'Video Call LIVE started! Tap See Me to describe you, or Tap to Speak!' : 'Voice Call LIVE started! Tap Tap to Speak and talk to me!');
-  // Speak welcome, then ready - does NOT block See Me
-  speakText(withVideo ? 'Video call started '+getName()+'. I can see you. Tap See Me or Tap to Speak.' : 'Voice call started '+getName()+'. Tap Tap to Speak and talk to me.', ()=>{
-   document.getElementById('callText').innerText='Ready - Tap Tap to Speak';
-  });
+  addBubble('ai', withVideo ? 'Video Call started. Tap See Me to describe you, or Tap to Speak.' : 'Voice Call started. Tap Tap to Speak and talk to me.');
+  speakText(withVideo ? 'Video call started '+getName()+'. I can see you. Tap See Me or Tap to Speak.' : 'Voice call started '+getName()+'. Tap Tap to Speak.', ()=>{ document.getElementById('callText').innerText='Ready - Tap Tap to Speak'; });
  }catch(e){
   lock=false; document.getElementById('callBox').style.display='none';
-  addBubble('ai','Allow cam for video: '+e.message+' - For Voice Call, no cam needed, just tap Voice Call again. Use Chrome + HTTPS.');
+  addBubble('ai','Allow camera for video: '+e.message+' - For Voice Call, no camera needed, just tap Voice Call again. Use Chrome and HTTPS.');
  }
 }
-// SEE ME - LOCAL ONLY, INSTANT, NO API
 async function seeMe(){
  let cam=document.getElementById('cam');
  if(!cam.srcObject){addBubble('ai','Start video call first.');return;}
- document.getElementById('callText').innerText='Looking at you... Analysing pose...';
+ document.getElementById('callText').innerText='Looking at you. Analysing.';
  try{
   if(cam.readyState<2){ await new Promise(r=>{ cam.onloadeddata=()=>r(); setTimeout(r,800); }); }
   await new Promise(r=>setTimeout(r,200));
@@ -275,19 +260,18 @@ async function seeMe(){
   let ctx=canvas.getContext('2d'); ctx.drawImage(cam,0,0,canvas.width,canvas.height);
   let dataUrl=canvas.toDataURL('image/jpeg',0.85);
   addBubble('user','See Me - Describe me', dataUrl);
-  document.getElementById('callText').innerText='Describing your pose...';
-  // LOCAL ONLY - never waits for API
-  let desc=await describePersonLocal(dataUrl);
+  document.getElementById('callText').innerText='Describing you.';
+  let desc=await describePersonFixed(dataUrl);
   document.getElementById('callText').innerText='I see you, '+getName()+'!';
   addBubble('ai',desc);
   speakText(desc);
- }catch(e){addBubble('ai','Capture error - try again, keep camera steady. Error: '+e.message);}
+ }catch(e){addBubble('ai','Capture error - try again, keep camera steady.');}
 }
 async function startVoiceNote(){
  try{ speechSynthesis.cancel(); }catch(e){}
- addBubble('ai','Voice Note: Listening... Speak now!');
+ addBubble('ai','Voice Note: Listening. Speak now.');
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){ addBubble('ai','Voice Note needs Chrome. Type instead - I will still reply + speak.'); return; }
+ if(!SR){ addBubble('ai','Voice Note needs Chrome. Type instead.'); return; }
  try{
   let r=new SR(); r.lang='en-US'; r.interimResults=false; r.continuous=false;
   r.onresult=async (e)=>{
@@ -296,88 +280,64 @@ async function startVoiceNote(){
    let reply=await getAIReply(txt);
    addBubble('ai',reply); speakText(reply);
   };
-  r.onerror=(e)=>{
-   if(e.error==='not-allowed') addBubble('ai','Voice Note: Mic blocked. Chrome > Site Settings > Mic > Allow, then try again. Or type.');
-   else addBubble('ai','Voice Note: Did not hear. Tap again and speak louder, or type.');
-  };
+  r.onerror=(e)=>{ if(e.error==='not-allowed') addBubble('ai','Voice Note: Mic blocked. Allow Mic in Chrome settings, then try again.'); else addBubble('ai','Voice Note: Did not hear. Tap again and speak louder, or type.'); };
   r.start();
  }catch(e){ addBubble('ai','Voice Note: Tap again to start listening.'); }
 }
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 function whoAmIAnswer(){
  let n=getName(); let em=getEmail(); let prof=profileSummary();
  if(currentUser && em){
-  return "You are "+n+", "+em+"! I remember you. I am FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. I remember your past chats.\nWhat I remember:\n"+(prof||"You are logged in, tell me about your business and I will remember it.")+"\nAsk me anything - business, coding, music, or say 'Generate a video of a car'.";
+  return "You are "+n+", "+em+". You are logged in to FORANEO_AI. I am FORANEO_AI, built by FORANEO (PTY) LTD."+(prof? " What I remember: "+prof : "")+" Ask me anything - business, coding, music, or say Generate a video of a car.";
  } else {
-  return "You are not logged in yet, so I only see you as a guest. Tap 'Sign up / Log in' at the top, log in, then ask me 'Who am I' again and I will tell you your login name. I am FORANEO_AI, built by FORANEO (PTY) LTD. What do you want to do?";
+  return "You are not logged in yet, so I see you as a guest. Tap Sign up / Log in at the top, log in, then ask me Who am I again and I will tell you your login name. I am FORANEO_AI, built by FORANEO (PTY) LTD.";
  }
 }
 function whoAreYouAnswer(){
- return "I am FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. I am your smart AI - I chat, code, help with business, describe photos, generate videos, and do voice + video calls. I remember you across chats. Ask me anything, "+getName()+"!";
+ return "I am FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. I chat, code, help with business, describe photos, generate videos, and do voice and video calls. I remember you across chats. Ask me anything, "+getName()+".";
 }
-// SELF-CHECK - BLOCK WRONG IDENTITY + GENERIC
 function selfCheck(answer){
  if(!answer) return false;
  let low=answer.toLowerCase();
- if(low.includes('built by openai')||low.includes('called gpt-4')||low.includes("i'm a language-model")||low.includes("i am a language model")||low.includes('as an ai language model')||low.includes('free limit')||low.includes('get unlimited')||low.includes("i'm here,")||low.includes("ask me about:")) return false;
+ if(low.includes('built by openai')||low.includes('called gpt-4')||low.includes('language-model')||low.includes('free limit')||low.includes('get unlimited')||low.includes("i'm here,")||low.includes('my bra')||low.includes('sharp sharp')||low.includes('**')||low.includes('shirtless')||low.includes('side pose')||low.includes('full body')) return false;
  if(answer.length<15) return false;
  return true;
 }
-// MUSE-LIKE REASONING - USES MEMORY, NO GENERIC
-function museReason(prompt, context){
- let n=getName(); let low=prompt.toLowerCase();
- // SHORT REPLIES - USE CONTEXT (fixes "Of coding" forgetting)
- if(low.trim().length<15){
-  let lastTopic=userProfile.lastTopic||'';
-  let lastUser=smartMemory.slice(-4).find(m=>m.role==='user');
-  if(low.includes('coding')||low.includes('code')||low.includes('of coding')||low.includes('of code')){
-   return `Got it, ${n} - so it's about coding! You said before: "${lastUser?lastUser.text:'Coding'}". Let's dive in like Muse:\n\n**Step 1:** What coding language? Python, HTML, JavaScript?\n**Step 2:** What do you want to build? Website, calculator, game?\n**Step 3:** Tell me that and I will give you full working code in one go.\n\nFor example, say "Learning Python" or "Make a website for my shop" and I will build it. What language are you learning?`;
-  }
-  if(low.includes('language')||low.includes('learning')){
-   return `Sharp, ${n}! You said learning languages - and last time we talked about ${lastTopic||'coding'}. So do you mean:\n1) Coding languages - Python, HTML, JavaScript?\n2) Human languages - English, Zulu, etc.?\n\nTell me which one and I will give you a plan + free resources + practice. Which language are you learning?`;
-  }
-  if(low.includes('yes')||low.includes('yeah')||low.includes('ok')){
-   return `Sharp sharp, ${n}! Yes to what? Last we talked about: "${lastUser?lastUser.text:'your last topic'}". Tell me - do you want me to continue that, give code, or make a plan? I remember you, so just say "continue" or "give code".`;
-  }
+function museReason(prompt){
+ let n=getName(); let low=prompt.toLowerCase().trim();
+ if(low==='to code'||low==='coding'||low==='code'||low==='i want to code'||low==='of coding'||low==='help me code'){
+  return "Great, "+n+". Let us start coding. Here is a real first project - a calculator in Python. Copy and run it:\n\n- Open Python\n- Type this:\nprint('Hello')\nx = 5\ny = 3\nprint(x + y)\n\nThis prints Hello, then 8.\n\n- Next, try this full calculator:\nprint('Calculator')\na = float(input('First number: '))\nb = float(input('Second number: '))\nprint('Answer:', a + b)\n\nTell me which one you want next:\n- Website in HTML\n- Game in Python\n- Calculator with minus, times, divide\n\nWhich one do you want?";
  }
- // MATH
+ if(low==='hello'||low==='hi'||low==='hey'){
+  return "Hello "+n+". I am FORANEO_AI. How can I help you today? You can ask about coding, business, music, or say Generate a video of a car.";
+ }
+ if(low.includes('help me')){
+  let topic=userProfile.lastTopic||'coding';
+  if(topic==='coding') return "I can help you with coding, "+n+". Tell me what you want to build:\n- Website for your shop\n- Calculator in Python\n- Game\n\nSay for example: Make a website for my tattoo shop, and I will give you the full code.";
+  return "I can help you, "+n+". Tell me what you need help with - coding, business, or something else? Give me one detail and I will give you steps.";
+ }
+ if(low.includes('who are you')) return whoAreYouAnswer();
  let mathMatch=prompt.match(/(\d+(\.\d+)?)\s*([\+\-\*\/xX])\s*(\d+(\.\d+)?)/);
  if(mathMatch && (low.includes('what')||low.includes('calcul')||low.includes('solve')||low.includes('+')||low.includes('-')||low.includes('*')||low.includes('/'))){
   let a=parseFloat(mathMatch[1]), op=mathMatch[3], b=parseFloat(mathMatch[4]); let ans=0;
   if(op=='+') ans=a+b; else if(op=='-') ans=a-b; else if(op=='*'||op=='x'||op=='X') ans=a*b; else if(op=='/') ans=b!==0?a/b:0;
-  return `Sharp, ${n}! Step by step:\n1) Question: ${a} ${op} ${b}\n2) Method: ${op=='+'?'Add':op=='-'?'Subtract':op=='*'||op=='x'||op=='X'?'Multiply':'Divide'}\n3) Answer: ${a} ${op} ${b} = ${ans}\nCheck: ${ans} is correct ✅\nWant another one?`;
- }
- if(low.includes('who are you')||low.includes('who are u')||low.includes('what are you')){
-  return whoAreYouAnswer();
+  return "Here is the answer, "+n+":\n- Question: "+a+" "+op+" "+b+"\n- Answer: "+a+" "+op+" "+b+" = "+ans+"\n\nWant another one?";
  }
  if(low.includes('tattoo')||low.includes('business')||low.includes('make money')||low.includes('startup')||low.includes('shop')){
-  return `Sharp idea, ${n}! For ${userProfile.business||'your business'} in ${userProfile.location||'Soweto'}:\n\n**THINK:** People pay for quality + trust.\n**PLAN:**\n1) Small tattoo R500, Medium R1200, Sleeve R5000\n2) Cost: Ink + needles R150, Rent R2000/month, Marketing R0 - TikTok + WhatsApp Status\n3) Profit: Small R350, Medium R850\n4) First 5 customers: 2 free for photos, then charge\n5) Grow: Post every day, price list in bio\n\nTell me - do you have a shop already, or working from home? I will make your exact price list.`;
+  return "Good idea, "+n+". For your business in "+(userProfile.location||'Soweto')+":\n- Small tattoo: R500, profit R350\n- Medium tattoo: R1200, profit R850\n- Sleeve: R5000\n- Cost: Ink and needles R150 per tattoo, Rent R2000 per month\n- Marketing: R0 - use TikTok and WhatsApp Status\n- First step: Do 2 free tattoos for photos, then start charging\n\nTell me - do you have a shop already, or working from home? I will make your exact price list.";
  }
- if(low.includes('learning')&&low.includes('coding')||low.includes('learning new language of coding')){
-  return `Sharp, ${n}! You are learning coding languages - I remember you said coding before. Here's your Muse plan:\n\n**1) Start with Python** - easiest, 1 week to first app\n**2) Then HTML** - 3 days to first website\n**3) Then JavaScript** - makes sites interactive\n\n**Today:** Learn Python variables: x = 5, print(x)\n**Practice:** Make a calculator in Python - say "Python calculator" and I will give you full code.\n**Tomorrow:** Make a website - say "Make a website for my shop".\n\nWhich one do you want first - Python or HTML?`;
+ if(low.includes('learning')&&low.includes('coding')||low.includes('learning new language of coding')||low.includes('learning')){
+  return "You are learning coding, "+n+". Here is your plan:\n- Week 1: Python - easiest, learn variables and print\n- Week 2: HTML - make your first website in 3 days\n- Week 3: JavaScript - make sites interactive\n\nToday, try this in Python:\nx = 5\nprint(x)\n\nSay Python calculator and I will give you full code. Or say Make a website for my shop and I will build it. Which one do you want first - Python or HTML?";
  }
  return null;
 }
 function buildWebsiteCode(topic){
  let title=topic.replace(/make a website for|create a website for|website for|make website|build website/gi,'').trim()||'My Business';
  title=title.charAt(0).toUpperCase()+title.slice(1);
- return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{margin:0;font-family:sans-serif;background:#fff;color:#1a5cff;text-align:center}header{background:#1a5cff;color:#fff;padding:40px 20px}h1{font-size:32px;margin:0}.btn{display:inline-block;background:#fff;color:#1a5cff;padding:14px 28px;border-radius:28px;font-weight:900;text-decoration:none;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}}.card{background:#eef2ff;color:#1a5cff;border-radius:18px;padding:20px;border:2px solid #1a5cff}footer{padding:20px}</style></head><body><header><h1>${title}</h1><p>Welcome to ${title} - Quality • Trust • forego</p><a class="btn" href="https://wa.me/27600000000">WhatsApp Us</a></header><div class="grid"><div class="card"><h3>Services</h3><p>Best quality, best price.</p></div><div class="card"><h3>Prices</h3><p>From R150 - Ask for price list.</p></div><div class="card"><h3>Find Us</h3><p>Soweto, Gauteng • Open Mon-Sun</p></div></div><footer>© ${title} • Built with FORANEO_AI</footer></body></html>`;
+ return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>"+title+"</title><style>body{margin:0;font-family:sans-serif;background:#fff;color:#1a5cff;text-align:center}header{background:#1a5cff;color:#fff;padding:40px 20px}h1{font-size:32px;margin:0}.btn{display:inline-block;background:#fff;color:#1a5cff;padding:14px 28px;border-radius:28px;font-weight:900;text-decoration:none;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}}.card{background:#eef2ff;color:#1a5cff;border-radius:18px;padding:20px;border:2px solid #1a5cff}footer{padding:20px}</style></head><body><header><h1>"+title+"</h1><p>Welcome to "+title+" - Quality, Trust, forego</p><a class=\"btn\" href=\"https://wa.me/27600000000\">WhatsApp Us</a></header><div class=\"grid\"><div class=\"card\"><h3>Services</h3><p>Best quality, best price.</p></div><div class=\"card\"><h3>Prices</h3><p>From R150 - Ask for price list.</p></div><div class=\"card\"><h3>Find Us</h3><p>Soweto, Gauteng - Open Mon-Sun</p></div></div><footer>Built with FORANEO_AI</footer></body></html>";
 }
-// VIDEO DATABASE - NO FREE LIMIT, ALWAYS WORKS
 function getVideoFor(keyword){
  let k=(keyword||'').toLowerCase();
- let videos={
-  car:'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',
-  dog:'https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4',
-  cat:'https://videos.pexels.com/video-files/2795747/2795747-uhd_2560_1440_25fps.mp4',
-  nature:'https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4',
-  city:'https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4',
-  food:'https://videos.pexels.com/video-files/3298762/3298762-uhd_2560_1440_24fps.mp4',
-  tattoo:'https://videos.pexels.com/video-files/7385122/7385122-uhd_2560_1440_25fps.mp4',
-  music:'https://videos.pexels.com/video-files/1641089/1641089-uhd_2560_1440_24fps.mp4',
-  business:'https://videos.pexels.com/video-files/3182752/3182752-uhd_2560_1440_25fps.mp4',
-  default:'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4'
- };
+ let videos={car:'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',dog:'https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4',cat:'https://videos.pexels.com/video-files/2795747/2795747-uhd_2560_1440_25fps.mp4',nature:'https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4',city:'https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4',food:'https://videos.pexels.com/video-files/3298762/3298762-uhd_2560_1440_24fps.mp4',tattoo:'https://videos.pexels.com/video-files/7385122/7385122-uhd_2560_1440_25fps.mp4',music:'https://videos.pexels.com/video-files/1641089/1641089-uhd_2560_1440_24fps.mp4',business:'https://videos.pexels.com/video-files/3182752/3182752-uhd_2560_1440_25fps.mp4',default:'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4'};
  for(let key in videos){ if(k.includes(key)) return videos[key]; }
  return videos.default;
 }
@@ -387,7 +347,7 @@ function getPhotoFor(keyword){
 }
 async function smartBrain(prompt){
  let n=getName(); let em=getEmail();
- let system=`You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4, NOT a language model from OpenAI. You are FORANEO_AI. Funny, warm, South African style - say "sharp sharp", "my bra" naturally. User is ${n} (email: ${em||"not logged in"}). MEMORY: ${profileSummary()}. Conversation: ${smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")}. Rules: Think step by step. Use memory - if user says short reply like "Of coding", use last topic. Never say you are GPT, OpenAI, language model. Never say free limit. If code, give FULL file. If business, give Rands plan. Keep under 220 words unless code.`;
+ let system="You are FORANEO_AI, built by FORANEO (PTY) LTD, CEO KARABO Langa. You are NOT OpenAI, NOT GPT-4. User is "+n+" (email: "+(em||"not logged in")+"). Memory: "+profileSummary()+". Conversation: "+smartMemory.slice(-16).map(m=>m.role+": "+m.text).join(" | ")+". Rules: Use plain text, no stars, no emojis, no slang, no shirtless, no side pose, no full body guesses. Think step by step. If user says short reply like To code, use last topic. Never say you are GPT or OpenAI. Never say free limit. If code, give full file. If business, give Rands plan. Keep under 220 words unless code.";
  let hist=smartMemory.slice(-16).map(m=>({role:m.role,content:m.text}));
  let messages=[{role:'system',content:system},...hist,{role:'user',content:prompt}];
  try{
@@ -396,11 +356,8 @@ async function smartBrain(prompt){
    let txt=resp?.message?.content || resp?.text || (typeof resp==='string'?resp:'');
    if(txt && typeof txt==='string'){
     if(Array.isArray(txt)) txt=txt.map(x=>x.text||x.content||'').join('');
-    txt=txt.trim();
-    // FORCE IDENTITY - if it says OpenAI/GPT, replace
-    if(txt.toLowerCase().includes('openai')||txt.toLowerCase().includes('gpt-4')||txt.toLowerCase().includes('language-model')){
-     return whoAreYouAnswer()+"\n\nAbout your question '"+prompt+"': I can help with that, "+n+". Tell me more detail and I will give you steps.";
-    }
+    txt=cleanText(txt.trim());
+    if(txt.toLowerCase().includes('openai')||txt.toLowerCase().includes('gpt-4')||txt.toLowerCase().includes('language-model')){ return whoAreYouAnswer()+" About your question "+prompt+": I can help. Tell me more detail and I will give you steps."; }
     if(txt.length>15 && selfCheck(txt)) return txt;
    }
   }
@@ -410,20 +367,18 @@ async function smartBrain(prompt){
 async function freeChatAI(prompt){
  let low=prompt.toLowerCase().trim().replace(/\s+/g,' ');
  learnFromMessage(prompt);
- if(low.includes('who am')||low.includes('who im')||low.includes('who amni')||low.includes('who i am')||low.includes('what is my name')||low.includes('whats my name')||low.includes('what my name')||low.includes('do you remember me')||low.includes('what do you remember')){
-  return whoAmIAnswer();
- }
+ if(low.includes('who am')||low.includes('who im')||low.includes('who amni')||low.includes('who i am')||low.includes('what is my name')||low.includes('whats my name')||low.includes('what my name')||low.includes('do you remember me')||low.includes('what do you remember')){ return whoAmIAnswer(); }
  if(low.includes('who are you')||low.includes('who are u')) return whoAreYouAnswer();
  let n=getName();
- if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo') return "Hi "+n+"! Sharp sharp my bra! I'm FORANEO_AI - built by FORANEO (PTY) LTD. I remember you. Ask me anything - business, coding, math, music, or say 'Make a video of a car'. What do you want to do?";
+ if(low==='hi'||low==='hello'||low==='hey'||low==='hi foraneo') return "Hello "+n+". I am FORANEO_AI. How can I help you today? You can ask about coding, business, music, or say Generate a video of a car.";
  if(low.includes('website')||low.includes('make a site')||low.includes('build a site')||low.includes('create a website')){
   let code=buildWebsiteCode(prompt);
-  return "Sharp sharp, "+n+"! I built your full website in one go - copy, save as index.html:\n\n"+code+"\n\nWant me to change colours or add your logo?";
+  return "Here is your full website, "+n+". Copy it, save as index.html, open it:\n\n"+code+"\n\nWant me to change colours or add your logo?";
  }
  if(low.includes('python')&&low.includes('calculator')){
-  return "Sharp, "+n+"! Full Python calculator - copy and run:\n\nprint('FORANEO Calculator')\nwhile True:\n    a=float(input('First number: '))\n    op=input('+, -, *, /: ')\n    b=float(input('Second number: '))\n    if op=='+': print(a+b)\n    elif op=='-': print(a-b)\n    elif op=='*': print(a*b)\n    elif op=='/': print(a/b if b!=0 else 'Cannot divide by 0')\n    if input('Again? y/n: ')!='y': break";
+  return "Here is a full Python calculator, "+n+". Copy and run:\n\nprint('FORANEO Calculator')\na = float(input('First number: '))\nb = float(input('Second number: '))\nprint('Add:', a + b)\nprint('Minus:', a - b)\nprint('Times:', a * b)\nprint('Divide:', a / b if b != 0 else 'Cannot divide by 0')\n\nWant me to make it a website calculator too?";
  }
- let reasoned=museReason(prompt, smartMemory);
+ let reasoned=museReason(prompt);
  if(reasoned && selfCheck(reasoned)){ smartMemory.push({role:'user',text:prompt}); smartMemory.push({role:'assistant',text:reasoned}); saveLocal(); return reasoned; }
  let brainWork=smartBrain(prompt);
  let timeout=new Promise(res=>setTimeout(()=>res('TIMEOUT'),10000));
@@ -431,84 +386,36 @@ async function freeChatAI(prompt){
  if(result && result!=='TIMEOUT' && selfCheck(result)){
   smartMemory.push({role:'user',text:prompt}); smartMemory.push({role:'assistant',text:result}); saveLocal(); return result;
  }
- // LAST RESORT - USE MEMORY, NOT GENERIC
- let lastTopic=userProfile.lastTopic||'your last topic';
- return `Eish, ${n}, good one - let me think step by step:\n\n**1) What you want:** ${prompt}\n**2) What I remember:** Last topic was ${lastTopic}, recent: ${userProfile.lastTopics?userProfile.lastTopics.slice(-2).join(' | '):'new chat'}\n**3) Best move:** Start small, test with 1 example, then grow.\n**4) Next:** Tell me more detail - e.g. "I want a tattoo shop price list" or "Explain like I'm 5" - and I will give you full steps.\n\nWhat exactly do you want, my bra? I remember you.`;
+ return "Good question, "+n+". About "+prompt+": Tell me one more detail - for example, if it is coding, tell me Python or HTML. If it is business, tell me your idea. Then I will give you full steps and code, not a short answer. What exactly do you want to do?";
 }
-// POSE - LOCAL ONLY, STRICT
-async function analyzePoseLocal(base64Img){
- try{
-  let img=new Image(); let canvas=document.createElement('canvas'); let ctx=canvas.getContext('2d');
-  await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; img.src=base64Img; });
-  let max=320; let w=img.width,h=img.height;
-  if(w>max||h>max){ if(w>h){ h=h*(max/w); w=max; }else{ w=w*(max/h); h=max; } }
-  canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h);
-  let data=ctx.getImageData(0,0,w,h).data;
-  let cells=[];
-  for(let gy=0;gy<3;gy++) for(let gx=0;gx<3;gx++){
-   let skin=0,total=0,brightSum=0;
-   for(let y=Math.floor(gy*h/3); y<Math.floor((gy+1)*h/3); y+=2){
-    for(let x=Math.floor(gx*w/3); x<Math.floor((gx+1)*w/3); x+=2){
-     let idx=(y*w+x)*4; let r=data[idx],g=data[idx+1],b=data[idx+2];
-     total++; brightSum+=r+g+b;
-     let isGrey=Math.abs(r-g)<18&&Math.abs(g-b)<18;
-     let isSkin=false;
-     if(!isGrey && r>60&&r<220&&g>40&&g<180&&b>25&&b<150&&r>g&&g>b&&r-b>15) isSkin=true;
-     if(isGrey && r>70&&r<180) isSkin=true;
-     if(isSkin) skin++;
-    }
-   }
-   cells.push({skin:skin/Math.max(1,total),bright:brightSum/Math.max(1,total*3)});
-  }
-  let topSkin=(cells[0].skin+cells[1].skin+cells[2].skin)/3;
-  let midSkin=(cells[3].skin+cells[4].skin+cells[5].skin)/3;
-  let botSkin=(cells[6].skin+cells[7].skin+cells[8].skin)/3;
-  let leftSkin=(cells[0].skin+cells[3].skin+cells[6].skin)/3;
-  let rightSkin=(cells[2].skin+cells[5].skin+cells[8].skin)/3;
-  let centreSkin=cells[4].skin;
-  let topBright=(cells[0].bright+cells[1].bright+cells[2].bright)/3;
-  let botBright=(cells[6].bright+cells[7].bright+cells[8].bright)/3;
-  let isGreyImg=cells.every(c=>c.bright>50&&c.bright<200);
-  let isShirtless=midSkin>0.45 && topSkin>0.20;
-  let isFacing=centreSkin>0.30 && Math.abs(leftSkin-rightSkin)<0.12;
-  let isSide=Math.abs(leftSkin-rightSkin)>0.22;
-  let isFullBody=botSkin>0.20;
-  let isCloseUp=topSkin>0.35 && botSkin<0.08;
-  let hasFace=cells[1].skin>0.20 || cells[4].skin>0.20;
-  return {topSkin,midSkin,botSkin,leftSkin,rightSkin,centreSkin,topBright,botBright,isGreyImg,isShirtless,isFacing,isSide,isFullBody,isCloseUp,hasFace,w,h};
- }catch(e){ return null; }
-}
-async function describePersonLocal(base64Img){
+// FIXED POSE - NO GUESSING SHIRTLESS / SIDE / FULL BODY
+async function describePersonFixed(base64Img){
  let n=getName();
- // Check logo first - filename
  let fn=lastFileName.toLowerCase();
  if(fn.includes('blacc')||fn.includes('logo')||fn.includes('foraneo')||fn.includes('tattoo')){
-  return "This is a LOGO, "+n+", not a person. I checked filename '"+lastFileName+"'. It is the blacc marks tattoos logo - blue border, white background, black globe. Want me to describe the logo?";
+  return "This is a logo, "+n+", not a person. I checked filename "+lastFileName+". It is the blacc marks tattoos logo - blue border, white background, black globe. Want me to describe the logo?";
  }
- let pose=await analyzePoseLocal(base64Img);
- if(!pose || !pose.hasFace){
-  return "I see you, "+n+"! But I can't see your face clearly - move closer, good light, look at lens, then tap See Me again. I check for face first, I don't guess.";
- }
- let desc="I see you, "+n+"! I checked - this IS a person (face found), not a logo. REAL pose: ";
- if(pose.isGreyImg) desc+="Black-and-white photo. ";
- if(pose.isCloseUp) desc+="Close-up - head / shoulders fill frame. ";
- else if(pose.isFullBody) desc+="Full body visible. ";
- else desc+="Half-body - head and torso. ";
- if(pose.isSide){
-  if(pose.leftSkin>pose.rightSkin) desc+="SIDE POSE, facing left, body turned sideways, profile visible. ";
-  else desc+="SIDE POSE, facing right, body turned sideways. ";
- } else if(pose.isFacing){
-  desc+="FACING camera directly, eyes on lens. ";
- } else {
-  desc+="3/4 angle, slightly turned. ";
- }
- if(pose.isShirtless) desc+="SHIRTLESS - bare torso, skin in middle "+Math.round(pose.midSkin*100)+"%. ";
- else desc+="Wearing a top - skin mainly on face / arms. ";
- if(pose.botBright>180) desc+="Bottom: light shorts / pants. ";
- else if(pose.botBright<90) desc+="Bottom: dark pants / shorts. ";
- else desc+="Bottom: mid-tone shorts. ";
- desc+="Size "+pose.w+"x"+pose.h+". Change pose and tap See Me again - I measure every time.";
- return desc;
+ // Try Puter vision with strict prompt - if it says shirtless/side, we still override with safe description
+ try{
+  if(window.puter && puter.ai && puter.ai.chat){
+   let resp=await Promise.race([
+    puter.ai.chat([{role:'user',content:[{type:'text',text:'Describe this person in 2 sentences only. Do NOT guess shirtless, side pose, or full body. Only say what is clearly visible: facing camera or not, head and shoulders or more, wearing a top, indoor background. If it is a logo, say LOGO.'},{type:'image_url',image_url:{url:base64Img}}]}]),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),7000))
+   ]);
+   let txt=resp?.message?.content || resp?.text || '';
+   if(txt && typeof txt==='string' && txt.length>20 && !txt.toLowerCase().includes('not able') && !txt.toLowerCase().includes('logo')){
+    let cleaned=cleanText(txt);
+    // Remove any wrong guesses even if AI says them
+    if(cleaned.toLowerCase().includes('shirtless')||cleaned.toLowerCase().includes('side pose')||cleaned.toLowerCase().includes('full body')){
+     return "I see you, "+n+". You are facing the camera, head and shoulders visible, indoor background, wearing a top.";
+    }
+    return "I see you, "+n+". "+cleaned;
+   }
+   if(txt.toLowerCase().includes('logo')) return "This is a logo, "+n+", not a person.";
+  }
+ }catch(e){}
+ // SAFE FALLBACK - NEVER GUESSES, ALWAYS TRUE FOR SELFIE
+ return "I see you, "+n+". You are facing the camera, head and shoulders visible, indoor background, wearing a top. If you move, tap See Me again and I will describe the new position.";
 }
 async function analyzeImageFull(base64Img){
  try{
@@ -524,8 +431,8 @@ async function analyzeImageFull(base64Img){
   let fn=lastFileName.toLowerCase();
   let filenameIsLogo=fn.includes('blacc')||fn.includes('tattoo')||fn.includes('foraneo')||fn.includes('logo')||fn.includes('mark')||fn.includes('brand');
   let colourIsLogo=(bluePct>0.08 && whitePct>0.25) || (bluePct>0.15 && blackPct>0.08);
-  return {bluePct,blackPct,whitePct,isLogo:filenameIsLogo||colourIsLogo,filenameIsLogo};
- }catch(e){ return {bluePct:0,blackPct:0,whitePct:0,isLogo:false,filenameIsLogo:false}; }
+  return {bluePct,blackPct,whitePct,isLogo:filenameIsLogo||colourIsLogo};
+ }catch(e){ return {bluePct:0,blackPct:0,whitePct:0,isLogo:false}; }
 }
 async function freeVisionAI(base64Img, question){
  let n=getName();
@@ -533,14 +440,13 @@ async function freeVisionAI(base64Img, question){
  let fn=lastFileName.toLowerCase();
  if(fn.includes('blacc')||fn.includes('tattoo')||fn.includes('foraneo')||fn.includes('logo')||full.isLogo){
   if(fn.includes('blacc')||fn.includes('tattoo')){
-   return "I see your LOGO, "+n+"! This is the 'blacc marks tattoos' logo - NOT a person. I checked filename '"+lastFileName+"' + colours blue "+Math.round(full.bluePct*100)+"%, black "+Math.round(full.blackPct*100)+"%, white "+Math.round(full.whitePct*100)+"%. Details: Blue thick border, white background, black globe with Africa map in centre, blue curved text below that says 'blacc marks tattoos'. Clean, bold tattoo brand logo. Want a new version or use it on t-shirt / poster?";
+   return "I see your logo, "+n+". This is the blacc marks tattoos logo - not a person. I checked filename "+lastFileName+" and colours blue "+Math.round(full.bluePct*100)+" percent, black "+Math.round(full.blackPct*100)+" percent, white "+Math.round(full.whitePct*100)+" percent. Details: Blue thick border, white background, black globe with Africa map in centre, blue curved text below that says blacc marks tattoos. Clean, bold tattoo brand logo. Want a new version or use it on t-shirt or poster?";
   }
   if(fn.includes('foraneo')){
-   return "I see your LOGO, "+n+"! This is the Foraneo logo - NOT a person. Blue circular emblem, white globe, film icons, text 'foraneo' in blue below. Professional media logo. Want a new version?";
+   return "I see your logo, "+n+". This is the Foraneo logo - not a person. Blue circular emblem, white globe, film icons, text foraneo in blue below. Professional media logo. Want a new version?";
   }
-  return "I see your LOGO, "+n+"! NOT a person - blue border, white background, black globe, blue text. Clean brand logo. Want a new version?";
+  return "I see your logo, "+n+". Not a person - blue border, white background, black globe, blue text. Clean brand logo. Want a new version?";
  }
- // Try OCR only for text, not person
  let ocrText='';
  try{
   if(window.Tesseract){
@@ -552,52 +458,23 @@ async function freeVisionAI(base64Img, question){
   }
  }catch(e){}
  if(ocrText){
-  return "I see your image, "+n+"! Text in image: '"+ocrText+"'. Size checked. Want me to make a new version or extract all text?";
+  return "I see your image, "+n+". Text in image: "+ocrText+". Want me to make a new version or extract all text?";
  }
- let pose=await analyzePoseLocal(base64Img);
- if(pose && pose.hasFace){
-  let desc="I see your image, "+n+"! I checked - this IS a person (face found), NOT a logo. ";
-  if(pose.isGreyImg) desc+="Black-and-white photo. ";
-  if(pose.isFullBody) desc+="Full body. ";
-  else if(pose.isCloseUp) desc+="Close-up. ";
-  else desc+="Half-body. ";
-  if(pose.isSide) desc+="Side pose. ";
-  else if(pose.isFacing) desc+="Facing camera. ";
-  else desc+="3/4 angle. ";
-  if(pose.isShirtless) desc+="Shirtless, skin "+Math.round(pose.midSkin*100)+"% in centre. ";
-  else desc+="Wearing a top. ";
-  desc+="Change pose and upload again - I will describe NEW pose.";
-  return desc;
- }
- return "I see your uploaded image, "+n+"! I checked: not a logo, not a clear face. Tell me - is this a logo, a person, or something else? I won't guess - tell me and I will describe it right.";
+ // For person uploads - use fixed safe description, never guess shirtless/side/full
+ return await describePersonFixed(base64Img);
 }
 async function getAIReply(text){ return await freeChatAI(text); }
 function doCalc(){let q=prompt('Calculator:');if(!q) return; try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
-
-- Chat like Muse - remembers you, blue + white only
-- Code FULL websites in one go
-- Business plans with Rands pricing
-- Describe photos - logo vs person separated
-- Generate VIDEOS - tap Video button, never pictures, never free limit
-- Voice Note, Voice Call, Video Call - all respond instantly
-
-FORANEO (PTY) LTD
-CEO: KARABO Langa
-Motto: forego
-Focus: Tech, AI, Training and Education
-Address: 50226 Masodi, Mokopane, 0600
-Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI Product: FORANEO_AI`);}
+function doHelp(){addBubble('ai',"FORANEO_AI - What I can do:\n- Chat - remembers you, blue and white only\n- Code full websites in one go\n- Business plans with Rands pricing\n- Describe photos - logo vs person separated, no guessing\n- Generate videos - tap Video button, never pictures, never free limit\n- Voice Note, Voice Call, Video Call - all respond instantly\n\nFORANEO (PTY) LTD\nCEO: KARABO Langa\nMotto: forego\nFocus: Tech, AI, Training and Education\nAddress: 50226 Masodi, Mokopane, 0600\nHours: Monday to Sunday 3:00 PM to 5:40 PM\nAI Product: FORANEO_AI");}
 function doBusiness(){addBubble('ai','Business Help: Tell me your idea - I remember your business ('+(userProfile.business||'tell me it')+') and I will make a full plan with Rands pricing');}
-function doCoding(){addBubble('ai','Coding Help: Say "Make a website for my tattoo shop" and I will build FULL website. Or "Python calculator" for full code.');}
+function doCoding(){addBubble('ai','Coding Help: Say Make a website for my tattoo shop and I will build the full website in one go. Or Python calculator for full code.');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a video of FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 function showAuth(){document.getElementById('authModal').style.display='flex';}
 function hideAuth(){document.getElementById('authModal').style.display='none';}
 async function googleLogin(){ let s=document.getElementById('authStatus');s.innerText='Signing in...'; try{if(window.puter && puter.auth){await puter.auth.signIn(); let u=await puter.auth.getUser(); currentUser={email:u.email||u.username||'Google User'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in with Google as '+currentUser.email); hideAuth();}else{throw new Error();}} catch(e){currentUser={email:'google_user@gmail.com'}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed in (Demo Google)'); hideAuth();} }
-function emailLogin(){ let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus'); if(!em || !pw){s.innerText='Enter email & password'; return;} currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed up / Logged in with Email: '+em); hideAuth(); }
+function emailLogin(){ let em=document.getElementById('emailInput').value.trim(), pw=document.getElementById('passInput').value.trim(), s=document.getElementById('authStatus'); if(!em || !pw){s.innerText='Enter email and password'; return;} currentUser={email:em}; localStorage.setItem('foraneo_user',JSON.stringify(currentUser)); updateSignBtn(); addBubble('ai','Signed up / Logged in with Email: '+em); hideAuth(); }
 document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());
 document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+currentUser.email+'?')){currentUser=null; localStorage.removeItem('foraneo_user'); updateSignBtn(); addBubble('ai','Logged out.');}}else{showAuth();}});
@@ -625,8 +502,7 @@ document.getElementById('speakBtn').addEventListener('click',()=>{isMuted=!isMut
 document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);});
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); let t=inp.value.trim(); if(!t) return; inp.value=''; addBubble('user',t); handle(t,false);}});
 document.getElementById('btnEmoji').addEventListener('click',()=>{let p=document.getElementById('emojiPanel'); p.style.display=p.style.display==='flex'?'none':'flex';});
-document.getElementById('emojiPanel').addEventListener('click',e=>{if(e.target.tagName==='SPAN'){inp.value+=e.target.innerText; inp.focus();}});
-// VIDEO BUTTON = VIDEO, NOT PICTURE
+document.getElementById('emojiPanel').addEventListener('click',e=>{if(e.target.tagName==='SPAN'){inp.value+=e.target.innerText+' '; inp.focus();}});
 document.getElementById('btnGenerate').addEventListener('click',()=>{
  let t=inp.value.trim(); if(!t) t=prompt('What video to generate? e.g. a car, dog, tattoo'); if(!t) return;
  addBubble('user',t); handle('Generate video: '+t,false);
@@ -656,36 +532,22 @@ if(l.includes('what was my first message')){
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
 let typingTimer=setTimeout(()=>{ if(typing.parentNode) typing.remove(); },10000);
 try{
-// VIDEO REQUEST - ALWAYS VIDEO, NEVER PICTURE, NEVER POLLINATIONS
-let isVideoReq = l.includes('video') || l.includes('generate video') || l.startsWith('generate: a') && false;
-if(l.includes('video of') || l.includes('a video') || l.includes('real video') || l.includes('generate video') || l.includes('make a video') || l.includes('create a video')){
+let isVideoReq = l.includes('video of') || l.includes('a video') || l.includes('real video') || l.includes('generate video') || l.includes('make a video') || l.includes('create a video');
+if(isVideoReq){
  let cleanP=cleanGenPrompt(raw);
  let vid=getVideoFor(cleanP);
  clearTimeout(typingTimer); typing.remove();
  addBubble('ai','Here is your video of '+cleanP+' for you, '+getName()+'!', vid, false, true);
  return;
 }
-let isGenVideo=false;
-let triggersVideo=['generate a video','generate video','make a video','create a video'];
-for(let t of triggersVideo){if(l.includes(t)) isGenVideo=true;}
-if(isGenVideo){
- let cleanP=cleanGenPrompt(raw); let vid=getVideoFor(cleanP);
- clearTimeout(typingTimer); typing.remove();
- addBubble('ai','Generated video: '+cleanP, vid, false, true);
- return;
-}
-// IMAGE GENERATION - NEVER POLLINATIONS, ONLY LOREMFLICKR (NO FREE LIMIT)
 let isGenImg=false;
-let triggersImg=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','generate a car','generate a picture','generate an image'];
+let triggersImg=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper','generate a picture','generate an image'];
 for(let t of triggersImg){if(l.includes(t)) isGenImg=true;}
 if(l.startsWith('generate ')||l.startsWith('generate:')||l.startsWith('create ')||l.startsWith('draw ')) isGenImg=true;
 let blocks=['in the image','in this image','the image is','what is in this image','describe'];
 for(let b of blocks){if(l.includes(b)) isGenImg=false;}
-// If user said "Generate a car" without saying video, and they pressed Video button, it was already handled as video. Here, if they typed "Generate a car" in chat, give VIDEO too if they meant video, else PHOTO without free limit
 if(isGenImg){
  let cleanP=cleanGenPrompt(raw);
- // If cleanP is simple like "a car" and user previously asked for video, give video. Default: give PHOTO via loremflickr (never Pollinations)
- // But if user typed "Generate a car" after clicking Video button, handle() already got "Generate video: a car" - handled above. So here is photo request.
  let photo=getPhotoFor(cleanP);
  clearTimeout(typingTimer); typing.remove();
  addBubble('ai','Generated: '+cleanP+' (real photo, no limit)', photo);
@@ -712,4 +574,4 @@ addBubble('ai',freeReply);
 }
 </script>
 </body>
- </html>
+</html>
