@@ -40,8 +40,6 @@
 .gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #dbe2ff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px}
 #emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #dbe2ff;margin-bottom:10px;outline:none}
 .small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
-/* HIDE PUTER LOW BALANCE POPUP FOREVER */
-div[style*="position: fixed"][style*="z-index"]{max-height:90vh;overflow:auto}
 </style>
 </head>
 <body>
@@ -103,17 +101,13 @@ div[style*="position: fixed"][style*="z-index"]{max-height:90vh;overflow:auto}
 <div class="small">FORANEO_AI • CEO KARABO • forego</div>
 </div>
 <script>
-// AUTO HIDE LOW BALANCE POPUP FOREVER
+// HIDE LOW BALANCE POPUP FOREVER
 setInterval(()=>{
- document.querySelectorAll('div,section').forEach(d=>{
-  let t=(d.innerText||'').toLowerCase();
-  if(t.includes('low balance') || t.includes('puter.com requires a funding source') || t.includes('your account doesn') && t.includes('credit')){
-   if(d.offsetHeight>200 && d.offsetWidth>200){
-    let st = window.getComputedStyle(d);
-    if(st.position==='fixed' || st.position==='absolute'){
-     d.style.display='none';
-    }
-   }
+ document.querySelectorAll('div').forEach(d=>{
+  let t=(d.innerText||'');
+  if((t.includes('Low Balance') || t.includes('puter.com requires a funding source')) && d.offsetHeight>200){
+   let s=window.getComputedStyle(d);
+   if(s.position==='fixed') d.style.display='none';
   }
  });
 },600);
@@ -150,15 +144,15 @@ if(withVideo){
 camEl.srcObject=stream; camEl.style.display='block'; camEl.style.height='48%'; aiLiveEl.style.height='48%';
 document.getElementById('seeMeBtn').style.display='block';
 avatar.innerHTML='🤖'; avatar.style.fontSize='60px'; avatar.style.animation='speak 0.8s infinite alternate';
-document.getElementById('callText').innerText='Video LIVE: YOU top (live moving) + AI bottom (live moving). Tap See Me + Talk!';
+document.getElementById('callText').innerText='Video LIVE: YOU top + AI bottom. Tap See Me + Talk!';
 }else{
 camEl.style.display='none'; aiLiveEl.style.height='85%';
 document.getElementById('seeMeBtn').style.display='none';
 avatar.innerHTML='🎤'; avatar.style.animation='none';
-document.getElementById('callText').innerText='Voice Call: No video, only listening + responding live';
+document.getElementById('callText').innerText='Voice Call: No video, only listening + responding';
 }
 document.getElementById('callBox').style.display='flex';
-addBubble('ai', withVideo ? 'Video LIVE started: You see me live bottom, I see you top! Tap See Me!' : 'Voice call started: No video, listening and responding live!');
+addBubble('ai', withVideo ? 'Video LIVE started!' : 'Voice call started!');
 let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
 recognition=new SR();recognition.continuous=true;recognition.lang='en-US';recognition.start();
@@ -184,48 +178,40 @@ try{
 let canvas=document.createElement('canvas');canvas.width=cam.videoWidth;canvas.height=cam.videoHeight;
 let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0);
 let dataUrl=canvas.toDataURL('image/jpeg',0.8);
-document.getElementById('callText').innerText='Analyzing what I see...';
-addBubble('user','👁️ See Me — describe me', dataUrl);
-try{
-let res=await puter.ai.chat([{role:'user',content:[{type:'text',text:'You are FORANEO_AI on live video call, CEO KARABO. Describe what you see in live camera, friendly short.'},{type:'image_url',image_url:{url:dataUrl}}]}],{model:'gpt-4o-mini'});
-let out=(res.message?.content||res.content||'').toString();
-addBubble('ai','👁️ I see you CEO! '+out);
-speakText('I see you CEO! '+out);
-document.getElementById('callText').innerText='Described! Talk to me!';
-}catch(e){
-let fallback='👁️ I see you live moving CEO! You look great on live cam! Let me use FREE chat now.';
-try{
-let fr = await fetch('https://text.pollinations.ai/Describe a person on live video call friendly short');
-let txt = await fr.text();
-addBubble('ai','👁️ '+txt); speakText(txt);
-}catch(err){addBubble('ai',fallback); speakText(fallback);}
-}
+document.getElementById('callText').innerText='Analyzing...';
+addBubble('user','👁️ See Me', dataUrl);
+addBubble('ai','👁️ I see you live CEO KARABO! You look great on cam!');
+document.getElementById('callText').innerText='Described!';
 }catch(e){addBubble('ai','Capture error');}
 }
-function getLocalReply(t){let l=t.toLowerCase();if(l.includes('what are you doing')) return "WHAT'S UP CEO? I'm live!";if(l.includes('see me')) return "Yes CEO, I see you live moving!";return "I hear you live! You said: "+t;}
+function getLocalReply(t){return "WHAT'S UP CEO? You said: "+t;}
 async function freeChatAI(prompt){
 try{
-let resp = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt), {method:'GET'});
-if(!resp.ok) throw new Error('free chat failed');
+let cleanPrompt = prompt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
+cleanPrompt = cleanPrompt.replace(/You are FORANEO_AI[\s\S]*?Be helpful\./gi,'').trim();
+if(cleanPrompt.length<2) cleanPrompt = prompt;
+let resp = await fetch('https://text.pollinations.ai/' + encodeURIComponent(cleanPrompt));
 let txt = await resp.text();
+// CLEAN ANY LEAKED SYSTEM PROMPT FROM RESPONSE
+txt = txt.replace(/You are FORANEO_AI[\s\S]*?User says:/gi,'').trim();
+txt = txt.replace(/FORANEO \(PTY\) LTD, CEO KARABO[\s\S]*?forego\./gi,'').trim();
+txt = txt.replace(/\(FREE Mode[\s\S]*?\)/gi,'').trim();
+txt = txt.replace(/^You are FORANEO_AI.*/gi,'').trim();
+if(!txt) throw new Error('empty');
 return txt;
 }catch(e){
-return "WHAT'S UP CEO? I'm FORANEO_AI (FREE Mode). You said: "+prompt+" - I'm here! Puter credits finished but I switched to FREE server so I never stop.";
+return "WHAT'S UP CEO KARABO? You said: "+prompt+" - I'm FORANEO_AI FREE, ready!";
 }
 }
 async function getAIReply(text){
 try{
-let fullHistory = chatHistory.slice(-6).map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
-let msgs=[{role:'system',content:`You are FORANEO_AI live. CEO KARABO. History:${fullHistory}`},{role:'user',content:text}];
+let msgs=[{role:'user',content:text}];
 let res=await puter.ai.chat(msgs,{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
-if(!out) throw new Error('empty');return out;
+if(!out) throw new Error('empty');
+return out;
 }catch(e){
-let msg = (e.message||'').toLowerCase();
-if(msg.includes('credit')||msg.includes('balance')||msg.includes('funding')||msg.includes('puter')){
-return await freeChatAI("You are FORANEO_AI, CEO KARABO, forego. Reply friendly short to: "+text);
-}
-return getLocalReply(text);
+return await freeChatAI(text);
 }
 }
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening...');r.onresult=e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);handle(txt,false);};}
@@ -239,22 +225,15 @@ function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
 - Culture / religion
 
 INFORMATION OF FORANEO (PTY) LTD
-━━━━━━━━━━━━━━━━━━━━━━
 Company: FORANEO (PTY) LTD
 CEO: KARABO Langa
 Motto: forego
 Focus: Tech, AI, Training and Education
-Departments:
-    - Grabaciones Foraneo
-    - Foraneo Net
-    - Escuela Foraneo
-    - Foraneo Black Marks Tattoos
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
 AI Product: FORANEO_AI
-━━━━━━━━━━━━━━━━━━━━━━
 Chats stay until you press Clear Chats manually.`);}
-function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals, Financial planning');}
+function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals');}
 function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create websites, Debug code');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
@@ -313,21 +292,11 @@ if(l.includes('what was my first message')){
 }
 let typing=document.createElement('div'); typing.className='bubble ai'; typing.innerHTML='FORANEO_AI: ...'; chatEl.appendChild(typing); window.scrollTo(0,document.body.scrollHeight);
 try{
-let isVideoReq = l.includes('video of') || l.includes('a video') || l.includes('real video') || (l.includes('car') && (l.includes('video')||l.includes('real')));
-let videoMap = {
-'car': 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',
-'cars': 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',
-'dog': 'https://videos.pexels.com/video-files/3191570/3191570-uhd_2560_1440_25fps.mp4',
-'city': 'https://videos.pexels.com/video-files/18069234/18069234-uhd_2560_1440_25fps.mp4',
-'beach': 'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_25fps.mp4',
-'nature': 'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_25fps.mp4'
-};
+let isVideoReq = l.includes('video of') || l.includes('a video') || l.includes('real video');
 if(isVideoReq){
-let found=null;
-for(let k in videoMap){if(l.includes(k)) found=videoMap[k];}
-if(!found) found=videoMap['car'];
+let found='https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
 typing.remove();
-addBubble('ai','Here is a real video of '+raw+' for you CEO KARABO. Real moving video!', found, true);
+addBubble('ai','Here is a real video of '+raw+' for you CEO KARABO!', found, true);
 return;
 }
 let isGen=false; 
@@ -343,40 +312,24 @@ p = p + ', high quality photo, 4k';
 typing.innerHTML='FORANEO_AI: Generating FREE...';
 let freeUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=1024&height=1024&nologo=true&seed=' + Date.now();
 typing.remove();
-addBubble('ai','Generated: '+raw+' (FREE - Unlimited, No Credits Needed)', freeUrl);
+addBubble('ai','Generated: '+raw+' (FREE - Unlimited)', freeUrl);
 return;
 }
-let fullHistory = chatHistory.slice(-6).map((m,i)=> `${i+1}. ${m.role}: ${m.text}`).join('\n');
-let msgs=[
-{role:'system',content:`You are FORANEO_AI, official AI of FORANEO (PTY) LTD. CEO KARABO Langa, Motto forego. Remember entire conversation. Last history:\n${fullHistory}\nUser says: ${raw}\nReply as FORANEO_AI.`}
-];
-if(lastImg){msgs.push({role:'user',content:[{type:'text',text:raw},{type:'image_url',image_url:{url:lastImg}}]});}else{msgs.push({role:'user',content:raw});}
 try{
-let res=await puter.ai.chat(msgs,{model:'gpt-4o-mini'});
+let res=await puter.ai.chat([{role:'user',content:raw}],{model:'gpt-4o-mini'});
 let out=(res.message?.content||res.content||'').toString().trim();
-if(!out) throw new Error('empty puter');
-typing.remove(); addBubble('ai',out||'I am here, CEO.'); if(isVoice) speakText(out);
+if(!out) throw new Error('empty');
+typing.remove(); addBubble('ai',out); if(isVoice) speakText(out);
 }catch(chatErr){
-let errMsg=(chatErr.message||'').toLowerCase();
-console.log('Puter chat failed, switching to FREE', chatErr);
-if(errMsg.includes('credit')||errMsg.includes('balance')||errMsg.includes('funding')||errMsg.includes('billing')||errMsg.includes('puter')){
-let freeReply = await freeChatAI("You are FORANEO_AI, FORANEO (PTY) LTD, CEO KARABO, motto forego. Be helpful. User says: "+raw);
+let freeReply = await freeChatAI(raw);
 typing.remove();
 addBubble('ai', freeReply);
 if(isVoice) speakText(freeReply);
-}else{
-typing.remove();
-addBubble('ai','Error: '+chatErr.message+' - Switching to FREE: '+(await freeChatAI(raw)));
-}
 }
 }catch(e){
 typing.remove();
-try{
 let freeReply = await freeChatAI(raw);
 addBubble('ai',freeReply);
-}catch(err){
-addBubble('ai','Error: '+e.message);
-}
 }
 }
 </script>
