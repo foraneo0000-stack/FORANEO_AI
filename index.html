@@ -166,8 +166,7 @@ if(video){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{
 }
 document.getElementById('pillVoiceCall').onclick=()=>startCall(false);
 document.getElementById('pillVideoCall').onclick=()=>startCall(true);
-document.getElementById('pillWhatCan').onclick=()=>addBubble("FORANEO_AI - What I can do:
-
+document.getElementById('pillWhatCan').onclick=()=>addBubble(`FORANEO_AI - What I can do:
 - Chat & answer questions, explain anything
 - See and describe images, read text in photos
 - Read documents, PDF, TXT and answer about them
@@ -176,7 +175,6 @@ document.getElementById('pillWhatCan').onclick=()=>addBubble("FORANEO_AI - What 
 - Voice Note, Voice Call, Video Call
 
 INFORMATION OF FORANEO (PTY) LTD
-______________________________
 Company: FORANEO (PTY) LTD
 Motto: forego
 Focus: Tech, AI, Training and Education
@@ -188,8 +186,7 @@ Departments:
 Address: 50226 Masodi, Mokopane, 0600
 Hours: Monday to Sunday 3:00 PM to 5:40 PM
 AI Product: FORANEO_AI
-______________________________
-
+Chats stay until you press Clear Chats manually.`, "ai");
 Chats stay until you press Clear Chats manually.`,"ai"); ;
 document.getElementById('endCallBtn').onclick=()=>{document.getElementById('callBox').style.display='none';if(callStream)callStream.getTracks().forEach(t=>t.stop());addBubble("Call ended. Thanks Friend!","ai")};
 document.getElementById('seeMeBtn').onclick=()=>addBubble("👁️ I see you! You look great today! 😊 What do you want to talk about?","ai");
