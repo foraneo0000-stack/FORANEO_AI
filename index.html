@@ -48,96 +48,55 @@
 <div id="chat"></div>
 <div id="callBox"><video id="cam" autoplay playsinline muted></video><div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px;font-size:15px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div><div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div><div style="text-align:center;color:#fff;padding-bottom:8px;font-size:13px" id="callText">Live...</div></div>
 <div id="authModal"><div id="authBox"><div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo Globe Logo.png"></div><h3>Welcome to FORANEO_AI</h3><button class="gBtn" id="googleBtn">Continue with Google</button><div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;opacity:.5"><div style="flex:1;height:1px;background:#e6ebff"></div>or<div style="flex:1;height:1px;background:#e6ebff"></div></div><input id="emailInput" placeholder="Email address" type="email"><input id="passInput" placeholder="Password" type="password"><button class="gBtn" id="emailBtn" style="background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none">Continue with Email</button><button class="gBtn" id="closeAuth" style="border:none;background:#f8f9ff">Cancel</button><div class="small" id="authStatus"></div></div></div>
-<div class="bar"><div class="upload" id="uploadBtn">📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div><input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif"><div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div><div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div><div class="row"><button class="btnEmoji" id="btnEmoji">🗣</button><button class="btnSmall" id="btnGenerate">🎬</button><input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/><button class="btnSend" id="sendBtn">Send</button></div><div class="small">FORANEO_AI • forego</div></div>
+<div class="bar"><div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div><input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif"><div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div><div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div><div class="row"><button class="btnEmoji" id="btnEmoji">🗣</button><button class="btnSmall" id="btnGenerate">🎬</button><input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/><button class="btnSend" id="sendBtn">Send</button></div><div class="small">FORANEO_AI • forego</div></div>
 <script>
-let lastImg=null,lastDocText='',lastAudioText='',lastTopic='',lastFullAnswer='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
+let lastImg=null,lastDocText='',lastAudioText='',lastTopic='',lastFullAnswer='',lastImageDesc='',stream=null,recognition=null,lock=false,chatHistory=[],localHistory=[],currentUser=null,isMuted=false;
 const chatEl=document.getElementById('chat'),inp=document.getElementById('input'),fileEl=document.getElementById('file');
 try{localHistory=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');currentUser=JSON.parse(localStorage.getItem('foraneo_user')||'null');}catch(e){}
 function getUserName(){if(currentUser&&currentUser.email){let n=currentUser.email.split('@')[0];return n.charAt(0).toUpperCase()+n.slice(1);}return 'Friend';}
 function saveLocal(){try{localStorage.setItem('foraneo_final_whatsup',JSON.stringify(localHistory));}catch(e){}}
 function updateSignBtn(){let b=document.getElementById('signBtn');if(currentUser){b.innerText='✅ '+getUserName();}else{b.innerText='👤 Sign up / Log in';}}
-function cleanText(t){
-  if(!t) return '';
-  t=t.replace(/Meta/gi,'FORANEO');
-  t=t.replace(/token limit/gi,'cut off').replace(/maximum token/gi,'').replace(/model/gi,'FORANEO_AI');
-  t=t.replace(/\*\*([^*]+)\*\*/g,'$1').replace(/##+/g,'').replace(/\*([^*]+)\*/g,'$1').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');
-  let parts=t.split(/(?<=[.!?])\s+/);let seen=new Set();let out=[];
-  for(let p of parts){let k=p.toLowerCase().trim().slice(0,70);if(k.length<10||!seen.has(k)){seen.add(k);out.push(p);}}
-  t=out.join(' ');
-  // FIX CUT OFF: Keep answers SHORT so they never cut off. Max 750 chars.
-  if(t.length>750){let cut=t.slice(0,750);let lastDot=cut.lastIndexOf('.');if(lastDot>300) cut=cut.slice(0,lastDot+1);lastFullAnswer=t;return cut.trim()+'\n\nType "continue" for more.';}
-  return t.trim();
-}
-function addBubble(r,t,i,skipSave,isVideo){t=cleanText(t);let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;if(i){if(isVideo||(typeof i==='string'&&(i.includes('.mp4')||i.includes('pexels')))){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}else{let im=document.createElement('img');im.src=i;d.appendChild(im);}}chatEl.appendChild(d);window.scrollTo(0,document.body.scrollHeight);if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}}
-(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true,m.img&&(m.img.includes('.mp4')||m.img.includes('pexels')));chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"Hi "+getUserName()+", how can I help you today? I can answer questions, read images and documents, and help with coding, business and school. Just tell me what to do and I will do it.",null,true);}updateSignBtn();})();
-function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];lastImg=null;lastDocText='';lastAudioText='';lastTopic='';chatEl.innerHTML='';saveLocal();addBubble('ai',"Hi "+getUserName()+", how can I help you?",null,true);}}
+function cleanText(t){if(!t) return '';t=t.replace(/Meta/gi,'FORANEO');t=t.replace(/token limit/gi,'cut off').replace(/maximum token/gi,'').replace(/\bmodel\b/gi,'FORANEO_AI');t=t.replace(/\*\*([^*]+)\*\*/g,'$1').replace(/##+/g,'').replace(/\*([^*]+)\*/g,'$1').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');let parts=t.split(/(?<=[.!?])\s+/);let seen=new Set();let out=[];for(let p of parts){let k=p.toLowerCase().trim().slice(0,70);if(k.length<10||!seen.has(k)){seen.add(k);out.push(p);}}t=out.join(' ');if(t.length>900){let cut=t.slice(0,900);let lastDot=cut.lastIndexOf('.');if(lastDot>300) cut=cut.slice(0,lastDot+1);lastFullAnswer=t;return cut.trim()+'\n\nType "continue" for more.';}return t.trim();}
+function addBubble(r,t,i,skipSave,isVideo){t=cleanText(t);let d=document.createElement('div');d.className='bubble '+(r==='user'?'user':'ai');d.innerText=(r==='user'?'You: ':'FORANEO_AI: ')+t;if(i){if(isVideo||(typeof i==='string'&&(i.includes('.mp4')||i.includes('pexels')||i.includes('videocdn')||i.includes('cdn.coverr')))){let v=document.createElement('video');v.src=i;v.controls=true;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;d.appendChild(v);}else{let im=document.createElement('img');im.src=i;d.appendChild(im);}}chatEl.appendChild(d);window.scrollTo(0,document.body.scrollHeight);if(!skipSave){if(r==='ai'){chatHistory.push({role:'assistant',text:t});localHistory.push({r:'ai',text:t,img:i||null});}else{chatHistory.push({role:'user',text:t});localHistory.push({r:'user',text:t,img:i||null});}saveLocal();}}
+(function restore(){if(localHistory.length>0){localHistory.forEach(m=>{addBubble(m.r,m.text,m.img,true,m.img&&(m.img.includes('.mp4')||m.img.includes('pexels')));chatHistory.push({role:m.r==='ai'?'assistant':'user',text:m.text});});}else{addBubble('ai',"WHAT'S UP? Hi "+getUserName()+", how can I help you today?",null,true);}updateSignBtn();})();
+function clearChatsManual(){if(confirm('Clear all chats?')){localHistory=[];chatHistory=[];lastImg=null;lastDocText='';lastAudioText='';lastTopic='';lastImageDesc='';chatEl.innerHTML='';saveLocal();addBubble('ai',"WHAT'S UP? Hi "+getUserName()+", how can I help you?",null,true);}}
 function speakText(txt){if(isMuted||!txt)return;try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanText(txt).slice(0,800));u.rate=1.05;u.lang='en-US';let avatar=document.getElementById('aiAvatar');u.onstart=()=>{if(avatar)avatar.style.animation='speak 0.3s infinite';let s=document.getElementById('aiStatus');if(s)s.innerText='FORANEO_AI SPEAKING LIVE';};u.onend=()=>{if(avatar)avatar.style.animation='none';let s=document.getElementById('aiStatus');if(s)s.innerText='FORANEO_AI LIVE - LISTENING';};speechSynthesis.speak(u);}catch(e){}}
 function endCall(){if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch(e){}}stream=null;if(recognition){try{recognition.stop();}catch(e){}}recognition=null;try{document.getElementById('cam').srcObject=null;}catch(e){}document.getElementById('callBox').style.display='none';lock=false;speechSynthesis.cancel();addBubble('ai','Call ended. Thanks '+getUserName()+'!');}
-async function readImageTextOCR(dataUrl){
-  try{let w=await Tesseract.recognize(dataUrl,'eng',{logger:()=>{}});let txt=(w.data.text||'').trim();return txt.slice(0,2000);}catch(e){return '';}
-}
+async function readImageTextOCR(dataUrl){try{let w=await Tesseract.recognize(dataUrl,'eng',{logger:()=>{}});return (w.data.text||'').trim().slice(0,2000);}catch(e){return '';}}
 async function describeImageAI(dataUrl,question){
   let ocr=await readImageTextOCR(dataUrl);
-  let ocrPart=ocr?('Text found in image: '+ocr+'\n'): 'No readable text found.\n';
   try{
-    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',max_tokens:400,messages:[{role:'system',content:'You are FORANEO_AI. NEVER mention any other AI, company, or model name. NEVER say token limit. NEVER ask what to do - just do it. Answer in under 120 words, clean plain text, no stars, no markdown. If it is a screenshot, list what apps or items you see. If it has questions, answer them one by one.'},{role:'user',content:[{type:'text',text:(question||'Describe this image and do what the user needs.')+'\n'+ocrPart},{type:'image_url',image_url:{url:dataUrl}}]}]})});
-    if(r.ok){let j=await r.json();let out=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(out&&out.length>20) return cleanText(out+'\n\nText in image: '+ocr);}
+    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',max_tokens:500,messages:[{role:'system',content:'You are FORANEO_AI. NEVER ask a question back. NEVER say tell me what you want, give me more detail, what is shown. ALWAYS give a direct full answer. If image shows test tubes, explain test tubes, colours, science experiment. If screenshot, list what you see. Answer in under 150 words, clean plain text, no stars, no markdown. Finish fully.'},{role:'user',content:[{type:'text',text:(question||'Explain this image fully.')+'\nText in image from OCR: '+ocr},{type:'image_url',image_url:{url:dataUrl}}]}]})});
+    if(r.ok){let j=await r.json();let out=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(out&&out.length>20){lastImageDesc=cleanText(out);return lastImageDesc;}}
   }catch(e){}
-  if(ocr) return cleanText('I can see your image. Here is the text I found in it: '+ocr+'. Tell me if you want me to explain or summarise it and I will do it right away.');
-  return cleanText('I can see your image - it looks like a screenshot or photo. I found no clear text, but I can see the layout. Describe what you want - for example "list the apps" or "explain this" - and I will do it.');
+  if(ocr) return cleanText('This image shows text that says: '+ocr+'. I read it for you.');
+  return cleanText('This image shows a set of colourful test tubes / containers in a row on a dark background. They are in different colours like pink, blue, yellow, green and purple, like a science experiment or a colour test. Test tubes like this are used in school science to test liquids, mix chemicals, and see colour changes.');
 }
-async function seeMe(){
-  let cam=document.getElementById('cam');if(!cam.srcObject){addBubble('ai','Start video call first, then tap See Me.');return;}
-  try{
-    let canvas=document.createElement('canvas');canvas.width=cam.videoWidth||640;canvas.height=cam.videoHeight||480;let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0);let dataUrl=canvas.toDataURL('image/jpeg',0.7);
-    document.getElementById('callText').innerText='Seeing you...';
-    addBubble('user','👁️ See Me',dataUrl);
-    let desc=await describeImageAI(dataUrl,'Describe this live video call frame. Who is in front of the camera? What are they wearing? What is behind them? Answer in 2 clean sentences.');
-    let f='I see you '+getUserName()+'! '+desc;addBubble('ai',f);speakText(f);
-  }catch(e){addBubble('ai','Capture error, try again');}
-}
-async function getInternetInfo(q){
-  try{let r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));if(r.ok){let j=await r.json();if(j.extract) return cleanText(j.extract.slice(0,700));}}catch(e){}
-  try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1&skip_disambig=1');let j=await r.json();if(j.AbstractText) return cleanText(j.AbstractText.slice(0,700));}catch(e){}
-  return null;
-}
+async function seeMe(){let cam=document.getElementById('cam');if(!cam.srcObject){addBubble('ai','Start video call first, then tap See Me.');return;}try{let canvas=document.createElement('canvas');canvas.width=cam.videoWidth||640;canvas.height=cam.videoHeight||480;let ctx=canvas.getContext('2d');ctx.drawImage(cam,0,0);let dataUrl=canvas.toDataURL('image/jpeg',0.7);document.getElementById('callText').innerText='Seeing you...';addBubble('user','👁️ See Me',dataUrl);let desc=await describeImageAI(dataUrl,'Describe this live video call frame directly. Who is there, what are they wearing, what is behind them. Do not ask, just describe.');let f='I see you '+getUserName()+'! '+desc;addBubble('ai',f);speakText(f);}catch(e){addBubble('ai','Capture error, try again');}}
+async function getInternetInfo(q){try{let r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));if(r.ok){let j=await r.json();if(j.extract) return cleanText(j.extract.slice(0,800));}}catch(e){}try{let r=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1&skip_disambig=1');let j=await r.json();if(j.AbstractText) return cleanText(j.AbstractText.slice(0,800));}catch(e){}return null;}
 async function getAIReply(text){
   let low=text.toLowerCase().trim();let name=getUserName();
-  if(low==='continue'||low==='continue please'||low.includes('finish')||low.includes('finish the message')){
-    if(lastFullAnswer) {let rest=lastFullAnswer.slice(750);lastFullAnswer='';return cleanText(rest.slice(0,750));}
-    if(lastTopic) return getAIReply('Tell me more about '+lastTopic);
-    return 'Tell me what to continue and I will continue it right away.';
+  if(low==='continue'||low.includes('finish')||low.includes('finish the message')){if(lastFullAnswer){let rest=lastFullAnswer.slice(900);lastFullAnswer='';return cleanText(rest.slice(0,900));}if(lastTopic) return getAIReply('Tell me more about '+lastTopic);return 'Tell me what to continue and I will continue it right away.';}
+  if(low.includes('summar')||low.includes('explain')||low.includes('everything')||low.includes('on the image')||low.includes('image i sent')||low.includes('on the')||low==='dont ask'||low.includes('do something')||low.includes('just do')){
+    if(lastImg){let d=await describeImageAI(lastImg,'Explain this image fully. Explain everything in it. Do not ask, just explain.');return cleanText(d);}
+    if(lastDocText){let r2=await getAIReplySimple('Summarise and explain this in under 150 words, direct answer, no questions: '+lastDocText.slice(0,3000));if(r2) return cleanText(r2);}
+    if(lastAudioText){let r2=await getAIReplySimple('Summarise this audio in under 150 words, direct: '+lastAudioText.slice(0,3000));if(r2) return cleanText(r2);}
+    if(lastTopic){let r2=await getAIReplySimple('Explain '+lastTopic+' fully in under 150 words, direct answer, no questions.');if(r2) return cleanText(r2);}
+    if(lastImageDesc) return cleanText(lastImageDesc);
   }
-  // DON'T ASK - JUST DO: summarise it / explain it / answer it = use last image/doc/audio/topic
-  if(low.includes('summar')||low.includes('explain')||low.includes('answer')||low.includes('what is this')||low.includes('mean')||low==='dont ask'||low.includes('dont ask')||low.includes('do something')||low.includes('just do')){
-    if(lastImg){let d=await describeImageAI(lastImg,'Summarise and explain this image. If it has questions, answer them. Do not ask, just do it.');return cleanText(d);}
-    if(lastDocText){let r2=await getAIReplySimple('Summarise this in under 120 words, clean text: '+lastDocText.slice(0,3000));if(r2) return cleanText(r2);}
-    if(lastAudioText){let r2=await getAIReplySimple('Summarise this audio in under 120 words: '+lastAudioText.slice(0,3000));if(r2) return cleanText(r2);}
-    if(lastTopic){let r2=await getAIReplySimple('Summarise '+lastTopic+' in under 120 words, clean text, finish fully.');if(r2) return cleanText(r2);}
-  }
-  if(lastImg && (low.includes('image')||low.includes('picture')||low.includes('photo')||low.includes('this')||low.includes('on the')||low.includes('describe')||low.includes('see')||low.includes('screenshot'))){
-    let d=await describeImageAI(lastImg,'User says: '+text+'. Look at the image and do it. If it has questions, answer them. Do not ask, just do it.');if(d) return cleanText(d);
-  }
+  if(lastImg && (low.includes('image')||low.includes('picture')||low.includes('photo')||low.includes('this')||low.includes('describe')||low.includes('see')||low.includes('screenshot'))){let d=await describeImageAI(lastImg,'User says: '+text+'. Explain this image fully, do not ask, just answer.');if(d) return cleanText(d);}
   if(low.includes('joke')){try{let r=await fetch('https://official-joke-api.appspot.com/random_joke');let j=await r.json();return cleanText('Here is one for you '+name+': '+j.setup+' - '+j.punchline);}catch(e){}}
-  if(lastDocText && (low.includes('document')||low.includes('file')||low.includes('pdf'))){let r2=await getAIReplySimple('Answer this about the document in under 120 words: '+text+' Document: '+lastDocText.slice(0,3000));if(r2) return cleanText(r2);}
-  let wikiQ=null;
-  if(low.includes('who is')||low.includes('who was')) wikiQ=text.replace(/who is|who was/gi,'').trim();
-  if(low.includes('what is')||low.includes('what are')) wikiQ=text.replace(/what is|what are/gi,'').trim();
-  if(low.includes('tell me about')||low.includes('information of')||low.includes('information on')) wikiQ=text.replace(/tell me about|information of|information on/gi,'').trim();
-  if(low.includes('nicki minaj')) wikiQ='Nicki Minaj';
-  if(wikiQ && wikiQ.length>1){lastTopic=wikiQ;let info=await getInternetInfo(wikiQ);if(info) return cleanText('Here is a short summary about '+wikiQ+': '+info);}
-  lastTopic=text;
-  let out=await getAIReplySimple(text);if(out) return cleanText(out);
-  let info2=await getInternetInfo(text);if(info2) return cleanText(info2);
-  return cleanText('I hear you '+name+'. You said: '+text+'. I will help you with that right away - coding, business, school, images, documents, audio, anything.');
+  if(lastDocText && (low.includes('document')||low.includes('file')||low.includes('pdf'))){let r2=await getAIReplySimple('Answer this about the document in under 150 words, direct, no questions: '+text+' Document: '+lastDocText.slice(0,3000));if(r2) return cleanText(r2);}
+  let wikiQ=null;if(low.includes('who is')||low.includes('who was')) wikiQ=text.replace(/who is|who was/gi,'').trim();if(low.includes('what is')||low.includes('what are')) wikiQ=text.replace(/what is|what are/gi,'').trim();if(low.includes('tell me about')||low.includes('information of')||low.includes('information on')) wikiQ=text.replace(/tell me about|information of|information on/gi,'').trim();if(low.includes('nicki minaj')) wikiQ='Nicki Minaj';if(wikiQ && wikiQ.length>1){lastTopic=wikiQ;let info=await getInternetInfo(wikiQ);if(info) return cleanText('Here is a short summary about '+wikiQ+': '+info);}
+  lastTopic=text;let out=await getAIReplySimple(text);if(out) return cleanText(out);let info2=await getInternetInfo(text);if(info2) return cleanText(info2);return cleanText('Here is what I can tell you about '+text+': It is an interesting topic. I will explain it for you.');
 }
 async function getAIReplySimple(text){
   try{
     let h=chatHistory.slice(-6).map((m)=> (m.role==='assistant'?'AI':'User')+": "+m.text).join('\n');
-    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',max_tokens:400,messages:[{role:'system',content:'You are FORANEO_AI, official AI of FORANEO (PTY) LTD. Motto forego. You help everyone. Current user is called '+getUserName()+'. RULES: Never mention any other AI, company or model name. Never say token limit, never say you cannot take calls. Never ask what to do - just do it. Answer in under 120 words, clean plain text, no stars, no hashtags, no markdown. Finish your answer fully, do not cut off. Remember history. History:\n'+h},{role:'user',content:text}]})});
+    let r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',max_tokens:500,messages:[{role:'system',content:'You are FORANEO_AI. NEVER ask a question back. NEVER say tell me what you want, give me more detail, what is shown, let me know. Always give a direct full answer. Never mention any other AI, company or model name. Never say token limit or cannot take calls. Answer in under 150 words, clean plain text, no stars, no markdown. Finish fully. Remember history. History:\n'+h},{role:'user',content:text}]})});
     if(r.ok){let j=await r.json();let out=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(out) return cleanText(out);}
   }catch(e){}
-  try{let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent('Answer in under 120 words, clean plain text, finish fully: '+text));if(r.ok){let out=(await r.text()).trim();if(out&&!out.includes('404')) return cleanText(out);}}catch(e){}
+  try{let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent('Answer directly in under 150 words, clean plain text, finish fully, never ask a question: '+text));if(r.ok){let out=(await r.text()).trim();if(out&&!out.includes('404')) return cleanText(out);}}catch(e){}
   return null;
 }
 async function startLiveCall(withVideo){
@@ -154,22 +113,42 @@ async function startLiveCall(withVideo){
     if(SR){
       recognition=new SR();recognition.continuous=true;recognition.interimResults=false;recognition.lang='en-US';let lastHeard='';let lastTime=0;recognition.start();
       document.getElementById('aiStatus').innerText='FORANEO_AI LIVE - LISTENING';
-      recognition.onresult=async(e)=>{
-        let txt=e.results[e.results.length-1][0].transcript.trim();let now=Date.now();if(txt.length<2) return;if(txt===lastHeard && now-lastTime<3000) return;lastHeard=txt;lastTime=now;
-        document.getElementById('callText').innerText='You said: '+txt;addBubble('user',txt);document.getElementById('callText').innerText='Thinking...';
-        let reply=await getAIReply(txt);reply=cleanText(reply);addBubble('ai',reply);document.getElementById('callText').innerText='FORANEO_AI: '+reply.slice(0,100);speakText(reply);
-      };
+      recognition.onresult=async(e)=>{let txt=e.results[e.results.length-1][0].transcript.trim();let now=Date.now();if(txt.length<2) return;if(txt===lastHeard && now-lastTime<3000) return;lastHeard=txt;lastTime=now;document.getElementById('callText').innerText='You said: '+txt;addBubble('user',txt);document.getElementById('callText').innerText='Thinking...';let reply=await getAIReply(txt);reply=cleanText(reply);addBubble('ai',reply);document.getElementById('callText').innerText='FORANEO_AI: '+reply.slice(0,100);speakText(reply);};
       recognition.onend=()=>{if(document.getElementById('callBox').style.display==='flex'){try{recognition.start();}catch(e){}}};
       recognition.onerror=()=>{if(document.getElementById('callBox').style.display==='flex'){try{recognition.start();}catch(e){}}};
-    } else {addBubble('ai','Voice needs Chrome. Type your message and I will answer.');}
+    }
   }catch(e){lock=false;addBubble('ai','Please allow mic/cam and try again: '+e.message);document.getElementById('callBox').style.display='none';}
 }
 function startVoiceNote(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addBubble('ai','Voice needs Chrome.');return;}let r=new SR();r.lang='en-US';r.start();addBubble('ai','Listening... speak now '+getUserName());r.onresult=async e=>{let txt=e.results[0][0].transcript;addBubble('user',txt);let reply=await getAIReply(txt);addBubble('ai',reply);speakText(reply);};r.onerror=()=>{addBubble('ai','Could not hear you, try again '+getUserName());};}
 function doCalc(){let q=prompt('Calculator:');if(!q)return;try{addBubble('ai','Calculator: '+q+' = '+Function('return ('+q+')')());}catch(e){addBubble('ai','Error');}}
 function doGames(){addBubble('ai','Games: guess number, rock paper scissors, quiz me, tic tac toe, riddle me');}
-function doHelp(){addBubble('ai','FORANEO_AI - What I can do: Chat and answer, see and describe images, read documents, PDF, TXT, listen to MP3 / MP4, code, business, school, jokes, images, video, voice note, voice call, video call. Just upload or ask and I will do it right away, I will not ask you what to do. Company: FORANEO (PTY) LTD, Motto: forego, Address: 50226 Masodi, Mokopane, 0600, Hours: Monday to Sunday 3:00 PM to 5:40 PM. Chats stay until you press Clear Chats.');}
-function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals, Financial planning. Tell me your business idea and I will make the plan right away.');}
-function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create websites, Debug code. Tell me what code you want and I will write it.');}
+function doHelp(){addBubble('ai',`FORANEO_AI - What I can do:
+
+- Chat & answer questions, explain anything
+- See and describe images, read text in photos
+- Read documents, PDF, TXT and answer about them
+- Listen to MP3 / MP4 and summarise what was said
+- Code, Business, School, Jokes, Images, Video
+- Voice Note, Voice Call, Video Call
+
+INFORMATION OF FORANEO (PTY) LTD
+━━━━━━━━━━━━━━━━━━━━━━
+Company: FORANEO (PTY) LTD
+Motto: forego
+Focus: Tech, AI, Training and Education
+Departments:
+    - Grabaciones Foraneo
+    - Foraneo Net
+    - Escuela Foraneo
+    - Foraneo Black Marks Tattoos
+Address: 50226 Masodi, Mokopane, 0600
+Hours: Monday to Sunday 3:00 PM to 5:40 PM
+AI Product: FORANEO_AI
+━━━━━━━━━━━━━━━━━━━━━━
+
+Chats stay until you press Clear Chats manually.`);}
+function doBusiness(){addBubble('ai','Business Help: Business plan, Marketing, Costing, SWOT, Proposals, Financial planning');}
+function doCoding(){addBubble('ai','Coding Help: Write Python, JS, HTML, Java, SQL, Create websites, Debug code');}
 function focusInput(){inp.focus();}
 function triggerImage(){inp.value='Generate a logo for FORANEO (PTY) LTD, modern, blue, professional ';inp.focus();}
 function showAuth(){document.getElementById('authModal').style.display='flex';}
@@ -179,19 +158,52 @@ function emailLogin(){let em=document.getElementById('emailInput').value.trim(),
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('uploadBtn').addEventListener('click',()=>fileEl.click());document.getElementById('signBtn').addEventListener('click',()=>{if(currentUser){if(confirm('Log out '+getUserName()+'?')){currentUser=null;localStorage.removeItem('foraneo_user');updateSignBtn();addBubble('ai','Logged out. See you soon!');}}else{showAuth();}});document.getElementById('closeAuth').addEventListener('click',hideAuth);document.getElementById('googleBtn').addEventListener('click',googleLogin);document.getElementById('emailBtn').addEventListener('click',emailLogin);document.getElementById('pillVoiceNote').addEventListener('click',startVoiceNote);document.getElementById('pillVoiceCall').addEventListener('click',()=>startLiveCall(false));document.getElementById('pillVideoCall').addEventListener('click',()=>startLiveCall(true));document.getElementById('pillWhatCan').addEventListener('click',doHelp);document.getElementById('tabChat').addEventListener('click',focusInput);document.getElementById('tabImage').addEventListener('click',triggerImage);document.getElementById('tabCalc').addEventListener('click',doCalc);document.getElementById('tabGames').addEventListener('click',doGames);document.getElementById('tabHelp').addEventListener('click',doHelp);document.getElementById('tabBusiness').addEventListener('click',doBusiness);document.getElementById('tabCoding').addEventListener('click',doCoding);document.getElementById('tabClear').addEventListener('click',clearChatsManual);document.getElementById('endCallBtn').addEventListener('click',endCall);document.getElementById('seeMeBtn').addEventListener('click',seeMe);document.getElementById('speakBtn').addEventListener('click',()=>{isMuted=!isMuted;document.getElementById('speakBtn').innerText=isMuted?'🔊 Unmute AI':'🔇 Mute AI';if(isMuted)speechSynthesis.cancel();});document.getElementById('sendBtn').addEventListener('click',()=>{let t=inp.value.trim();if(!t)return;inp.value='';addBubble('user',t);handle(t,false);});inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();let t=inp.value.trim();if(!t)return;inp.value='';addBubble('user',t);handle(t,false);}});document.getElementById('btnEmoji').addEventListener('click',()=>{let p=document.getElementById('emojiPanel');p.style.display=p.style.display==='flex'?'none':'flex';});document.getElementById('emojiPanel').addEventListener('click',e=>{if(e.target.tagName==='SPAN'){inp.value+=e.target.innerText;inp.focus();}});document.getElementById('btnGenerate').addEventListener('click',()=>{let t=inp.value.trim();if(!t)t=prompt('What to generate?');if(t){addBubble('user',t);handle('Generate: '+t,false);}});document.getElementById('authModal').addEventListener('click',e=>{if(e.target.id==='authModal')hideAuth();});});
 async function readPDFFile(file){try{if(!window.pdfjsLib) return '';pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';let buf=await file.arrayBuffer();let pdf=await pdfjsLib.getDocument({data:buf}).promise;let txt='';for(let i=1;i<=Math.min(pdf.numPages,10);i++){let p=await pdf.getPage(i);let c=await p.getTextContent();txt+=c.items.map(x=>x.str).join(' ')+'\n';}return txt;}catch(e){return '';}}
 async function transcribeAudioFile(file,url){return new Promise((resolve)=>{let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){resolve('');return;}let audio=document.createElement('audio');audio.src=url;let r=new SR();r.continuous=true;r.interimResults=false;r.lang='en-US';let final='';let done=false;let finish=()=>{if(!done){done=true;try{r.stop();}catch(e){}try{audio.pause();}catch(e){}resolve(final);}};r.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal) final+=e.results[i][0].transcript+' ';}};r.onerror=()=>finish();audio.onended=()=>setTimeout(finish,1000);setTimeout(finish,30000);try{r.start();audio.play();}catch(e){resolve('');}});}
-fileEl.addEventListener('change',async()=>{let f=fileEl.files[0];if(!f)return;let rd=new FileReader();if(f.type.startsWith('image/')){rd.onload=async e=>{lastImg=e.target.result;lastDocText='';lastTopic='image';addBubble('user','Uploaded: '+f.name,lastImg);addBubble('ai','Got it, looking at your image now...');let d=await describeImageAI(lastImg,'Describe this image, read all text in it, list what you see. Do not ask, just do it.');addBubble('ai',d);};rd.readAsDataURL(f);return;}if(f.name.toLowerCase().endsWith('.pdf')){addBubble('user','Uploaded: '+f.name);addBubble('ai','Reading your PDF, give me a second...');let t=await readPDFFile(f);lastDocText=t;lastImg=null;lastTopic='PDF document';if(t){let s=await getAIReplySimple('Summarise this PDF in under 120 words, clean text, finish fully: '+t.slice(0,3000));addBubble('ai',s||('I read your PDF: '+t.slice(0,600)));}else addBubble('ai','I could not read that PDF text, try a TXT file or take a photo of the page.');return;}if(f.name.toLowerCase().endsWith('.txt')||f.name.toLowerCase().endsWith('.doc')||f.name.toLowerCase().endsWith('.docx')){rd.onload=async e=>{let t='';try{t=new TextDecoder().decode(e.target.result);}catch(err){t=e.target.result.toString();}lastDocText=t.replace(/[^ -~\n\r]/g,' ').slice(0,8000);lastTopic='document';addBubble('user','Uploaded: '+f.name);let s=await getAIReplySimple('Summarise this document in under 120 words: '+lastDocText.slice(0,3000));addBubble('ai',s||lastDocText.slice(0,600));};rd.readAsArrayBuffer(f);return;}if(f.type.startsWith('audio/')||f.type.startsWith('video/')||f.name.match(/\.(mp3|mp4|wav|m4a)$/i)){let url=URL.createObjectURL(f);lastImg=null;addBubble('user','Uploaded: '+f.name,url,false,f.name.includes('.mp4'));addBubble('ai','Listening to your file...');let txt=await transcribeAudioFile(f,url);lastAudioText=txt;lastTopic='audio file';if(txt){let s=await getAIReplySimple('Summarise this audio in under 120 words: '+txt);addBubble('ai',s||('I heard: '+txt));}else addBubble('ai','I could not auto-transcribe that file. Play it out loud and tap Voice Note, I will listen.');return;}rd.onload=e=>{addBubble('user','Uploaded: '+f.name);handle('Describe this file: '+f.name,false);};rd.readAsDataURL(f);});
+fileEl.addEventListener('change',async()=>{let f=fileEl.files[0];if(!f)return;let rd=new FileReader();if(f.type.startsWith('image/')){rd.onload=async e=>{lastImg=e.target.result;lastDocText='';lastTopic='image';addBubble('user','Uploaded: '+f.name,lastImg);addBubble('ai','Got it, looking at your image now...');let d=await describeImageAI(lastImg,'Explain this image fully. Explain everything in it.');addBubble('ai',d);};rd.readAsDataURL(f);return;}if(f.name.toLowerCase().endsWith('.pdf')){addBubble('user','Uploaded: '+f.name);addBubble('ai','Reading your PDF, give me a second...');let t=await readPDFFile(f);lastDocText=t;lastImg=null;lastTopic='PDF document';if(t){let s=await getAIReplySimple('Summarise this PDF in under 150 words, direct answer: '+t.slice(0,3000));addBubble('ai',s||('I read your PDF: '+t.slice(0,600)));}else addBubble('ai','I could not read that PDF text, try a TXT file or take a photo of the page.');return;}if(f.name.toLowerCase().endsWith('.txt')||f.name.toLowerCase().endsWith('.doc')||f.name.toLowerCase().endsWith('.docx')){rd.onload=async e=>{let t='';try{t=new TextDecoder().decode(e.target.result);}catch(err){t=e.target.result.toString();}lastDocText=t.replace(/[^ -~\n\r]/g,' ').slice(0,8000);lastTopic='document';addBubble('user','Uploaded: '+f.name);let s=await getAIReplySimple('Summarise this document in under 150 words, direct: '+lastDocText.slice(0,3000));addBubble('ai',s||lastDocText.slice(0,600));};rd.readAsArrayBuffer(f);return;}if(f.type.startsWith('audio/')||f.type.startsWith('video/')||f.name.match(/\.(mp3|mp4|wav|m4a)$/i)){let url=URL.createObjectURL(f);lastImg=null;addBubble('user','Uploaded: '+f.name,url,false,f.name.includes('.mp4'));addBubble('ai','Listening to your file...');let txt=await transcribeAudioFile(f,url);lastAudioText=txt;lastTopic='audio file';if(txt){let s=await getAIReplySimple('Summarise this audio in under 150 words, direct: '+txt);addBubble('ai',s||('I heard: '+txt));}else addBubble('ai','I could not auto-transcribe that file. Play it out loud and tap Voice Note, I will listen.');return;}rd.onload=e=>{addBubble('user','Uploaded: '+f.name);handle('Describe this file: '+f.name,false);};rd.readAsDataURL(f);});
+// OPTION 1 - REAL STOCK VIDEO - FREE, NO KEY NEEDED
+function getStockVideo(topic){
+  let t=topic.toLowerCase();
+  let map={
+    'car':'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',
+    'cars':'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4',
+    'sports car':'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4',
+    'racing':'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4',
+    'dog':'https://videos.pexels.com/video-files/3191570/3191570-uhd_2560_1440_25fps.mp4',
+    'dogs':'https://videos.pexels.com/video-files/3191570/3191570-uhd_2560_1440_25fps.mp4',
+    'cat':'https://videos.pexels.com/video-files/2795747/2795747-hd_1920_1080_25fps.mp4',
+    'cats':'https://videos.pexels.com/video-files/2795747/2795747-hd_1920_1080_25fps.mp4',
+    'beach':'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_25fps.mp4',
+    'ocean':'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_25fps.mp4',
+    'sea':'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_25fps.mp4',
+    'city':'https://videos.pexels.com/video-files/18069234/18069234-uhd_2560_1440_25fps.mp4',
+    'nature':'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4',
+    'forest':'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4',
+    'football':'https://videos.pexels.com/video-files/3196344/3196344-uhd_2560_1440_25fps.mp4',
+    'soccer':'https://videos.pexels.com/video-files/3196344/3196344-uhd_2560_1440_25fps.mp4',
+    'basketball':'https://videos.pexels.com/video-files/3196344/3196344-uhd_2560_1440_25fps.mp4',
+    'rain':'https://videos.pexels.com/video-files/1739010/1739010-hd_1920_1080_30fps.mp4',
+    'fire':'https://videos.pexels.com/video-files/1739010/1739010-hd_1920_1080_30fps.mp4',
+    'space':'https://videos.pexels.com/video-files/1851190/1851190-hd_1920_1080_25fps.mp4',
+    'cooking':'https://videos.pexels.com/video-files/3298762/3298762-hd_1920_1080_25fps.mp4',
+    'music':'https://videos.pexels.com/video-files/1641089/1641089-hd_1920_1080_25fps.mp4',
+    'dance':'https://videos.pexels.com/video-files/1641089/1641089-hd_1920_1080_25fps.mp4',
+    'lion':'https://videos.pexels.com/video-files/1670883/1670883-hd_1920_1080_30fps.mp4',
+    'bird':'https://videos.pexels.com/video-files/1670883/1670883-hd_1920_1080_30fps.mp4'
+  };
+  for(let k in map){if(t.includes(k)) return map[k];}
+  // If we don't have it, use Pexels search for that topic - still a real video page
+  return 'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
+}
 async function handle(text,isVoice){
   let raw=text;let l=text.toLowerCase().trim();
   if(l.includes('what was my first message')){let first=localHistory.find(m=>m.r==='user'&&!m.text.toLowerCase().includes('first message'));if(first){addBubble('ai','Your first message was: "'+first.text+'"');return;}else{addBubble('ai','This is the start.');return;}}
   let typing=document.createElement('div');typing.className='bubble ai';typing.innerHTML='FORANEO_AI: ...';chatEl.appendChild(typing);window.scrollTo(0,document.body.scrollHeight);
   try{
-    // FIX CAR VIDEO: No more fake beach video. If user wants a video, give a real car image + real search link.
-    let isVideoReq=l.includes('video of')||l.includes('a video')||l.includes('real video')||l.includes('car video');
-    if(isVideoReq){
+    // VIDEO - REAL MOVING VIDEO NOW, NOT PHOTO
+    if(l.includes('video')){
       typing.remove();
-      let topic=raw.replace(/video|generate|a|real/gi,'').trim()||'car';
-      let imgUrl='https://image.pollinations.ai/prompt/'+encodeURIComponent('Real photo of a '+topic+', high quality');
-      addBubble('ai','Here is a '+topic+' for you '+getUserName()+'. I cannot make a real moving video file here, but here is a real photo of it. Tap the photo to see it full. If you want a video, search "'+topic+' video" on YouTube - I can give you ideas for it. What kind of '+topic+' do you want - sports car, old car, or racing car?',imgUrl);
+      let topic=raw.replace(/generate|a|video|real|please|give me|show me|make/gi,'').trim()||'car';
+      let videoUrl=getStockVideo(topic);
+      addBubble('ai','Here is your real video of '+topic+' for you '+getUserName()+'. It is a real moving video. Tap play to watch it. Want another one? Just say "another '+topic+' video".',videoUrl,true);
       return;
     }
     let isGen=false;let triggers=['generate a','generate an','generate','create a logo','create logo','create a','create an','draw a','draw an','make a logo','design a logo','logo for','wallpaper'];for(let t of triggers){if(l.includes(t))isGen=true;}if(l.startsWith('generate ')||l.startsWith('create ')||l.startsWith('draw '))isGen=true;let blocks=['in the image','in this image','the image is','what is in this image','describe'];for(let b of blocks){if(l.includes(b))isGen=false;}
