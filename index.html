@@ -87,7 +87,7 @@ async function describeImageAI(dataUrl,question){
   }
   try{
     let base64=dataUrl.split(',')[1];let mime=dataUrl.split(';')[0].split(':')[1]||'image/jpeg';
-    let r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'You are FORANEO_AI. Never ask a question back. Describe this image fully and directly, in under 150 words, plain text, no stars. If it is a screenshot, list what apps, messages and text you see. If it is a person, describe the person, what they are wearing, background, lighting. If it is test tubes, explain test tubes. User question: '+(question||'Describe this image fully.')},{inlineData:{mimeType:mime,data:base64}}]}]})});
+    let r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+geminiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'You are FORANEO_AI. Never ask a question back. Describe this image fully and directly, in under 150 words, plain text, no stars. If it is a screenshot, list what apps, messages and text you see. If it is a person, describe the person, what they are wearing, background, lighting. If it is test tubes, explain test tubes. User question: '+(question||'Describe this image fully.')},{inlineData:{mimeType:mime,data:base64}}]}]})});
     let j=await r.json();
     let out=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text;
     if(out && out.length>20){lastImageDesc=cleanText(out);return lastImageDesc;}
