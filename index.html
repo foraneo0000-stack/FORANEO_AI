@@ -114,7 +114,8 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
     let data = await res.json();
     if(data.error) return "Gemini error: " + data.error.message;
     return data.candidates[0].content.parts[0].text;
-  aiReply(v).then(r=>addBubble(r,'ai'));
+  }
+async function aiReply(q){
   let l=q.toLowerCase();
   if(lastImg && (l.includes('describe') || l.includes('what do you see') || l.includes('what is this') || l.includes('see this') || l.includes('in this image'))){
     addBubble("👁️ Looking at your image with Gemini... one second...", "ai");
