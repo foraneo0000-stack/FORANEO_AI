@@ -158,7 +158,31 @@ if(video){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{
 }
 document.getElementById('pillVoiceCall').onclick=()=>startCall(false);
 document.getElementById('pillVideoCall').onclick=()=>startCall(true);
-document.getElementById('pillWhatCan').onclick=()=>addBubble("FORANEO_AI - What I can do:\n\n💬 Chat - Ask anything\n🎨 Image / Logo - Make logos/posters\n🧮 Calculator - Maths\n🎮 Games - Quiz, Riddle, Guess\n📚 Help - Study, CV, Business\n💼 Business - Plans, Prices, Marketing\n💻 Coding - Websites / Apps\n📎 Upload - Image / PDF / DOC / MP3 / MP4\n🎤 Voice Note / Call / Video Call\n\nTap 🔑 AI Key + Sign up at top!","ai");
+document.getElementById('pillWhatCan').onclick=()=>addBubble("FORANEO_AI - What I can do:
+
+- Chat & answer questions, explain anything
+- See and describe images, read text in photos
+- Read documents, PDF, TXT and answer about them
+- Listen to MP3 / MP4 and summarise what was said
+- Code, Business, School, Jokes, Images, Video
+- Voice Note, Voice Call, Video Call
+
+INFORMATION OF FORANEO (PTY) LTD
+______________________________
+Company: FORANEO (PTY) LTD
+Motto: forego
+Focus: Tech, AI, Training and Education
+Departments:
+- Grabaciones Foraneo
+- Foraneo Net
+- Escuela Foraneo
+- Foraneo Black Marks Tattoos
+Address: 50226 Masodi, Mokopane, 0600
+Hours: Monday to Sunday 3:00 PM to 5:40 PM
+AI Product: FORANEO_AI
+______________________________
+
+Chats stay until you press Clear Chats manually.`,"ai"); ;
 document.getElementById('endCallBtn').onclick=()=>{document.getElementById('callBox').style.display='none';if(callStream)callStream.getTracks().forEach(t=>t.stop());addBubble("Call ended. Thanks Friend!","ai")};
 document.getElementById('seeMeBtn').onclick=()=>addBubble("👁️ I see you! You look great today! 😊 What do you want to talk about?","ai");
 document.getElementById('speakBtn').onclick=function(){muted=!muted;this.textContent=muted?'🔊 Unmute AI':'🔇 Mute AI'};
