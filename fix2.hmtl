@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FORANEO_AI</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ff;color:#1a1d2d}
+.header{background:linear-gradient(135deg,#1a5cff,#0f46d6,#0a34a3);color:#fff;text-align:center;padding:18px 16px 14px;position:sticky;top:0;z-index:1000;display:flex;flex-direction:column;align-items:center}
+.headerTop{width:100%;display:flex;justify-content:space-between;align-items:center;max-width:940px}
+.logoBox{display:flex;align-items:center;gap:12px}.logo{width:50px;height:50px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;padding:3px}
+.logoTxt{text-align:left;line-height:1.1}.logoTxt b{font-size:15px;display:block}.logoTxt span{font-size:11px;opacity:.9}
+.header h1{margin:10px 0 0;font-size:30px;font-weight:900}.header p{margin:6px 0 0;font-size:11.5px;opacity:.92}
+.signBtn{background:#fff;color:#1a5cff;border:none;padding:8px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+.tabs{display:flex;gap:9px;padding:12px;background:#fff;border-bottom:1.5px solid #e6ebff;overflow-x:auto;position:sticky;top:110px;z-index:900}.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;padding:11px 20px;border-radius:30px;border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;font-size:13.6px;font-weight:800;cursor:pointer}.tab.active{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff}.tab.clear{border-color:#ff4d4d;color:#ff2a2a;background:#fff5f5}
+#chat{padding:18px 14px;padding-bottom:360px;display:flex;flex-direction:column;gap:18px;min-height:78vh;max-width:940px;margin:0 auto}
+.bubble{max-width:88%;padding:14px 20px;border-radius:22px;font-size:15.2px;line-height:1.74;white-space:pre-wrap;word-break:break-word;box-shadow:0 3px 14px rgba(0,0,0,.06);border:1.5px solid transparent}
+.user{align-self:flex-end;background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border-bottom-right-radius:8px}
+.ai{align-self:flex-start;background:#fff;border-color:#e8ecff;color:#1e233a;border-bottom-left-radius:8px}
+.ai img,.user img{max-width:92% !important;max-height:320px !important;object-fit:contain;border-radius:18px;margin-top:14px;display:block;background:#fff;border:3.5px solid #1a5cff;box-shadow:0 0 0 4px #fff, 0 4px 18px rgba(26,92,255,.25);padding:6px}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px;border-top:1.8px solid #e6ebff;z-index:800;max-width:940px;margin:0 auto}
+.upload{padding:13px 18px;border:2px dashed #a8b8ff;border-radius:28px;margin-bottom:12px;font-size:13.8px;color:#1a5cff;background:#f8f9ff;cursor:pointer;font-weight:900;text-align:center}
+.pills{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pill{border:1.7px solid #dbe2ff;background:#f8f9ff;color:#1a5cff;padding:9px 18px;border-radius:28px;font-size:13.4px;font-weight:800;cursor:pointer}
+#pillWhatCan{flex-basis:100% !important;max-width:260px !important;text-align:center !important}
+.row{display:flex;gap:8px;align-items:center}.row input{flex:1;padding:15px 18px;border-radius:32px;border:1.8px solid #dbe2ff;outline:none}.row button{border:none;padding:15px 18px;border-radius:32px;font-weight:900;cursor:pointer}
+.btnEmoji{background:#fff;border:1.8px solid #dbe2ff !important;font-size:22px}.btnSmall{background:#f8f9ff;border:1.7px solid #dbe2ff !important;color:#1a5cff;font-size:16px}.btnSend{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;padding:15px 28px !important}
+#emojiPanel{display:none;flex-wrap:wrap;gap:8px;padding:10px;background:#f8f9ff;border:1.5px solid #e6ebff;border-radius:18px;margin-bottom:10px;max-height:160px;overflow-y:auto}#emojiPanel span{font-size:22px;cursor:pointer;padding:6px;border-radius:10px}
+#callBox{display:none;position:fixed;inset:0;background:#0f111a;z-index:3000;flex-direction:column;padding:10px}
+#cam{width:100%;height:48%;object-fit:cover;border-radius:22px;background:#000;display:none}
+#aiLive{width:100%;height:48%;border-radius:22px;background:radial-gradient(circle at 50% 30%,#1a5cff,#0a34a3);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;position:relative;overflow:hidden}
+#aiAvatar{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 0 30px rgba(255,255,255,0.4)}
+.live-badge{position:absolute;top:12px;left:12px;background:#ff2a2a;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px}
+.wave{display:flex;gap:4px;margin-top:14px}.wave span{width:6px;height:18px;background:#fff;border-radius:10px;animation:wave 0.6s infinite}.wave span:nth-child(2){animation-delay:0.1s}.wave span:nth-child(3){animation-delay:0.2s}.wave span:nth-child(4){animation-delay:0.3s}@keyframes wave{0%,100%{height:12px}50%{height:32px}}
+.callControls{display:flex;gap:8px;padding:10px;flex-wrap:wrap}.callControls button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:900;cursor:pointer;min-width:85px}
+#authModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;align-items:center;justify-content:center;padding:18px}
+#authBox{background:#fff;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
+.gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #dbe2ff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px}
+#emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #dbe2ff;margin-bottom:10px;outline:none}
+.small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+<div class="header"><div class="headerTop"><div class="logoBox"><div class="logo"><img src="Foraneo Globe Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div><div style="display:flex;gap:6px"><button class="signBtn" id="keyBtn">🔑 AI Key</button><button class="signBtn" id="signBtn">👤 Sign up / Log in</button></div></div><h1>FORANEO_AI</h1><p>Foraneo Net Department • forego</p></div>
+<div class="tabs"><div class="tab active" id="tabChat">💬 Chat</div><div class="tab" id="tabImage">🎨 Image / Logo</div><div class="tab" id="tabCalc">🧮 Calculator</div><div class="tab" id="tabGames">🎮 Games</div><div class="tab" id="tabHelp">📚 Help</div><div class="tab" id="tabBusiness">💼 Business</div><div class="tab" id="tabCoding">💻 Coding</div><div class="tab clear" id="tabClear">🗑️ Clear Chats</div></div>
+<div id="chat"></div>
+<div id="callBox"><video id="cam" autoplay playsinline muted></video><div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px;font-size:15px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div><div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div><div style="text-align:center;color:#fff;padding-bottom:8px;font-size:13px" id="callText">Live...</div></div>
+<div id="authModal"><div id="authBox"><div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo Globe Logo.png"></div><h3>Welcome to FORANEO_AI</h3><button class="gBtn" id="googleBtn">Continue with Google</button><div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;opacity:.5"><div style="flex:1;height:1px;background:#e6ebff"></div>or<div style="flex:1;height:1px;background:#e6ebff"></div></div><input id="emailInput" placeholder="Email address" type="email"><input id="passInput" placeholder="Password" type="password"><button class="gBtn" id="emailBtn" style="background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none">Continue with Email</button><button class="gBtn" id="closeAuth" style="border:none;background:#f8f9ff">Cancel</button><div class="small" id="authStatus"></div></div></div>
+<div class="bar"><div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div><input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif"><div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div></div><div class="pills"><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div><div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div><div class="row"><button class="btnEmoji" id="btnEmoji">🗣</button><button class="btnSmall" id="btnGenerate">🎬</button><input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/><button class="btnSend" id="sendBtn">Send</button></div><div class="small">FORANEO_AI • forego</div></div>
+<script>
+let lastImg=null,currentUser=null,recording=false,mediaRecorder=null,chunks=[],callStream=null,muted=false;
+let imgMode=false,calcMode=false,gameMode=false,helpMode=false,bizMode=false,codeMode=false;
+const chatEl=document.getElementById('chat');
+const input=document.getElementById('input');
+const fileEl=document.getElementById('file');
+function scrollB(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function addBubble(text,who,imgData,videoData,fileData,fileName){
+let d=document.createElement('div');d.className='bubble '+(who==='user'?'user':'ai');
+let t=document.createElement('div');t.textContent=text||'';d.appendChild(t);
+if(imgData){let im=document.createElement('img');im.src=imgData;d.appendChild(im)}
+if(videoData){let v=document.createElement('video');v.src=videoData;v.controls=true;d.appendChild(v)}
+if(fileData){let a=document.createElement('a');a.href=fileData;a.download=fileName||'file';a.textContent='📎 '+fileName;a.style.display='block';a.style.marginTop='10px';d.appendChild(a)}
+chatEl.appendChild(d);scrollB();
+try{let h=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');h.push({text,who});if(h.length>20)h=h.slice(-20);localStorage.setItem('foraneo_final_whatsup',JSON.stringify(h))}catch(e){}
+}
+function restore(){
+try{let h=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');if(!h.length){addBubble("WHAT'S UP? Hi Friend, how can I help you today?","ai");return}
+h.slice(-20).forEach(m=>{let d=document.createElement('div');d.className='bubble '+(m.who==='user'?'user':'ai');let t=document.createElement('div');t.textContent=m.text||'';d.appendChild(t);chatEl.appendChild(d)});scrollB()}catch(e){localStorage.removeItem('foraneo_final_whatsup');addBubble("WHAT'S UP? Hi Friend, how can I help you today?","ai")}
+}
+function setTab(name){
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+imgMode=calcMode=gameMode=helpMode=bizMode=codeMode=false;
+if(name==='Image')imgMode=true;if(name==='Calculator')calcMode=true;if(name==='Games')gameMode=true;if(name==='Help')helpMode=true;if(name==='Business')bizMode=true;if(name==='Coding')codeMode=true;
+let map={'Chat':'tabChat','Image':'tabImage','Calculator':'tabCalc','Games':'tabGames','Help':'tabHelp','Business':'tabBusiness','Coding':'tabCoding'};
+if(map[name])document.getElementById(map[name]).classList.add('active');
+let msgs={'Chat':"WHAT'S UP? Hi Friend, how can I help you today?",'Image':"🎨 Image / Logo Mode ON. Tell me what image or logo to make!",'Calculator':"🧮 Calculator Mode ON. Type like: 25+25",'Games':"🎮 Games Mode ON. Type: Guess Game, Quiz, Riddle",'Help':"📚 Help Mode ON. Ask me Study, Homework, CV, Business, Coding!",'Business':"💼 Business Mode ON. Tell me your business idea.",'Coding':"💻 Coding Mode ON. Tell me what app / website you want."};
+addBubble(msgs[name]||msgs.Chat,"ai");
+}
+document.getElementById('tabChat').onclick=()=>setTab('Chat');
+document.getElementById('tabImage').onclick=()=>setTab('Image');
+document.getElementById('tabCalc').onclick=()=>setTab('Calculator');
+document.getElementById('tabGames').onclick=()=>setTab('Games');
+document.getElementById('tabHelp').onclick=()=>setTab('Help');
+document.getElementById('tabBusiness').onclick=()=>setTab('Business');
+document.getElementById('tabCoding').onclick=()=>setTab('Coding');
+document.getElementById('tabClear').onclick=()=>{if(confirm('Clear all chats?')){localStorage.removeItem('foraneo_final_whatsup');chatEl.innerHTML='';addBubble("WHAT'S UP? Hi Friend, how can I help you today?","ai")}};
+document.getElementById('uploadBtn').onclick=()=>fileEl.click();
+fileEl.onchange=async()=>{
+let f=fileEl.files[0];if(!f)return;
+let r=new FileReader();
+r.onload=()=>{
+if(f.type.startsWith('image/')){lastImg=r.result;addBubble('📎 Image uploaded: '+f.name,'user',r.result);addBubble("Got your image! What do you want me to do with it?","ai")}
+else if(f.type.startsWith('video/')){addBubble('📎 Video uploaded: '+f.name,'user',null,r.result);addBubble("Got your video!","ai")}
+else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);addBubble("Got your file!","ai")}
+};r.readAsDataURL(f);fileEl.value='';
+};
+const KNOWLEDGE={
+"pop smoke":"🎤 POP SMOKE (1999-2020)\n\nReal name: Bashar Barakah Jackson. American rapper from Brooklyn, New York.\n\nHe was the king of Brooklyn Drill. He made drill music famous worldwide.\n\nFamous songs:\n- Dior\n- Welcome to the Party\n- What You Know Bout Love\n- For The Night (with Lil Baby & DaBaby)\n- Mood Swings (with Lil Tjay)\n\nAlbum: Shoot for the Stars, Aim for the Moon (2020) - No.1 in USA.\n\nHe sadly died on 19 Feb 2020 at age 20. He is remembered as a legend who changed drill forever.",
+"nicki minaj":"👑 NICKI MINAJ\n\nReal name: Onika Tanya Maraj. Born 8 Dec 1982 in Trinidad.\n\nShe is called the Queen of Rap. One of the best-selling female rappers ever.\n\nFamous songs:\n- Super Bass\n- Starships\n- Anaconda\n- Chun-Li\n- Super Freaky Girl\n- Barbie World (with Ice Spice)\n\nShe has won many awards, 10+ Grammy nominations, and inspired many new female rappers.",
+"drake":"🎤 DRAKE\n\nReal name: Aubrey Drake Graham. Born 24 Oct 1986 in Toronto, Canada.\n\nOne of the biggest artists in the world. Rapper, singer, actor.\n\nFamous songs: Hotline Bling, God's Plan, One Dance, Started From The Bottom, In My Feelings.\n\nHe started as an actor on Degrassi, then became a music superstar.",
+"chris brown":"🎤 CHRIS BROWN\n\nBorn 5 May 1989 in Virginia, USA. Singer, dancer, rapper.\n\nFamous songs: Run It!, With You, Forever, No Guidance, Under The Influence.\n\nKnown as one of the best dancers in music.",
+"beyonce":"👑 BEYONCE\n\nBorn 4 Sept 1981 in Houston, Texas. Singer, Queen Bey.\n\nFormerly in Destiny's Child. Solo superstar.\n\nFamous songs: Crazy In Love, Single Ladies, Halo, Break My Soul, Texas Hold 'Em.\n\nShe has won the most Grammy Awards ever - 32 Grammys.",
+"davido":"🎤 DAVIDO\n\nReal name: David Adeleke. Born 21 Nov 1992. Nigerian-American Afrobeats superstar.\n\nFamous songs: Fall, If, Unavailable (with Musa Keys), Feel.\n\nHe helped take Afrobeats to the world.",
+"burna boy":"🎤 BURNA BOY\n\nReal name: Damini Ogulu. Born 2 July 1991 in Nigeria. African Giant.\n\nFamous songs: Ye, Last Last, City Boys, Bundle By Bundle.\n\nWon Grammy for Best Global Music Album - Twice As Tall.",
+"wamkelekile":"🎤 WIZKID\n\nReal name: Ayodeji Balogun. Born 16 July 1990 in Lagos, Nigeria. Starboy.\n\nFamous songs: Essence (with Tems), Ojuelegba, Come Closer (with Drake).\n\nOne of the biggest Afrobeats stars in the world.",
+"tems":"🎤 TEMS\n\nReal name: Temilade Openiyi. Born 11 June 1995 in Lagos, Nigeria.\n\nFamous songs: Essence (with Wizkid), Free Mind, Love Me JeJe.\n\nShe won a Grammy and is one of the biggest new stars from Africa.",
+"amapiano":"🎹 AMAPIANO\n\nAmapiano is a South African music style from Gauteng. It started around 2012 in Pretoria and Soweto.\n\nIt mixes deep house, jazz, and kwaito. Slow, log-drum beats.\n\nBig stars: Kabza De Small, DJ Maphorisa, Uncle Waffles, Focalistic, Young Stunna.",
+"messi":"⚽ LIONEL MESSI\n\nBorn 24 June 1987 in Argentina. Considered the GOAT by many.\n\nWon 8 Ballon d'Or awards. Won World Cup 2022 with Argentina.\n\nPlayed for Barcelona, PSG, now Inter Miami.",
+"ronaldo":"⚽ CRISTIANO RONALDO\n\nBorn 5 Feb 1985 in Portugal. CR7.\n\nOne of the greatest footballers ever. Most goals in football history.\n\nPlayed for Man United, Real Madrid, Juventus, Al-Nassr.",
+"kaizer chiefs":"⚽ KAIZER CHIEFS\n\nSouth African football club from Soweto, founded 1970 by Kaizer Motaung.\n\nNickname: Amakhosi. One of the biggest clubs in SA. Rivals: Orlando Pirates - Soweto Derby.",
+"orlando pirates":"⚽ ORLANDO PIRATES\n\nSouth African football club from Orlando, Soweto. Founded 1937.\n\nNickname: Buccaneers. Rivals: Kaizer Chiefs in the Soweto Derby."
+};
+async function aiReply(q){
+let l=q.toLowerCase().trim();
+for(let key in KNOWLEDGE){ if(l.includes(key)) return KNOWLEDGE[key]; }
+if(l.includes('tell me about')||l.includes('who is')||l.includes('what is')||l.includes('explain')){
+let topic=l.replace(/tell me about|who is|what is|explain|about/g,'').trim();
+try{
+let res=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(topic));
+let d=await res.json();
+if(d.extract) return "📚 "+d.title+"\n\n"+d.extract;
+}catch(e){}
+return "📚 "+topic+" - I am still learning about this. Try asking about Pop Smoke, Nicki Minaj, Drake, Burna Boy, Messi, Amapiano, Kaizer Chiefs - I know those well! Or tap 🔑 AI Key to add Gemini for full AI.";
+}
+if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
+if(l.includes('hello')||l.includes('hi')||l.includes('whats up')){return "Hello Friend! 👋 I am FORANEO_AI. Ask me: Tell me about Pop Smoke, Nicki Minaj, Drake, Amapiano, Messi - I will answer!";}
+if(l.includes('business')||bizMode){return "💼 BUSINESS PLAN for: "+q+"\n\n1. Idea: "+q+"\n2. Customers: People in your area\n3. Price: Start low, then grow\n4. Marketing: WhatsApp + TikTok + Posters\nTell me your budget and I will make a full plan.";}
+if(l.includes('code')||codeMode){return "💻 CODING: I can make you a website / app! Tell me what you want - e.g. 'Make a website for my shop'";}
+if(l.includes('study')||l.includes('homework')||l.includes('school')){return "📚 STUDY HELP: Send me your question and I will explain step by step.";}
+if(l.includes('cv')||l.includes('resume')){return "📄 CV HELP: Send me your name, age, skills and what job you want.";}
+if(l.includes('who are you')||l.includes('what can you do')){return "I am FORANEO_AI from FORANEO (PTY) LTD - Chat, Images, Business, Coding, School. Ask me about any celebrity, football, or music!";}
+return "Thanks Friend! 👍 You asked about '"+q+"'.\n\nI know a lot about: Pop Smoke, Nicki Minaj, Drake, Beyonce, Davido, Burna Boy, Wizkid, Tems, Amapiano, Messi, Ronaldo, Kaizer Chiefs, Orlando Pirates.\n\nTry: 'Tell me about Pop Smoke'";
+}
+async function sendMsg(){
+let v=input.value.trim();if(!v)return;
+addBubble(v,'user');input.value='';
+try{let reply=await aiReply(v);addBubble(reply,'ai');}catch(e){addBubble("Oops: "+e.message,"ai");}
+}
+document.getElementById('sendBtn').onclick=sendMsg;
+input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
+document.getElementById('btnEmoji').onclick=()=>{let p=document.getElementById('emojiPanel');p.style.display=p.style.display==='flex'?'none':'flex'};
+document.querySelectorAll('#emojiPanel span').forEach(s=>{s.onclick=()=>{input.value+=s.innerText;input.focus()}});
+document.getElementById('btnGenerate').onclick=()=>{input.value='Generate a video of ';input.focus()};
+document.getElementById('pillVoiceNote').onclick=async()=>{
+try{
+if(!recording){let s=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(s);chunks=[];mediaRecorder.ondataavailable=e=>chunks.push(e.data);mediaRecorder.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let u=URL.createObjectURL(b);addBubble('🎤 Voice Note sent','user',null,u);addBubble("Got your voice note! Type it too so I can answer.","ai")};mediaRecorder.start();recording=true;document.getElementById('pillVoiceNote').textContent='⏹️ Stop Voice Note';addBubble("🎤 Recording... speak now!","ai")}
+else{mediaRecorder.stop();recording=false;document.getElementById('pillVoiceNote').textContent='▶️ Voice Note'}
+}catch(e){addBubble("Voice needs Chrome + allow microphone.","ai")}
+};
+function startCall(video){
+document.getElementById('callBox').style.display='flex';
+document.getElementById('callText').textContent=video?'📹 Video Call LIVE...':'🎤 Voice Call LIVE...';
+document.getElementById('cam').style.display=video?'block':'none';
+addBubble(video?"📹 Video Call started!":"🎤 Voice Call started!","ai");
+if(video){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{callStream=s;document.getElementById('cam').srcObject=s}).catch(()=>{})}
+}
+document.getElementById('pillVoiceCall').onclick=()=>startCall(false);
+document.getElementById('pillVideoCall').onclick=()=>startCall(true);
+document.getElementById('pillWhatCan').onclick=()=>addBubble(`FORANEO_AI - What I can do:\n- Chat & answer questions\n- Tell me about celebrities, football, music\n- Business, School, Coding, Jokes\n- Voice Note, Voice Call, Video Call\n\nFORANEO (PTY) LTD - forego\n50226 Masodi, Mokopane, 0600\nMon-Sun 3:00 PM to 5:40 PM`, "ai");
+document.getElementById('endCallBtn').onclick=()=>{document.getElementById('callBox').style.display='none';if(callStream)callStream.getTracks().forEach(t=>t.stop());addBubble("Call ended. Thanks Friend!","ai")};
+document.getElementById('seeMeBtn').onclick=()=>addBubble("👁️ I see you! You look great today! 😊","ai");
+document.getElementById('speakBtn').onclick=function(){muted=!muted;this.textContent=muted?'🔊 Unmute AI':'🔇 Mute AI'};
+document.getElementById('signBtn').onclick=()=>document.getElementById('authModal').style.display='flex';
+document.getElementById('closeAuth').onclick=()=>document.getElementById('authModal').style.display='none';
+document.getElementById('googleBtn').onclick=()=>{let e=prompt('Enter your Google email:');if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
+document.getElementById('emailBtn').onclick=()=>{let e=document.getElementById('emailInput').value;if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
+document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gemini API Key:');if(k){localStorage.setItem('foraneo_gemini_key',k);document.getElementById('keyBtn').textContent='✅ AI Key';addBubble("Key saved!","ai")}};
+restore();
+</script>
+</body>
+</html>
