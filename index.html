@@ -136,8 +136,8 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
 function sendMsg(){
 let v=input.value.trim();if(!v)return;
 addBubble(v,'user');input.value='';
-setTimeout(()=>addBubble(aiReply(v),'ai'),400);
-}
+aiReply(v).then(r=>addBubble(r,'ai'));
+}    
 document.getElementById('sendBtn').onclick=sendMsg;
 input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
 document.getElementById('btnEmoji').onclick=()=>{let p=document.getElementById('emojiPanel');p.style.display=p.style.display==='flex'?'none':'flex'};
