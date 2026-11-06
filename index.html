@@ -133,11 +133,16 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
   if(l.includes('who are you')||l.includes('what can you do')){return "I am FORANEO_AI from FORANEO (PTY) LTD - Chat, Images, Business, Coding, School.";}
   return "Got it Friend! 👍 For '"+q+"' - tell me a bit more: What is your goal? I will help you.";
 }
-function sendMsg(){
+async function sendMsg(){
 let v=input.value.trim();if(!v)return;
 addBubble(v,'user');input.value='';
-aiReply(v).then(r=>addBubble(r,'ai'));
-}    
+try{
+let reply = await aiReply(v);
+addBubble(reply,'ai');
+}catch(e){
+addBubble("Oops: "+e.message,"ai");
+}
+}  
 document.getElementById('sendBtn').onclick=sendMsg;
 input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
 document.getElementById('btnEmoji').onclick=()=>{let p=document.getElementById('emojiPanel');p.style.display=p.style.display==='flex'?'none':'flex'};
