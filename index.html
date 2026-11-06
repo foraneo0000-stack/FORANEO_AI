@@ -196,7 +196,6 @@ document.getElementById('googleBtn').onclick=()=>{let e=prompt('Enter your Googl
 document.getElementById('emailBtn').onclick=()=>{let e=document.getElementById('emailInput').value;if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
 document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gemini API Key from aistudio.google.com:');if(k){localStorage.setItem('foraneo_gemini_key',k);document.getElementById('keyBtn').textContent='✅ AI Key';addBubble("Key saved! Now I can see images like Meta AI.","ai")}};
 restore();
-}
 </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </html>
+</html>
