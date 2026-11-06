@@ -60,8 +60,6 @@ function scrollB(){window.scrollTo({top:document.body.scrollHeight,behavior:'smo
 function saveH(){try{let h=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');if(h.length>20)h=h.slice(-20);localStorage.setItem('foraneo_final_whatsup',JSON.stringify(h))}catch(e){}}
 function addBubble(text,who,imgData,videoData,fileData,fileName){
 let d=document.createElement('div');d.className='bubble '+(who==='user'?'user':'ai');
-let isImageRequest=/image|logo|picture|draw|poster|flyer|generate/i.test(text||'');
-if(who==='ai'&&!imgData&&!videoData&&!fileData&&!isImageRequest&&text.length>40&&!text.startsWith("WHAT'S")){let img=document.createElement('img');img.src='Foraneo Globe Logo.png';img.style.width='150px';img.style.height='150px';img.style.objectFit='contain';img.style.margin='10px auto';img.style.display='block';d.appendChild(img)}
 let t=document.createElement('div');t.textContent=text||'';d.appendChild(t);
 if(imgData){let im=document.createElement('img');im.src=imgData;d.appendChild(im)}
 if(videoData){let v=document.createElement('video');v.src=videoData;v.controls=true;d.appendChild(v)}
@@ -118,6 +116,16 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
   }
     catch(e){return "Gemini error: "+e.message;}
   }
+async function getWiki(topic){
+  try{
+    let clean = topic.trim().replace(/^(tell me about|who is|what is|about|explain)\s+/i,'').trim();
+    if(!clean) return null;
+    let res = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(clean));
+    let data = await res.json();
+    if(data.extract) return "📚 " + data.title + "\n\n" + data.extract + (data.content_urls?.desktop?.page ? "\n\nRead more: " + data.content_urls.desktop.page : "");
+    return null;
+  }catch(e){ return null; }
+}
 async function aiReply(q){
   let l=q.toLowerCase();
   if(lastImg && (l.includes('describe') || l.includes('what do you see') || l.includes('what is this') || l.includes('see this') || l.includes('in this image'))){
@@ -126,6 +134,15 @@ async function aiReply(q){
     return answer;
   }
   if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
+  if(l.includes('nicki minaj')){
+    let w = await getWiki("Nicki Minaj");
+    if(w) return w;
+    return "👑 Nicki Minaj (born Onika Tanya Maraj, 8 Dec 1982) is a Trinidadian-born rapper, singer and songwriter. She is known as the Queen of Rap. Famous songs: Super Bass, Starships, Anaconda, Chun-Li, Super Freaky Girl. She has won many awards and is one of the best-selling female rappers ever.";
+  }
+  if(l.startsWith('tell me about') || l.startsWith('who is') || l.startsWith('what is') || l.startsWith('explain')){
+    let w = await getWiki(q);
+    if(w) return w;
+  }
   if(imgMode||l.includes('logo')||l.includes('image')||l.includes('draw')){return "🎨 Image mode...";}
   if(gameMode||l.includes('game')||l.includes('quiz')||l.includes('riddle')){return "🎮 Game mode...";}
   if(l.includes('hello')||l.includes('hi')||l.includes('whats up')){return "Hello Friend! 👋 I am FORANEO_AI. How can I help you?";}
@@ -135,6 +152,9 @@ async function aiReply(q){
   if(l.includes('cv')||l.includes('resume')){return "📄 CV HELP: Send me your name, age, skills.";}
   if(l.includes('money')||l.includes('price')||l.includes('sell')){return "💰 MONEY TIP: Tell me what you sell.";}
   if(l.includes('who are you')||l.includes('what can you do')){return "I am FORANEO_AI from FORANEO (PTY) LTD - Chat, Images, Business, Coding, School.";}
+  // Last try: Wikipedia for any other question
+  let wiki = await getWiki(q);
+  if(wiki) return wiki;
   return "Got it Friend! 👍 For '"+q+"' - tell me a bit more: What is your goal? I will help you.";
 }
 async function sendMsg(){
@@ -199,4 +219,4 @@ document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gem
 restore();
 </script>
 </body>
-  </html>
+</html>
