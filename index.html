@@ -100,19 +100,38 @@ else if(f.type==='application/pdf'){addBubble('📎 PDF uploaded: '+f.name,'user
 else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);addBubble("Got your file! What should I do with it?","ai")}
 };r.readAsDataURL(f);fileEl.value='';
 };  
-  function aiReply(q){
-let l=q.toLowerCase();
-if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r}catch(e){return "Type like: 25+25"}}
-if(imgMode||l.includes('logo')||l.includes('image')||l.includes('draw')||l.includes('poster')||l.includes('flyer')){let p=encodeURIComponent(q+", high quality, professional");let url="https://image.pollinations.ai/prompt/"+p+"?width=512&height=512&nologo=true";setTimeout(()=>addBubble("Here is your image for: "+q,"ai",url),300);return "🎨 Making your image... one second..."}
-if(gameMode||l.includes('game')||l.includes('quiz')||l.includes('riddle')||l.includes('guess')){let games=["🎮 GUESS GAME: I am thinking of a number 1-10. Guess one!","🧩 RIDDLE: What has keys but can't open locks? Answer: A piano! Want another?","🎲 ROCK PAPER SCISSORS: Type Rock, Paper or Scissors!","📚 QUIZ: What is 5+7? Type your answer!"];return games[Math.floor(Math.random()*games.length)]}
-if(l.includes('hello')||l.includes('hi')||l.includes('whats up')||l.includes("what's up"))return "WHAT'S UP? Hi Friend! 😊 How can I help you today? Ask me Study, Business, Coding, or tap Image to make a logo.";
-if(l.includes('business')||bizMode)return "💼 BUSINESS PLAN for: "+q+"\n\n1. Idea: "+q+"\n2. Start small in Soweto, sell on WhatsApp + TikTok\n3. Price: Cost + 50% profit\n4. Marketing: Post 1 video a day\n5. Next step: Tell me your budget and I will make your full plan.";
-if(l.includes('code')||codeMode)return "💻 CODING: I can make you a website / app!\n\nTell me: What should it do? Example: 'Make a shop website for clothes'\nI will write the full HTML for you.";
-if(l.includes('study')||l.includes('homework')||l.includes('school'))return "📚 STUDY HELP: Tell me your subject + topic. Example: 'Explain photosynthesis for Grade 10' — I will explain step by step + give you quiz questions.";
-if(l.includes('cv')||l.includes('resume'))return "📄 CV HELP: Send me your name, age, school, skills, and job you want. I will write your CV for you.";
-if(l.includes('money')||l.includes('price')||l.includes('sell'))return "💰 MONEY TIP: To make money fast in Soweto: 1. Sell what people need daily (food, airtime, clothes) 2. Post on WhatsApp Status 3x a day 3. Offer delivery. Tell me what you want to sell and I will make your prices + advert.";
-if(l.includes('who are you')||l.includes('what can you do'))return "I am FORANEO_AI 🤖 by FORANEO (PTY) LTD. I can: Chat, Make Images/Logos, Calculator, Games, Help with Study/Business/Coding, Read your Images/PDFs, Voice Note/Call/Video Call. Tap Help tab to see all!";
-return "Got it Friend! 👍 For '"+q+"' — tell me a bit more: What is your goal? I will guide you step by step. Or tap: Image for logo, Calculator, Games, Business, Coding.";
+  async function callGeminiVision(question){
+  let key = localStorage.getItem('foraneo_gemini_key');
+  if(!key || !key.startsWith('AIza')) return "⚠️ No real Gemini key yet. Tap 🔑 AI Key at top and paste your key starting with AIza...";
+  if(!lastImg) return "Upload an image first, then ask me.";
+  try{
+    let base64 = lastImg.split(',')[1];
+    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text: question || "Describe this image in detail like Meta AI. What do you see?"},{inline_data:{mime_type:"image/jpeg", data: base64}}]}]})
+    });
+    let data = await res.json();
+    if(data.error) return "Gemini error: " + data.error.message;
+    return data.candidates[0].content.parts[0].text;
+  aiReply(v).then(r=>addBubble(r,'ai'));
+  let l=q.toLowerCase();
+  if(lastImg && (l.includes('describe') || l.includes('what do you see') || l.includes('what is this') || l.includes('see this') || l.includes('in this image'))){
+    addBubble("👁️ Looking at your image with Gemini... one second...", "ai");
+    let answer = await callGeminiVision(q);
+    return answer;
+  }
+  if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
+  if(imgMode||l.includes('logo')||l.includes('image')||l.includes('draw')){return "🎨 Image mode...";}
+  if(gameMode||l.includes('game')||l.includes('quiz')||l.includes('riddle')){return "🎮 Game mode...";}
+  if(l.includes('hello')||l.includes('hi')||l.includes('whats up')){return "Hello Friend! 👋 I am FORANEO_AI. How can I help you?";}
+  if(l.includes('business')||bizMode){return "💼 BUSINESS PLAN for: "+q;}
+  if(l.includes('code')||codeMode){return "💻 CODING: I can make you a website / app!";}
+  if(l.includes('study')||l.includes('homework')||l.includes('school')){return "📚 STUDY HELP: Send me your question.";}
+  if(l.includes('cv')||l.includes('resume')){return "📄 CV HELP: Send me your name, age, skills.";}
+  if(l.includes('money')||l.includes('price')||l.includes('sell')){return "💰 MONEY TIP: Tell me what you sell.";}
+  if(l.includes('who are you')||l.includes('what can you do')){return "I am FORANEO_AI from FORANEO (PTY) LTD - Chat, Images, Business, Coding, School.";}
+  return "Got it Friend! 👍 For '"+q+"' - tell me a bit more: What is your goal? I will help you.";
 }
 function sendMsg(){
 let v=input.value.trim();if(!v)return;
