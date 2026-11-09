@@ -34,7 +34,7 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 <img class="logo" src="https://via.placeholder.com/300x150?text=foraneo+(Pty)+Ltd" alt="foraneo">
 <div style="font-weight:bold;color:#2b7cff;margin-top:6px">FORANEO_AI • FOREGO</div>
 <div style="font-size:12px;color:#666">Created by FORANEO (PTY) LTD • FORANEO NET (MODERN LIFE, AIs)</div>
-<div id="authArea" class="authbox">
+<div class="authbox">
 <div id="userInfo" style="display:none;font-weight:bold;color:#2b7cff"></div>
 <div id="loginBtns">
 <button class="gbtn" onclick="loginGoogle()">🔵 Continue with Google</button>
@@ -55,17 +55,17 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 
 <div class="tools">
 <label>🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC <input type="file" id="fileInput" hidden onchange="handleFile(this)"></label>
-<button onclick="alert('Voice Note: Tap mic below, speak, then Send.')">▶️ Voice Note</button>
-<button onclick="alert('Voice Call: Coming soon in FORANEO_AI')">🎤 Voice Call</button>
-<button onclick="alert('Video Call: Coming soon in FORANEO_AI')">👤 Video Call</button>
-<button onclick="showHelp()">📚 What FORANEO_AI can do</button>
+<button type="button" onclick="showVoiceNote()">▶️ Voice Note</button>
+<button type="button" onclick="showVoiceCall()">🎤 Voice Call</button>
+<button type="button" onclick="showVideoCall()">👤 Video Call</button>
+<button type="button" id="helpBtn" onclick="showHelp()">📚 What FORANEO_AI can do</button>
 </div>
 
 <div class="bottom">
-<button onclick="startVoice()">🎤</button>
-<button onclick="alert('Video maker: Type what video you want and Send.')">🎬</button>
+<button type="button" onclick="startVoice()">🎤</button>
+<button type="button" onclick="showVideoMaker()">🎬</button>
 <input id="userInput" placeholder="Ask FORANEO_AI anything..." onkeydown="if(event.key==='Enter') sendMsg()">
-<button onclick="sendMsg()">➤</button>
+<button type="button" onclick="sendMsg()">➤</button>
 </div>
 <div class="small">FORANEO_AI • Created by FORANEO (PTY) LTD • FORANEO NET (MODERN LIFE, AIs) • FOREGO</div>
 
@@ -73,9 +73,9 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 let pendingFile = null;
 let pendingFileType = "";
 function getKey(){ return localStorage.getItem('foraneo_key') || ""; }
-function getUser(){ try{ const u=JSON.parse(localStorage.getItem('foraneo_user')||"null"); if(u && !u.name) u.name = u.email ? u.email.split('@')[0] : "Friend"; return u; }catch(e){return null} }
+function getUser(){ try{ let u=JSON.parse(localStorage.getItem('foraneo_user')||"null"); if(u && !u.name) u.name = u.email ? u.email.split('@')[0] : "Friend"; return u; }catch(e){ return null; } }
 function updateAuth(){
-  const u=getUser();
+  let u=getUser();
   if(u){
     document.getElementById('userInfo').style.display='block';
     document.getElementById('userInfo').textContent='👋 Hi, '+u.name+' ('+u.email+') ✅ Logged in';
@@ -88,137 +88,99 @@ function updateAuth(){
   }
 }
 function loginGoogle(){
-  const email=prompt("For Google Login, enter your Google email to continue:");
+  let email=prompt("For Google Login, enter your Google email to continue:");
   if(!email) return;
-  const name=email.split('@')[0] || "Friend";
+  let name=email.split('@')[0] || "Friend";
   localStorage.setItem('foraneo_user', JSON.stringify({email:email,name:name,method:'Google'}));
   updateAuth();
   addMsg("ai","Welcome "+name+"! You are logged in with Google ✅");
 }
 function loginEmail(){
-  const email=document.getElementById('emailInput').value.trim();
+  let email=document.getElementById('emailInput').value.trim();
   let name=document.getElementById('nameInput').value.trim();
   if(!name && email) name=email.split('@')[0];
-  if(!email||!email.includes('@')){alert("Enter a valid email");return;}
+  if(!email||!email.includes('@')){ alert("Enter a valid email"); return; }
   if(!name) name="Friend";
   localStorage.setItem('foraneo_user', JSON.stringify({email:email,name:name,method:'Email'}));
   updateAuth();
   addMsg("ai","Welcome "+name+"! You are logged in with Email ✅");
 }
 function logout(){ localStorage.removeItem('foraneo_user'); updateAuth(); addMsg("ai","You logged out."); }
-window.onload = function(){
-  updateAuth();
-  const k = getKey();
-  if(k) document.getElementById('apiKey').value = k;
-  const u=getUser();
-  if(u) addMsg("ai", "👋 Welcome back "+u.name+"! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Paste your OWN key if you haven't, then ask me anything.");
-  else addMsg("ai", "👋 Hi! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Please Login with Google or Email at the top, paste your OWN key, then ask me anything.");
-};
+function showVoiceNote(){ alert("Voice Note: Tap mic below, speak, then Send."); }
+function showVoiceCall(){ alert("Voice Call: Coming soon in FORANEO_AI"); }
+function showVideoCall(){ alert("Video Call: Coming soon in FORANEO_AI"); }
+function showVideoMaker(){ alert("Video maker: Type what video you want and Send."); }
 function saveKey(){
-  const k = document.getElementById('apiKey').value.trim();
+  let k=document.getElementById('apiKey').value.trim();
   if(!k){ alert("Paste your key first"); return; }
   localStorage.setItem('foraneo_key', k);
   addMsg("ai", "Key saved! Length: " + k.length + " — Now type Hi and Send.");
 }
 function addMsg(who, text){
-  const c = document.getElementById('chat');
-  const d = document.createElement('div');
-  d.className = "msg " + (who === "me" ? "me" : "ai");
-  d.textContent = text;
+  let c=document.getElementById('chat');
+  let d=document.createElement('div');
+  d.className="msg "+(who==="me"?"me":"ai");
+  d.textContent=text;
   c.appendChild(d);
-  c.scrollTop = c.scrollHeight;
+  c.scrollTop=c.scrollHeight;
   return d;
 }
 function showHelp(){
-  addMsg("ai", "📚 What FORANEO_AI can do\n\n" +
-  "1. WHAT FORANEO_AI CAN DO:\n" +
-  "• Code - write HTML, Python, JavaScript, apps, fix code errors\n" +
-  "• Entertain - jokes, stories, games, fun chats, music lyrics\n" +
-  "• Answer questions\n" +
-  "• Write essays, CVs, business plans, letters, emails, speeches\n" +
-  "• Read images / PDF / DOC / Files / MP3 / MP4\n" +
-  "• Explain school work - maths, English, science, homework\n" +
-  "• Help with business - foraneo (Pty) Ltd\n" +
-  "• Help with modern life, technology and AIs\n" +
-  "• Translate languages\n" +
-  "• Study, learn, revise and prepare for exams\n" +
-  "• Plan - trips, parties, budgets, daily life\n" +
-  "• Etc - just ask anything!\n\n" +
-  "Just type or upload a file.\n\n" +
-  "---\n" +
-  "2. FORANEO_AI INFORMATION:\n" +
-  "Name: FORANEO_AI\n" +
-  "Created by: FORANEO (PTY) LTD\n" +
-  "Department: FORANEO NET (MODERN LIFE, AIs)\n" +
-  "Motto: FOREGO\n\n" +
-  "✨ AI CREATION INSIDE INFORMATION:\n" +
-  "AI creations as FORANEO_AI:\n" +
-  "• Create stories, poems and songs\n" +
-  "• Create business names, logos ideas, slogans\n" +
-  "• Create video ideas, scripts and captions\n" +
-  "• Create images ideas, posters and designs\n" +
-  "• Create study notes, quizzes and flashcards\n" +
-  "• Create apps, websites and code\n" +
-  "• Create CVs, presentations and plans\n\n" +
-  "FORANEO_AI helps everyone, like you.");
+  addMsg("ai", "📚 What FORANEO_AI can do\n\n1. WHAT FORANEO_AI CAN DO:\n• Code - write HTML, Python, JavaScript, apps, fix code errors\n• Entertain - jokes, stories, games, fun chats, music lyrics\n• Answer questions\n• Write essays, CVs, business plans, letters, emails, speeches\n• Read images / PDF / DOC / Files / MP3 / MP4\n• Explain school work - maths, English, science, homework\n• Help with business - foraneo (Pty) Ltd\n• Help with modern life, technology and AIs\n• Translate languages\n• Study, learn, revise and prepare for exams\n• Plan - trips, parties, budgets, daily life\n• Etc - just ask anything!\n\nJust type or upload a file.\n\n---\n2. FORANEO_AI INFORMATION:\nName: FORANEO_AI\nCreated by: FORANEO (PTY) LTD\nDepartment: FORANEO NET (MODERN LIFE, AIs)\nMotto: FOREGO\n\n✨ AI CREATION INSIDE INFORMATION:\nAI creations as FORANEO_AI:\n• Create stories, poems and songs\n• Create business names, logos ideas, slogans\n• Create video ideas, scripts and captions\n• Create images ideas, posters and designs\n• Create study notes, quizzes and flashcards\n• Create apps, websites and code\n• Create CVs, presentations and plans\n\nFORANEO_AI helps everyone, like you.");
 }
 function handleFile(input){
-  const f = input.files[0];
+  let f=input.files[0];
   if(!f) return;
-  pendingFileType = f.type;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    pendingFile = e.target.result;
-    addMsg("me", "📎 Uploaded: " + f.name + " — Now type what you want me to do with it and Send.");
+  pendingFileType=f.type;
+  let reader=new FileReader();
+  reader.onload=function(e){
+    pendingFile=e.target.result;
+    addMsg("me", "📎 Uploaded: "+f.name+" — Now type what you want me to do with it and Send.");
   };
-  if(f.type.startsWith("image/")) reader.readAsDataURL(f);
+  if(f.type.indexOf("image/")===0) reader.readAsDataURL(f);
   else reader.readAsText(f);
 }
 function startVoice(){
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){ alert("Voice not supported on this phone, please type."); return; }
-  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const r = new Rec();
-  r.lang = "en-ZA";
-  r.onresult = function(e){ document.getElementById('userInput').value = e.results[0][0].transcript; sendMsg(); };
+  let Rec=window.SpeechRecognition || window.webkitSpeechRecognition;
+  let r=new Rec();
+  r.lang="en-ZA";
+  r.onresult=function(e){ document.getElementById('userInput').value=e.results[0][0].transcript; sendMsg(); };
   r.start();
   addMsg("ai", "🎤 Listening... speak now.");
 }
 async function sendMsg(){
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
+  let input=document.getElementById('userInput');
+  let text=input.value.trim();
   if(!text && !pendingFile) return;
-  const key = getKey();
-  if(!key){
-    addMsg("ai", "⚠️ Paste your OWN key in the white box at the TOP, tap Save Key, then ask again.");
-    return;
-  }
+  let key=getKey();
+  if(!key){ addMsg("ai","⚠️ Paste your OWN key in the white box at the TOP, tap Save Key, then ask again."); return; }
   addMsg("me", text || "Please read this file.");
-  input.value = "";
-  const thinking = addMsg("ai", "Thinking...");
+  input.value="";
+  let thinking=addMsg("ai","Thinking...");
   try{
-    let parts = [{text: "You are FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto is FOREGO. You help everyone. Answer this: " + (text || "Please explain this file.")}];
-    if(pendingFile && pendingFileType.startsWith("image/")){
-      parts.push({inline_data:{mime_type:pendingFileType, data:pendingFile.split(",")[1]}});
+    let parts=[{text:"You are FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto is FOREGO. You help everyone. Answer this: "+(text || "Please explain this file.")}];
+    if(pendingFile && pendingFileType.indexOf("image/")===0){
+      let base64Data=pendingFile.split(",")[1];
+      parts.push({inline_data:{mime_type:pendingFileType, data:base64Data}});
     }
-    pendingFile = null;
-    // ONLY 3.8-flash - 2.5 is dead, never use it again
-    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + key;
-    const res = await fetch(url, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({contents:[{parts:parts}]})
-    });
-    const data = await res.json();
-    if(data.error){
-      thinking.textContent = "Gemini error: " + data.error.message + " - wait 1 min and try again.";
-      return;
-    }
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No reply, try again.";
-    thinking.textContent = reply;
-  }catch(e){
-    thinking.textContent = "Error: " + e.message + " - check internet and try again.";
-  }
+    pendingFile=null;
+    let url="https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key="+key;
+    let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})});
+    let data=await res.json();
+    if(data.error){ thinking.textContent="Gemini error: "+data.error.message+" - wait 1 min and try again."; return; }
+    let reply=(data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || "No reply, try again.";
+    thinking.textContent=reply;
+  }catch(e){ thinking.textContent="Error: "+e.message+" - check internet and try again."; }
 }
+window.onload=function(){
+  updateAuth();
+  let k=getKey();
+  if(k) document.getElementById('apiKey').value=k;
+  let u=getUser();
+  if(u) addMsg("ai","👋 Welcome back "+u.name+"! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Paste your OWN key if you haven't, then ask me anything.");
+  else addMsg("ai","👋 Hi! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Please Login with Google or Email at the top, paste your OWN key, then ask me anything.");
+};
 </script>
 </body>
 </html>
