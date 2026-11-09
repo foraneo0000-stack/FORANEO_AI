@@ -72,7 +72,8 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 <script>
 let pendingFile = null;
 let pendingFileType = "";
-function getKey(){ return localStorage.getItem('foraneo_key') || ""; }
+let isTrying = false;
+function getKey(){ return (localStorage.getItem('foraneo_key') || "").trim(); }
 function getUser(){ try{ let u=JSON.parse(localStorage.getItem('foraneo_user')||"null"); if(u && !u.name) u.name = u.email ? u.email.split('@')[0] : "Friend"; return u; }catch(e){ return null; } }
 function updateAuth(){
   let u=getUser();
@@ -149,15 +150,18 @@ function startVoice(){
   r.start();
   addMsg("ai", "🎤 Listening... speak now.");
 }
+function sleep(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
 async function sendMsg(){
   let input=document.getElementById('userInput');
   let text=input.value.trim();
   if(!text && !pendingFile) return;
+  if(isTrying){ addMsg("ai","⏳ I'm already trying, please wait, don't send again..."); return; }
   let key=getKey();
   if(!key){ addMsg("ai","⚠️ Paste your OWN key in the white box at the TOP, tap Save Key, then ask again."); return; }
   addMsg("me", text || "Please read this file.");
   input.value="";
   let thinking=addMsg("ai","Thinking...");
+  isTrying=true;
   try{
     let parts=[{text:"You are FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto is FOREGO. You help everyone. Answer this: "+(text || "Please explain this file.")}];
     if(pendingFile && pendingFileType.indexOf("image/")===0){
@@ -165,13 +169,38 @@ async function sendMsg(){
       parts.push({inline_data:{mime_type:pendingFileType, data:base64Data}});
     }
     pendingFile=null;
-    let url="https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key="+key;
-    let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})});
-    let data=await res.json();
-    if(data.error){ thinking.textContent="Gemini error: "+data.error.message+" - wait 1 min and try again."; return; }
-    let reply=(data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || "No reply, try again.";
-    thinking.textContent=reply;
-  }catch(e){ thinking.textContent="Error: "+e.message+" - check internet and try again."; }
+    let models=["gemini-3.8-flash","gemini-2.0-flash","gemini-2.0-flash-lite","gemini-1.5-flash","gemini-1.5-flash-8b"];
+    let attempt=0;
+    while(true){
+      attempt++;
+      let model=models[(attempt-1) % models.length];
+      thinking.textContent="Thinking... Trying "+model+" (try "+attempt+") - FORANEO_AI will NOT give up, keep waiting...";
+      try{
+        let url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
+        let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})});
+        let data=await res.json();
+        if(data.error){
+          let msg=data.error.message || "";
+          // If key is really wrong, stop and tell user - otherwise keep retrying
+          if(msg.indexOf("API key not valid")>-1 || msg.indexOf("API_KEY_INVALID")>-1){
+            thinking.textContent="❌ Your key is wrong. Go to aistudio.google.com/apikey, create NEW key, paste FULL key, Save Key, try again.";
+            break;
+          }
+          thinking.textContent="⏳ Google busy / "+msg+" - Trying again in 5 sec... (try "+attempt+") Don't send again, I'm still trying...";
+          await sleep(5000);
+          continue;
+        }
+        let reply=(data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || "";
+        if(reply){ thinking.textContent=reply; break; }
+        thinking.textContent="⏳ Empty reply, trying again... (try "+attempt+")";
+        await sleep(3000);
+      }catch(e){
+        thinking.textContent="⏳ Internet glitch (Failed to fetch) - Trying again in 5 sec... (try "+attempt+") Don't send again, I'm still trying...";
+        await sleep(5000);
+      }
+    }
+  }catch(e){ thinking.textContent="Error: "+e.message+" - trying again..."; }
+  isTrying=false;
 }
 window.onload=function(){
   updateAuth();
