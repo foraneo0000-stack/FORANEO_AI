@@ -102,12 +102,12 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
 };r.readAsDataURL(f);fileEl.value='';
 };
 async function callGeminiVision(question){
-  let key = localStorage.getItem('foraneo_gemini_key');
+  let key = (localStorage.getItem('foraneo_gemini_key')||'').trim();
   if(!key || !key.startsWith('AIza')) return "⚠️ No real Gemini key yet. Tap 🔑 AI Key at top and paste your key starting with AIza...";
   if(!lastImg) return "Upload an image first, then ask me.";
   try{
     let base64 = lastImg.split(',')[1];
-    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {
+    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+key, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:[{parts:[{text: question || "Describe this image in detail like Meta AI. What do you see?"},{inline_data:{mime_type:"image/jpeg", data: base64}}]}]})
@@ -126,7 +126,7 @@ async function aiReply(q){
     return answer;
   }
   if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
-  let key = localStorage.getItem('foraneo_gemini_key');
+  let key = (localStorage.getItem('foraneo_gemini_key')||'').trim();
   if(!key || !key.startsWith('AIza')) return "⚠️ Tap 🔑 AI Key at top and paste your Gemini key starting with AIza...";
   try{
     let modeText = "";
@@ -135,7 +135,7 @@ async function aiReply(q){
     if(helpMode) modeText = "User needs study/homework help. ";
     if(bizMode) modeText = "User needs business help. Give plan, prices, marketing. ";
     if(codeMode) modeText = "User needs coding help. Give code. ";
-    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {
+    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+key, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:[{parts:[{text: "You are FORANEO_AI from FORANEO (PTY) LTD. Motto: forego. Company in Mokopane, South Africa. Focus: Tech, AI, Training and Education. Be helpful, friendly, clear, short. "+modeText+"User: "+q}]}]})
@@ -203,7 +203,7 @@ document.getElementById('signBtn').onclick=()=>document.getElementById('authModa
 document.getElementById('closeAuth').onclick=()=>document.getElementById('authModal').style.display='none';
 document.getElementById('googleBtn').onclick=()=>{let e=prompt('Enter your Google email:');if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
 document.getElementById('emailBtn').onclick=()=>{let e=document.getElementById('emailInput').value;if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
-document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gemini API Key from aistudio.google.com:');if(k){localStorage.setItem('foraneo_gemini_key',k);document.getElementById('keyBtn').textContent='✅ AI Key';addBubble("Key saved! Now I can see images like Meta AI.","ai")}};
+document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gemini API Key from aistudio.google.com:');if(k){k=k.trim();localStorage.setItem('foraneo_gemini_key',k);document.getElementById('keyBtn').textContent='✅ AI Key';addBubble("Key saved! Now I can see images like Meta AI.","ai")}};
 restore();
 </script>
 </body>
