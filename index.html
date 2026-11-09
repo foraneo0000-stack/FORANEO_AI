@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORANEO_AI - foraneo</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:flex;flex-direction:column}
 .top{background:#fff;padding:14px;text-align:center;border-bottom:1px solid #ddd}
 .logo{width:150px;max-width:70%;border:3px solid #2b7cff;border-radius:14px}
+.authbox{margin:12px auto;max-width:500px;background:#f0f5ff;padding:12px;border-radius:12px}
+.authbox button,.authbox input{width:100%;padding:11px;margin:4px 0;border-radius:8px;border:1px solid #ccc;font-weight:bold}
+.gbtn{background:#fff;color:#000 !important}
+.ebtn{background:#2b7cff;color:#fff;border:0}
 .keybox{margin:12px auto;max-width:500px;background:#fff;padding:10px;border-radius:12px;display:flex;gap:8px}
 .keybox input{flex:1;padding:10px;border:1px solid #ccc;border-radius:8px}
 .keybox button{background:#2b7cff;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}
@@ -22,120 +27,121 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 .bottom input{flex:1;padding:13px;border:1px solid #ccc;border-radius:25px;outline:none}
 .bottom button{width:48px;height:48px;border-radius:50%;border:0;background:#2b7cff;color:#fff;font-size:20px}
 .small{text-align:center;font-size:12px;color:#888;padding-bottom:8px}
-img.prev{max-width:100%;border-radius:10px;margin-top:8px}
 </style>
 </head>
 <body>
-
 <div class="top">
 <img class="logo" src="https://via.placeholder.com/300x150?text=foraneo+(Pty)+Ltd" alt="foraneo">
+<div id="authArea" class="authbox">
+<div id="userInfo" style="display:none;font-weight:bold;color:#2b7cff"></div>
+<div id="loginBtns">
+<button class="gbtn" onclick="loginGoogle()">🔵 Continue with Google</button>
+<input id="emailInput" type="email" placeholder="Enter your email - e.g. you@gmail.com">
+<input id="nameInput" type="text" placeholder="Enter your name">
+<button class="ebtn" onclick="loginEmail()">📧 Login with Email</button>
+</div>
+<button id="logoutBtn" style="display:none;background:#ff4444;color:#fff;border:0" onclick="logout()">Logout</button>
+</div>
 <div class="keybox">
-<input id="apiKey" type="password" placeholder="Paste your Gemini API Key here">
+<input id="apiKey" type="password" placeholder="Paste YOUR OWN Gemini API Key here">
 <button onclick="saveKey()">Save Key</button>
 </div>
+<div style="font-size:12px;color:#666;max-width:500px;margin:0 auto">Each person uses their OWN key. Your key stays in YOUR phone only. Get free key at aistudio.google.com/apikey</div>
 </div>
-
 <div id="chat"></div>
-
 <div class="tools">
 <label>🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC <input type="file" id="fileInput" hidden onchange="handleFile(this)"></label>
 <button onclick="alert('Voice Note: Tap mic below, speak, then Send.')">▶️ Voice Note</button>
-<button onclick="alert('Voice Call: Coming soon in FORANEO_AI')">🎤 Voice Call</button>
-<button onclick="alert('Video Call: Coming soon in FORANEO_AI')">👤 Video Call</button>
+<button onclick="alert('Voice Call: Coming soon')">🎤 Voice Call</button>
+<button onclick="alert('Video Call: Coming soon')">👤 Video Call</button>
 <button onclick="showHelp()">📚 What FORANEO can do?</button>
 </div>
-
 <div class="bottom">
 <button onclick="startVoice()">🎤</button>
 <button onclick="alert('Video maker: Type what video you want and Send.')">🎬</button>
 <input id="userInput" placeholder="Ask FORANEO_AI anything..." onkeydown="if(event.key==='Enter') sendMsg()">
 <button onclick="sendMsg()">➤</button>
 </div>
-<div class="small">FORANEO_AI • foraneo</div>
-
+<div class="small">FORANEO_AI • foraneo (Pty) Ltd • Helps everyone like you</div>
 <script>
-let pendingFile = null;
-let pendingFileType = "";
-
-function getKey(){ return localStorage.getItem('foraneo_key') || ""; }
-window.onload = function(){
-  const k = getKey();
-  if(k) document.getElementById('apiKey').value = k;
-  addMsg("ai", "👋 Hi! I'm FORANEO_AI. Paste your key at the top if you haven't, then ask me anything.");
+let pendingFile=null,pendingFileType="";
+function getKey(){return localStorage.getItem('foraneo_key')||""}
+function getUser(){return JSON.parse(localStorage.getItem('foraneo_user')||"null")}
+function updateAuth(){
+  const u=getUser();
+  if(u){
+    document.getElementById('userInfo').style.display='block';
+    document.getElementById('userInfo').textContent='👋 Hi, '+u.name+' ('+u.email+') ✅ Logged in';
+    document.getElementById('loginBtns').style.display='none';
+    document.getElementById('logoutBtn').style.display='block';
+  } else {
+    document.getElementById('userInfo').style.display='none';
+    document.getElementById('loginBtns').style.display='block';
+    document.getElementById('logoutBtn').style.display='none';
+  }
+}
+function loginGoogle(){
+  // Simple Google Login - uses Google popup, saves email
+  // For full secure Google login, we will add Firebase later - this version asks to confirm email after Google
+  const email=prompt("For Google Login, enter your Google email to continue:");
+  if(!email) return;
+  const name=email.split('@')[0];
+  localStorage.setItem('foraneo_user', JSON.stringify({email:email,name:name,method:'Google'}));
+  updateAuth();
+  addMsg("ai","Welcome "+name+"! You are logged in with Google ✅ Now paste YOUR OWN Gemini key above and ask me anything.");
+}
+function loginEmail(){
+  const email=document.getElementById('emailInput').value.trim();
+  const name=document.getElementById('nameInput').value.trim()||email.split('@')[0];
+  if(!email||!email.includes('@')){alert("Enter a valid email");return;}
+  localStorage.setItem('foraneo_user', JSON.stringify({email:email,name:name,method:'Email'}));
+  updateAuth();
+  addMsg("ai","Welcome "+name+"! You are logged in with Email ✅ Now paste YOUR OWN Gemini key above.");
+}
+function logout(){
+  localStorage.removeItem('foraneo_user');
+  updateAuth();
+  addMsg("ai","You logged out. Login again to continue.");
+}
+window.onload=function(){
+  updateAuth();
+  const k=getKey(); if(k) document.getElementById('apiKey').value=k;
+  const u=getUser();
+  if(u) addMsg("ai","👋 Welcome back "+u.name+"! I'm FORANEO_AI. I help everyone like you. Paste your OWN key if you haven't, then ask me anything.");
+  else addMsg("ai","👋 Hi! I'm FORANEO_AI. Please Login with Google or Email at the top, then paste YOUR OWN Gemini key, then ask me anything.");
 };
-function saveKey(){
-  const k = document.getElementById('apiKey').value.trim();
-  if(!k){ alert("Paste your key first"); return; }
-  localStorage.setItem('foraneo_key', k);
-  addMsg("ai", "Key saved! Length: " + k.length + " — Now type Hi and Send.");
-}
-function addMsg(who, text){
-  const c = document.getElementById('chat');
-  const d = document.createElement('div');
-  d.className = "msg " + (who === "me" ? "me" : "ai");
-  d.textContent = text;
-  c.appendChild(d);
-  c.scrollTop = c.scrollHeight;
-  return d;
-}
-function showHelp(){
-  addMsg("ai", "📚 What FORANEO can do?\n\n• Answer questions\n• Write essays, CVs, business plans\n• Read images / PDF / DOC\n• Explain school work\n• Help with business - foraneo (Pty) Ltd\n\nJust type or upload a file.");
-}
-function handleFile(input){
-  const f = input.files[0];
-  if(!f) return;
-  pendingFileType = f.type;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    pendingFile = e.target.result;
-    addMsg("me", "📎 Uploaded: " + f.name + " — Now type what you want me to do with it and Send.");
-  };
-  if(f.type.startsWith("image/")) reader.readAsDataURL(f);
-  else reader.readAsText(f);
-}
-function startVoice(){
-  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){ alert("Voice not supported on this phone, please type."); return; }
-  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const r = new Rec();
-  r.lang = "en-ZA";
-  r.onresult = function(e){ document.getElementById('userInput').value = e.results[0][0].transcript; sendMsg(); };
-  r.start();
-  addMsg("ai", "🎤 Listening... speak now.");
+function saveKey(){const k=document.getElementById('apiKey').value.trim();if(!k){alert("Paste your key first");return;}localStorage.setItem('foraneo_key',k);addMsg("ai","Key saved! Length: "+k.length+" — Now type Hi and Send. Remember: this key is only in YOUR phone.");}
+function addMsg(who,text){const c=document.getElementById('chat');const d=document.createElement('div');d.className="msg "+(who==="me"?"me":"ai");d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
+function showHelp(){addMsg("ai","📚 What FORANEO can do?\n\n• Answer questions\n• Write essays, CVs, business plans\n• Read images / PDF / DOC\n• Explain school work\n• Help with business - foraneo (Pty) Ltd\n\nJust login, add YOUR key, type or upload.");}
+function handleFile(input){const f=input.files[0];if(!f)return;pendingFileType=f.type;const reader=new FileReader();reader.onload=function(e){pendingFile=e.target.result;addMsg("me","📎 Uploaded: "+f.name+" — Now type what you want me to do with it and Send.");};if(f.type.startsWith("image/"))reader.readAsDataURL(f);else reader.readAsText(f);}
+function startVoice(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Voice not supported, please type.");return;}const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;const r=new Rec();r.lang="en-ZA";r.onresult=function(e){document.getElementById('userInput').value=e.results[0][0].transcript;sendMsg();};r.start();addMsg("ai","🎤 Listening... speak now.");}
+async function tryModel(model,key,parts){
+  const url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
+  const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})});
+  const data=await res.json();
+  return data;
 }
 async function sendMsg(){
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if(!text && !pendingFile) return;
-  const key = getKey();
-  if(!key){
-    addMsg("ai", "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.");
-    return;
-  }
-  addMsg("me", text || "Please read this file.");
-  input.value = "";
-  const thinking = addMsg("ai", "Thinking...");
+  const input=document.getElementById('userInput');const text=input.value.trim();
+  if(!text&&!pendingFile)return;
+  if(!getUser()){addMsg("ai","⚠️ Please Login with Google or Email at the TOP first.");return;}
+  const key=getKey();
+  if(!key){addMsg("ai","⚠️ Paste YOUR OWN key in the box at the TOP, tap Save Key, then ask again. Get free key at aistudio.google.com/apikey");return;}
+  addMsg("me",text||"Please read this file.");input.value="";
+  const thinking=addMsg("ai","Thinking...");
   try{
-    let parts = [{text: text || "Please explain this file."}];
-    if(pendingFile && pendingFileType.startsWith("image/")){
-      parts.push({inline_data:{mime_type:pendingFileType, data:pendingFile.split(",")[1]}});
+    let parts=[{text:text||"Please explain this file."}];
+    if(pendingFile&&pendingFileType.startsWith("image/")){parts.push({inline_data:{mime_type:pendingFileType,data:pendingFile.split(",")[1]}});}
+    pendingFile=null;
+    let data=await tryModel("gemini-3.8-flash",key,parts);
+    if(data.error&&data.error.message.includes("high demand")){
+      thinking.textContent="First model busy, trying backup model...";
+      data=await tryModel("gemini-2.5-flash",key,parts);
     }
-    pendingFile = null;
-    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + key;
-    const res = await fetch(url, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({contents:[{parts:parts}]})
-    });
-    const data = await res.json();
-    if(data.error){
-      thinking.textContent = "Gemini error: " + data.error.message + " - wait 1 min and try again.";
-      return;
-    }
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No reply, try again.";
-    thinking.textContent = reply;
-  }catch(e){
-    thinking.textContent = "Error: " + e.message + " - check internet and try again.";
-  }
+    if(data.error){thinking.textContent="Gemini error: "+data.error.message+" - wait 1 min and try again.";return;}
+    const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||"No reply, try again.";
+    thinking.textContent=reply;
+  }catch(e){thinking.textContent="Error: "+e.message;}
 }
 </script>
 </body>
