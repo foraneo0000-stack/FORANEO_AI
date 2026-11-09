@@ -40,24 +40,29 @@
 .gBtn{width:100%;padding:13px;background:#fff;border:1.8px solid #dbe2ff;border-radius:28px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:10px}
 #emailInput,#passInput{width:100%;padding:13px 16px;border-radius:28px;border:1.8px solid #dbe2ff;margin-bottom:10px;outline:none}
 .small{font-size:11px;opacity:.62;margin-top:8px;text-align:center}
+#keyBar{display:flex;gap:6px;padding:10px;background:#fff;border-bottom:1.5px solid #e6ebff;position:sticky;top:110px;z-index:900;max-width:940px;margin:0 auto}
+#keyInput{flex:1;padding:11px 14px;border-radius:20px;border:1.8px solid #dbe2ff;outline:none;font-size:13px}
+#keySaveBtn{background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none;padding:11px 16px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap}
 </style>
 </head>
 <body>
 <div class="header"><div class="headerTop"><div class="logoBox"><div class="logo"><img src="Foraneo Globe Logo.png"></div><div class="logoTxt"><b>FORANEO_AI</b><span>FORANEO (PTY) LTD</span></div></div><div style="display:flex;gap:6px"><button class="signBtn" id="keyBtn">🔑 AI Key</button><button class="signBtn" id="signBtn">👤 Sign up / Log in</button></div></div><h1>FORANEO_AI</h1><p>Foraneo Net Department • forego</p></div>
+<div id="keyBar"><input id="keyInput" placeholder="Paste Gemini Key here... AIza..." autocomplete="off"><button id="keySaveBtn">Save Key</button></div>
 <div class="tabs"><div class="tab active" id="tabChat">💬 Chat</div><div class="tab" id="tabImage">🎨 Image / Logo</div><div class="tab" id="tabCalc">🧮 Calculator</div><div class="tab" id="tabGames">🎮 Games</div><div class="tab" id="tabHelp">📚 Help</div><div class="tab" id="tabBusiness">💼 Business</div><div class="tab" id="tabCoding">💻 Coding</div><div class="tab clear" id="tabClear">🗑️ Clear Chats</div></div>
 <div id="chat"></div>
 <div id="callBox"><video id="cam" autoplay playsinline muted></video><div id="aiLive"><div class="live-badge">● LIVE</div><div id="aiAvatar">🤖</div><div id="aiStatus" style="margin-top:12px;font-size:15px">FORANEO_AI LIVE</div><div class="wave"><span></span><span></span><span></span><span></span></div></div><div class="callControls"><button id="seeMeBtn" style="background:#fff;color:#1a5cff;display:none">👁️ See Me</button><button id="endCallBtn" style="background:#ff2a2a;color:#fff">End Call</button><button id="speakBtn" style="background:#1a5cff;color:#fff">🔇 Mute AI</button></div><div style="text-align:center;color:#fff;padding-bottom:8px;font-size:13px" id="callText">Live...</div></div>
 <div id="authModal"><div id="authBox"><div class="logo" style="width:70px;height:70px;margin:0 auto 14px"><img src="Foraneo Globe Logo.png"></div><h3>Welcome to FORANEO_AI</h3><button class="gBtn" id="googleBtn">Continue with Google</button><div style="display:flex;align-items:center;gap:12px;margin:14px 0;font-size:12px;opacity:.5"><div style="flex:1;height:1px;background:#e6ebff"></div>or<div style="flex:1;height:1px;background:#e6ebff"></div></div><input id="emailInput" placeholder="Email address" type="email"><input id="passInput" placeholder="Password" type="password"><button class="gBtn" id="emailBtn" style="background:linear-gradient(135deg,#1a5cff,#0f46d6);color:#fff;border:none">Continue with Email</button><button class="gBtn" id="closeAuth" style="border:none;background:#f8f9ff">Cancel</button><div class="small" id="authStatus"></div></div></div>
 <div class="bar"><div class="upload" id="uploadBtn">🏀 📎 Upload Image / Document / File / MP3 / MP4 / PDF / DOC</div><input type="file" id="file" hidden accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.mp4,.wav,.m4a,.webp,.heic,.png,.jpeg,.jpg,.gif"><div class="pills"><div class="pill" id="pillVoiceNote">▶️ Voice Note</div><div class="pill" id="pillVoiceCall">🎤 Voice Call</div><div class="pill" id="pillVideoCall">👤 Video Call</div></div><div class="pills"><div class="pill" id="pillWhatCan">📚 What FORANEO can do?</div></div><div id="emojiPanel"><span>😊</span><span>😂</span><span>❤️</span><span>🔥</span><span>👍</span><span>🎉</span><span>🙏</span><span>😍</span><span>🤔</span><span>👏</span><span>💯</span><span>🚀</span><span>💼</span><span>💻</span><span>🎨</span><span>🏀</span><span>📚</span><span>✨</span><span>🌟</span><span>💡</span><span>🎯</span><span>✅</span><span>👑</span><span>🦁</span><span>🗣</span></div><div class="row"><button class="btnEmoji" id="btnEmoji">🗣</button><button class="btnSmall" id="btnGenerate">🎬</button><input id="input" placeholder="Ask FORANEO_AI anything..." autocomplete="off"/><button class="btnSend" id="sendBtn">Send</button></div><div class="small">FORANEO_AI • forego</div></div>
 <script>
+let MEMORY_KEY="";
 let lastImg=null,currentUser=null,recording=false,mediaRecorder=null,chunks=[],callStream=null,callType=null,muted=false;
 let topic="Chat";
 let imgMode=false,calcMode=false,gameMode=false,helpMode=false,bizMode=false,codeMode=false;
 const chatEl=document.getElementById('chat');
 const input=document.getElementById('input');
 const fileEl=document.getElementById('file');
+function getKey(){let k=(MEMORY_KEY||"").trim();if(k) return k;try{let s=(localStorage.getItem('foraneo_gemini_key')||'').trim();if(s) return s;}catch(e){}try{let v=document.getElementById('keyInput').value.trim();if(v) return v;}catch(e){}return "";}
 function scrollB(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
-function saveH(){try{let h=JSON.parse(localStorage.getItem('foraneo_final_whatsup')||'[]');if(h.length>20)h=h.slice(-20);localStorage.setItem('foraneo_final_whatsup',JSON.stringify(h))}catch(e){}}
 function addBubble(text,who,imgData,videoData,fileData,fileName){
 let d=document.createElement('div');d.className='bubble '+(who==='user'?'user':'ai');
 let isImageRequest=/image|logo|picture|draw|poster|flyer|generate/i.test(text||'');
@@ -102,22 +107,17 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
 };r.readAsDataURL(f);fileEl.value='';
 };
 async function callGeminiVision(question){
-  let key = (localStorage.getItem('foraneo_gemini_key')||'').trim();
-  if(!key || !key.startsWith('AIza')) return "⚠️ No real Gemini key yet. Tap 🔑 AI Key at top and paste your key starting with AIza...";
+  let key = getKey();
+  if(!key || !key.startsWith('AIza')) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
   if(!lastImg) return "Upload an image first, then ask me.";
   try{
     let base64 = lastImg.split(',')[1];
-    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+key, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text: question || "Describe this image in detail like Meta AI. What do you see?"},{inline_data:{mime_type:"image/jpeg", data: base64}}]}]})
-    });
+    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({contents:[{parts:[{text: question || "Describe this image in detail like Meta AI. What do you see?"},{inline_data:{mime_type:"image/jpeg", data: base64}}]}]})});
     let data = await res.json();
     if(data.error) return "Gemini error: " + data.error.message;
     return data.candidates[0].content.parts[0].text;
-  }
-    catch(e){return "Gemini error: "+e.message;}
-  }
+  }catch(e){return "Gemini error: "+e.message;}
+}
 async function aiReply(q){
   let l=q.toLowerCase();
   if(lastImg && (l.includes('describe') || l.includes('what do you see') || l.includes('what is this') || l.includes('see this') || l.includes('in this image'))){
@@ -126,8 +126,8 @@ async function aiReply(q){
     return answer;
   }
   if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
-  let key = (localStorage.getItem('foraneo_gemini_key')||'').trim();
-  if(!key || !key.startsWith('AIza')) return "⚠️ Tap 🔑 AI Key at top and paste your Gemini key starting with AIza...";
+  let key = getKey();
+  if(!key || !key.startsWith('AIza')) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
   try{
     let modeText = "";
     if(imgMode) modeText = "User wants an image/logo idea. Give a detailed prompt/description. ";
@@ -135,11 +135,7 @@ async function aiReply(q){
     if(helpMode) modeText = "User needs study/homework help. ";
     if(bizMode) modeText = "User needs business help. Give plan, prices, marketing. ";
     if(codeMode) modeText = "User needs coding help. Give code. ";
-    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+key, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text: "You are FORANEO_AI from FORANEO (PTY) LTD. Motto: forego. Company in Mokopane, South Africa. Focus: Tech, AI, Training and Education. Be helpful, friendly, clear, short. "+modeText+"User: "+q}]}]})
-    });
+    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({contents:[{parts:[{text: "You are FORANEO_AI from FORANEO (PTY) LTD. Motto: forego. Company in Mokopane, South Africa. Focus: Tech, AI, Training and Education. Be helpful, friendly, clear, short. "+modeText+"User: "+q}]}]})});
     let data = await res.json();
     if(data.error) return "Gemini error: " + data.error.message + " - wait 1 min and try again.";
     return data.candidates[0].content.parts[0].text;
@@ -148,12 +144,7 @@ async function aiReply(q){
 async function sendMsg(){
 let v=input.value.trim();if(!v)return;
 addBubble(v,'user');input.value='';
-try{
-let reply = await aiReply(v);
-addBubble(reply,'ai');
-}catch(e){
-addBubble("Oops: "+e.message,"ai");
-}
+try{let reply = await aiReply(v);addBubble(reply,'ai');}catch(e){addBubble("Oops: "+e.message,"ai");}
 }
 document.getElementById('sendBtn').onclick=sendMsg;
 input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
@@ -175,27 +166,7 @@ if(video){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{
 }
 document.getElementById('pillVoiceCall').onclick=()=>startCall(false);
 document.getElementById('pillVideoCall').onclick=()=>startCall(true);
-document.getElementById('pillWhatCan').onclick=()=>addBubble(`FORANEO_AI - What I can do:
-- Chat & answer questions, explain anything
-- See and describe images, read text in photos
-- Read documents, PDF, TXT and answer about them
-- Listen to MP3 / MP4 and summarise what was said
-- Code, Business, School, Jokes, Images, Video
-- Voice Note, Voice Call, Video Call
-
-INFORMATION OF FORANEO (PTY) LTD
-Company: FORANEO (PTY) LTD
-Motto: forego
-Focus: Tech, AI, Training and Education
-Departments:
-- Grabaciones Foraneo
-- Foraneo Net
-- Escuela Foraneo
-- Foraneo Black Marks Tattoos
-Address: 50226 Masodi, Mokopane, 0600
-Hours: Monday to Sunday 3:00 PM to 5:40 PM
-AI Product: FORANEO_AI
-Chats stay until you press Clear Chats manually.`, "ai");
+document.getElementById('pillWhatCan').onclick=()=>addBubble(`FORANEO_AI - What I can do:\n- Chat & answer questions, explain anything\n- See and describe images, read text in photos\n- Read documents, PDF, TXT and answer about them\n- Listen to MP3 / MP4 and summarise what was said\n- Code, Business, School, Jokes, Images, Video\n- Voice Note, Voice Call, Video Call\n\nINFORMATION OF FORANEO (PTY) LTD\nCompany: FORANEO (PTY) LTD\nMotto: forego\nFocus: Tech, AI, Training and Education\nDepartments:\n- Grabaciones Foraneo\n- Foraneo Net\n- Escuela Foraneo\n- Foraneo Black Marks Tattoos\nAddress: 50226 Masodi, Mokopane, 0600\nHours: Monday to Sunday 3:00 PM to 5:40 PM\nAI Product: FORANEO_AI\nChats stay until you press Clear Chats manually.`, "ai");
 document.getElementById('endCallBtn').onclick=()=>{document.getElementById('callBox').style.display='none';if(callStream)callStream.getTracks().forEach(t=>t.stop());addBubble("Call ended. Thanks Friend!","ai")};
 document.getElementById('seeMeBtn').onclick=()=>addBubble("👁️ I see you! You look great today! 😊 What do you want to talk about?","ai");
 document.getElementById('speakBtn').onclick=function(){muted=!muted;this.textContent=muted?'🔊 Unmute AI':'🔇 Mute AI'};
@@ -203,7 +174,9 @@ document.getElementById('signBtn').onclick=()=>document.getElementById('authModa
 document.getElementById('closeAuth').onclick=()=>document.getElementById('authModal').style.display='none';
 document.getElementById('googleBtn').onclick=()=>{let e=prompt('Enter your Google email:');if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
 document.getElementById('emailBtn').onclick=()=>{let e=document.getElementById('emailInput').value;if(e){currentUser={email:e};document.getElementById('authModal').style.display='none';document.getElementById('signBtn').textContent='✅ '+e.split('@')[0];addBubble('Welcome '+e.split('@')[0]+'! 🎉',"ai")}};
-document.getElementById('keyBtn').onclick=()=>{let k=prompt('Paste your FREE Gemini API Key from aistudio.google.com:');if(k){k=k.trim();localStorage.setItem('foraneo_gemini_key',k);document.getElementById('keyBtn').textContent='✅ AI Key';addBubble("Key saved! Now I can see images like Meta AI.","ai")}};
+document.getElementById('keyBtn').onclick=()=>{document.getElementById('keyInput').focus();addBubble("Paste your key in the white box at the TOP, then tap Save Key.","ai")};
+document.getElementById('keySaveBtn').onclick=()=>{let k=document.getElementById('keyInput').value.trim();if(!k){addBubble("Box is empty. Paste your key first.","ai");return;}MEMORY_KEY=k;try{localStorage.setItem('foraneo_gemini_key',k);}catch(e){}document.getElementById('keySaveBtn').textContent='✅ Saved!';addBubble("Key saved! Length: "+k.length+" — Now type Hi and Send.","ai")};
+try{let old=localStorage.getItem('foraneo_gemini_key')||'';if(old){document.getElementById('keyInput').value=old;MEMORY_KEY=old;}}catch(e){}
 restore();
 </script>
 </body>
