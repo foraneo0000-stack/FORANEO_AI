@@ -58,7 +58,7 @@ body{font-family:Arial,sans-serif;background:#eef2ff;min-height:100vh;display:fl
 <button type="button" onclick="showVoiceNote()">▶️ Voice Note</button>
 <button type="button" onclick="showVoiceCall()">🎤 Voice Call</button>
 <button type="button" onclick="showVideoCall()">👤 Video Call</button>
-<button type="button" id="helpBtn" onclick="showHelp()">📚 What FORANEO_AI can do</button>
+<button type="button" onclick="showHelp()">📚 What FORANEO_AI can do</button>
 </div>
 
 <div class="bottom">
@@ -155,7 +155,7 @@ async function sendMsg(){
   let input=document.getElementById('userInput');
   let text=input.value.trim();
   if(!text && !pendingFile) return;
-  if(isTrying){ addMsg("ai","⏳ I'm already trying, please wait, don't send again..."); return; }
+  if(isTrying){ addMsg("ai","⏳ I'm already trying, please wait..."); return; }
   let key=getKey();
   if(!key){ addMsg("ai","⚠️ Paste your OWN key in the white box at the TOP, tap Save Key, then ask again."); return; }
   addMsg("me", text || "Please read this file.");
@@ -169,37 +169,56 @@ async function sendMsg(){
       parts.push({inline_data:{mime_type:pendingFileType, data:base64Data}});
     }
     pendingFile=null;
-    let models=["gemini-3.8-flash","gemini-2.0-flash","gemini-2.0-flash-lite","gemini-1.5-flash","gemini-1.5-flash-8b"];
+    // Start with models that still have quota - 3.8 is dead for today, so skip it first
+    let models=["gemini-2.0-flash","gemini-1.5-flash","gemini-2.0-flash-lite","gemini-1.5-flash-8b","gemini-3.8-flash"];
+    let deadModels={};
     let attempt=0;
     while(true){
       attempt++;
-      let model=models[(attempt-1) % models.length];
-      thinking.textContent="Thinking... Trying "+model+" (try "+attempt+") - FORANEO_AI will NOT give up, keep waiting...";
+      // Find next alive model
+      let model=null;
+      for(let i=0;i<models.length;i++){ if(!deadModels[models[i]]){ model=models[i]; break; } }
+      if(!model){
+        thinking.textContent="❌ All models used up their free quota today (20 each).\n\nFIX NOW: 1) Create a NEW key with a DIFFERENT Gmail at aistudio.google.com/apikey 2) Paste new key, Save Key 3) Try Hi again. OR wait until tomorrow - quota resets every 24h.";
+        break;
+      }
+      thinking.textContent="Thinking... Trying "+model+" (try "+attempt+") - will NOT give up...";
       try{
         let url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
         let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})});
         let data=await res.json();
         if(data.error){
           let msg=data.error.message || "";
-          // If key is really wrong, stop and tell user - otherwise keep retrying
           if(msg.indexOf("API key not valid")>-1 || msg.indexOf("API_KEY_INVALID")>-1){
-            thinking.textContent="❌ Your key is wrong. Go to aistudio.google.com/apikey, create NEW key, paste FULL key, Save Key, try again.";
+            thinking.textContent="❌ Your key is wrong. Get NEW key at aistudio.google.com/apikey";
             break;
           }
-          thinking.textContent="⏳ Google busy / "+msg+" - Trying again in 5 sec... (try "+attempt+") Don't send again, I'm still trying...";
-          await sleep(5000);
+          if(msg.indexOf("quota")>-1 || msg.indexOf("Quota")>-1 || msg.indexOf("exceeded")>-1 || msg.indexOf("429")>-1){
+            thinking.textContent="⏳ "+model+" quota finished today (20 chats used). Jumping to next model that still has quota...";
+            deadModels[model]=true;
+            await sleep(2000);
+            continue;
+          }
+          if(msg.indexOf("high demand")>-1 || msg.indexOf("overloaded")>-1 || msg.indexOf("503")>-1){
+            thinking.textContent="⏳ "+model+" busy, waiting 5 sec and trying again... (try "+attempt+")";
+            await sleep(5000);
+            continue;
+          }
+          thinking.textContent="⏳ "+model+" error: "+msg+" - trying next model...";
+          deadModels[model]=true;
+          await sleep(2000);
           continue;
         }
         let reply=(data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || "";
         if(reply){ thinking.textContent=reply; break; }
-        thinking.textContent="⏳ Empty reply, trying again... (try "+attempt+")";
+        thinking.textContent="⏳ Empty reply, trying again...";
         await sleep(3000);
       }catch(e){
-        thinking.textContent="⏳ Internet glitch (Failed to fetch) - Trying again in 5 sec... (try "+attempt+") Don't send again, I'm still trying...";
+        thinking.textContent="⏳ Internet glitch - trying again in 5 sec... (try "+attempt+")";
         await sleep(5000);
       }
     }
-  }catch(e){ thinking.textContent="Error: "+e.message+" - trying again..."; }
+  }catch(e){ thinking.textContent="Error: "+e.message; }
   isTrying=false;
 }
 window.onload=function(){
