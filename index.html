@@ -108,7 +108,7 @@ else{addBubble('📎 File uploaded: '+f.name,'user',null,null,r.result,f.name);a
 };
 async function callGeminiVision(question){
   let key = getKey();
-  if(!key || !key.startsWith('AIza')) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
+  if(!key || key.length<20) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
   if(!lastImg) return "Upload an image first, then ask me.";
   try{
     let base64 = lastImg.split(',')[1];
@@ -127,7 +127,7 @@ async function aiReply(q){
   }
   if(calcMode||/^[0-9+\-*/(). ]+$/.test(q.trim())){try{let r=eval(q.replace(/[^0-9+\-*/(). ]/g,''));return "🧮 Answer: "+q+" = "+r;}catch(e){}}
   let key = getKey();
-  if(!key || !key.startsWith('AIza')) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
+  if(!key || key.length<20) return "⚠️ Paste your key in the white box at the TOP, tap Save Key, then ask again.";
   try{
     let modeText = "";
     if(imgMode) modeText = "User wants an image/logo idea. Give a detailed prompt/description. ";
