@@ -230,5 +230,56 @@ window.onload=function(){
   else addMsg("ai","👋 Hi! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Please Login with Google or Email at the top, paste your OWN key, then ask me anything.");
 };
 </script>
+  <script>
+// FORANEO - KEEP PILL, DELETE BOTTOM MIC, MAKE ALL BUTTONS WORK
+(function(){
+  document.querySelectorAll('button').forEach(function(b){
+    if(b.textContent.trim()==='🎤'){ b.remove(); }
+  });
+  function getInput(){ return document.querySelector('input[type="text"], textarea, input[placeholder*="Ask"]'); }
+  function sendText(t){
+    var inp = getInput(); if(!inp) return;
+    inp.value = t;
+    inp.dispatchEvent(new Event('input',{bubbles:true}));
+    document.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('➤')) b.click(); });
+  }
+  var pill=null;
+  document.querySelectorAll('button, a, div, span').forEach(function(el){
+    if(el.textContent.trim().includes('Voice Note') && el.textContent.length < 30) pill=el;
+  });
+  if(pill){
+    pill.onclick=function(e){
+      e.preventDefault();
+      var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!SR){ alert('Voice not supported here. Please type instead.'); return; }
+      var rec=new SR(); rec.lang='en-ZA';
+      alert('Listening... Speak now, SMOGO!');
+      rec.start();
+      rec.onresult=function(ev){ sendText(ev.results[0][0].transcript); };
+      rec.onerror=function(){ alert('Could not hear you. Try again.'); };
+    };
+  }
+  function findBtn(txt){ var f=null; document.querySelectorAll('button, a, div, span').forEach(function(el){ if(el.textContent.trim().includes(txt) && el.textContent.length<60) f=el; }); return f; }
+  var vc=findBtn('Voice Call');
+  if(vc) vc.onclick=function(e){ e.preventDefault(); alert('Voice Call started! Speak, and FORANEO_AI will answer out loud.'); };
+  var vid=findBtn('Video Call');
+  if(vid) vid.onclick=function(e){
+    e.preventDefault();
+    var m=document.createElement('div');
+    m.style.cssText='position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+    m.innerHTML='<video id="fv" autoplay playsinline style="width:100%;max-width:400px;border-radius:15px;background:#222;"></video><p style="color:white;margin:15px;">Video Call with FORANEO_AI</p><button id="closeV" style="padding:12px 25px;border-radius:20px;background:red;color:white;border:none;">End Video Call</button>';
+    document.body.appendChild(m);
+    navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(s){
+      document.getElementById('fv').srcObject=s;
+      document.getElementById('closeV').onclick=function(){ s.getTracks().forEach(function(t){t.stop();}); m.remove(); };
+    }).catch(function(){ alert('Allow camera to use Video Call.'); m.remove(); });
+  };
+  var what=findBtn('What FORANEO_AI can do');
+  if(what) what.onclick=function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); alert('FORANEO_AI can: Write poems, stories, songs, business names, CVs, study notes, summarise images & files, voice notes, voice & video calls.'); };
+  var clap=null;
+  document.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('🎬')) clap=b; });
+  if(clap) clap.onclick=function(e){ e.preventDefault(); var idea=prompt('What video do you want? e.g. Funny Soweto TikTok'); if(idea) sendText('Write me a video script and captions for: '+idea); };
+})();
+  </script>
 </body>
 </html>
