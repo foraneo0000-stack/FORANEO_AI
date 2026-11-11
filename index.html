@@ -373,8 +373,6 @@ window.onload=function(){
   };
 
   // 5. Other buttons
-  var what = findBtn('What FORANEO_AI can do');
-if(what) what.onclick = function(e){ e.preventDefault(); sendText('What can FORANEO_AI do? Show me the full AI CREATION INSIDE INFORMATION list: stories, poems, songs, business names, logos ideas, slogans, video ideas, scripts and captions, images ideas, posters and designs, study notes, quizzes and flashcards, apps, websites and code, CVs, presentations and plans.'); };
   var clap=null;
   document.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('🎬')) clap=b; });
   if(clap) clap.onclick = function(e){ e.preventDefault(); var idea=prompt('What video do you want? e.g. Funny Soweto TikTok'); if(idea) sendText('Write me a video script and captions for: '+idea); };
