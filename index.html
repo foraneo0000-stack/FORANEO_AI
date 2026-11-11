@@ -230,56 +230,156 @@ window.onload=function(){
   else addMsg("ai","👋 Hi! I'm FORANEO_AI. Created by FORANEO (PTY) LTD, under FORANEO NET (MODERN LIFE, AIs). Motto: FOREGO. Please Login with Google or Email at the top, paste your OWN key, then ask me anything.");
 };
 </script>
-  <script>
-// FORANEO - KEEP PILL, DELETE BOTTOM MIC, MAKE ALL BUTTONS WORK
+<script>
+// FORANEO V2 - VOICE NOTE + VOICE CALL + VIDEO CALL - AI RESPONDS + SPEAKS BACK
 (function(){
+  // 1. Delete bottom mic again (keep pill)
   document.querySelectorAll('button').forEach(function(b){
     if(b.textContent.trim()==='🎤'){ b.remove(); }
   });
-  function getInput(){ return document.querySelector('input[type="text"], textarea, input[placeholder*="Ask"]'); }
-  function sendText(t){
-    var inp = getInput(); if(!inp) return;
-    inp.value = t;
-    inp.dispatchEvent(new Event('input',{bubbles:true}));
-    document.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('➤')) b.click(); });
+
+  function getInput(){
+    return document.querySelector('input[type="text"], textarea, input[placeholder*="Ask"], #userInput, #input');
   }
-  var pill=null;
+  function getChatBox(){
+    return document.querySelector('#chat, #messages, #chatBox, #chat-box, #conversation') || document.body;
+  }
+
+  // Speak any text out loud
+  function speak(text){
+    if(!text) return;
+    try{ speechSynthesis.cancel(); }catch(e){}
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-ZA'; u.rate = 1; u.pitch = 1;
+    speechSynthesis.speak(u);
+  }
+
+  // Watch for new AI reply and speak it
+  var lastSpoken = '';
+  var observer = new MutationObserver(function(){
+    var els = document.querySelectorAll('div, p');
+    if(!els.length) return;
+    var last = els[els.length-1].textContent.trim();
+    if(last && last !== lastSpoken && last.length > 5 && !last.includes('Welcome back') && !last.includes("Hi! I'm FORANEO")){
+      // Only speak if we are in voice mode
+      if(window.foraneoVoiceMode){
+        lastSpoken = last;
+        speak(last);
+      }
+    }
+  });
+  observer.observe(getChatBox(), {childList:true, subtree:true});
+
+  // REAL SEND - tries every way FORANEO uses
+  function sendText(t){
+    window.foraneoVoiceMode = true;
+    var inp = getInput();
+    if(!inp){ alert('Could not find input box'); return; }
+    // Set value the way React / JS apps listen for
+    var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
+    if(setter && setter.set){ setter.set.call(inp, t); } else { inp.value = t; }
+    inp.dispatchEvent(new Event('input', {bubbles:true}));
+    inp.dispatchEvent(new Event('change', {bubbles:true}));
+    inp.focus();
+
+    // Try to call the app's own send function if it exists
+    if(typeof window.sendMessage === 'function'){ window.sendMessage(); return; }
+    if(typeof window.sendMsg === 'function'){ window.sendMsg(); return; }
+    if(typeof window.askAI === 'function'){ window.askAI(t); return; }
+    if(typeof window.ask === 'function'){ window.ask(t); return; }
+
+    // Press Enter
+    var ev = new KeyboardEvent('keydown', {key:'Enter', code:'Enter', keyCode:13, which:13, bubbles:true});
+    inp.dispatchEvent(ev);
+    var ev2 = new KeyboardEvent('keyup', {key:'Enter', code:'Enter', keyCode:13, which:13, bubbles:true});
+    inp.dispatchEvent(ev2);
+
+    // Click send button
+    setTimeout(function(){
+      var done = false;
+      document.querySelectorAll('button').forEach(function(b){
+        if(!done && (b.textContent.includes('➤') || b.textContent.toLowerCase().includes('send'))){
+          b.click(); done = true;
+        }
+      });
+      // Fallback: if still not sent, try form submit
+      var form = inp.closest('form');
+      if(form){ try{ form.requestSubmit(); }catch(e){} }
+    }, 100);
+  }
+
+  function startListening(onText, continuous){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ alert('Voice not supported on this browser. Use Chrome.'); return null; }
+    var rec = new SR();
+    rec.lang = 'en-ZA'; rec.interimResults = false; rec.continuous = !!continuous;
+    rec.onresult = function(ev){
+      var txt = ev.results[ev.results.length-1][0].transcript;
+      onText(txt);
+    };
+    rec.onerror = function(){ if(continuous){ try{ rec.start(); }catch(e){} } };
+    rec.onend = function(){ if(continuous){ try{ rec.start(); }catch(e){} } };
+    rec.start();
+    return rec;
+  }
+
+  // 2. PILL VOICE NOTE - speak, AI answers + speaks back
+  var pill = null;
   document.querySelectorAll('button, a, div, span').forEach(function(el){
-    if(el.textContent.trim().includes('Voice Note') && el.textContent.length < 30) pill=el;
+    if(el.textContent.trim().includes('Voice Note') && el.textContent.length < 30) pill = el;
   });
   if(pill){
-    pill.onclick=function(e){
+    pill.onclick = function(e){
       e.preventDefault();
-      var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-      if(!SR){ alert('Voice not supported here. Please type instead.'); return; }
-      var rec=new SR(); rec.lang='en-ZA';
-      alert('Listening... Speak now, SMOGO!');
-      rec.start();
-      rec.onresult=function(ev){ sendText(ev.results[0][0].transcript); };
-      rec.onerror=function(){ alert('Could not hear you. Try again.'); };
+      alert('Listening... Speak now, SMOGO! FORANEO will answer + speak back.');
+      startListening(function(txt){ sendText(txt); }, false);
     };
   }
+
+  // 3. VOICE CALL - continuous talk like a real call
   function findBtn(txt){ var f=null; document.querySelectorAll('button, a, div, span').forEach(function(el){ if(el.textContent.trim().includes(txt) && el.textContent.length<60) f=el; }); return f; }
-  var vc=findBtn('Voice Call');
-  if(vc) vc.onclick=function(e){ e.preventDefault(); alert('Voice Call started! Speak, and FORANEO_AI will answer out loud.'); };
-  var vid=findBtn('Video Call');
-  if(vid) vid.onclick=function(e){
+  var vc = findBtn('Voice Call');
+  if(vc) vc.onclick = function(e){
     e.preventDefault();
-    var m=document.createElement('div');
+    window.foraneoVoiceMode = true;
+    alert('Voice Call STARTED! Talk to FORANEO. It will listen, answer, and speak back. Tap Voice Call again to stop.');
+    if(window.foraneoCallRec){ try{ window.foraneoCallRec.stop(); }catch(e){} window.foraneoCallRec=null; speak('Voice call ended.'); return; }
+    speak('Hello SMOGO, I am FORANEO AI. What do you want to talk about?');
+    setTimeout(function(){
+      window.foraneoCallRec = startListening(function(txt){ sendText(txt); }, true);
+    }, 2000);
+  };
+
+  // 4. VIDEO CALL - camera + voice + AI speaks back
+  var vid = findBtn('Video Call');
+  if(vid) vid.onclick = function(e){
+    e.preventDefault();
+    window.foraneoVoiceMode = true;
+    var m = document.createElement('div');
     m.style.cssText='position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
-    m.innerHTML='<video id="fv" autoplay playsinline style="width:100%;max-width:400px;border-radius:15px;background:#222;"></video><p style="color:white;margin:15px;">Video Call with FORANEO_AI</p><button id="closeV" style="padding:12px 25px;border-radius:20px;background:red;color:white;border:none;">End Video Call</button>';
+    m.innerHTML='<video id="fv" autoplay playsinline muted style="width:100%;max-width:400px;border-radius:15px;background:#222;"></video><p style="color:white;margin:15px;">Video Call with FORANEO_AI - Speak, I am listening</p><button id="closeV" style="padding:12px 25px;border-radius:20px;background:red;color:white;border:none;">End Video Call</button>';
     document.body.appendChild(m);
     navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(s){
-      document.getElementById('fv').srcObject=s;
-      document.getElementById('closeV').onclick=function(){ s.getTracks().forEach(function(t){t.stop();}); m.remove(); };
-    }).catch(function(){ alert('Allow camera to use Video Call.'); m.remove(); });
+      document.getElementById('fv').srcObject = s;
+      speak('Hello SMOGO, video call started. I can see you. What do you want?');
+      window.foraneoCallRec = startListening(function(txt){ sendText(txt); }, true);
+      document.getElementById('closeV').onclick=function(){
+        s.getTracks().forEach(function(t){t.stop();});
+        if(window.foraneoCallRec){ try{ window.foraneoCallRec.stop(); }catch(e){} }
+        window.foraneoVoiceMode = false;
+        m.remove();
+      };
+    }).catch(function(){ alert('Allow camera + mic to use Video Call.'); m.remove(); });
   };
-  var what=findBtn('What FORANEO_AI can do');
-  if(what) what.onclick=function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); alert('FORANEO_AI can: Write poems, stories, songs, business names, CVs, study notes, summarise images & files, voice notes, voice & video calls.'); };
+
+  // 5. Other buttons
+  var what = findBtn('What FORANEO_AI can do');
+  if(what) what.onclick = function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); alert('FORANEO_AI can: Write poems, stories, songs, business names, CVs, study notes, summarise images & files, voice notes, voice & video calls.'); };
   var clap=null;
   document.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('🎬')) clap=b; });
-  if(clap) clap.onclick=function(e){ e.preventDefault(); var idea=prompt('What video do you want? e.g. Funny Soweto TikTok'); if(idea) sendText('Write me a video script and captions for: '+idea); };
+  if(clap) clap.onclick = function(e){ e.preventDefault(); var idea=prompt('What video do you want? e.g. Funny Soweto TikTok'); if(idea) sendText('Write me a video script and captions for: '+idea); };
 })();
+</script>
   </script>
 </body>
 </html>
